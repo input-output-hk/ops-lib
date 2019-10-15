@@ -1,5 +1,5 @@
 self: super: {
-  mkSourcesOverlay = super: s: {
+  mergeSources = super: s: {
     sources = (super.sources or s) // s;
   };
 }

@@ -4,7 +4,7 @@
 , config ? {} }:
 import sources.nixpkgs {
   overlays = import ../overlays ++ [
-    (_: super: super.mkSourcesOverlay super sources)
+    (_: super: super.mergeSources super sources)
   ];
   inherit system config;
 }
