@@ -1,5 +1,5 @@
 self: super: {
-  mkSourcesOverlay = s: {
+  mkSourcesOverlay = super: s: {
     sources = (super.sources or s) // s;
   };
 }
