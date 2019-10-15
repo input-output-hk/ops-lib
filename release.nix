@@ -46,6 +46,8 @@ let
     required = mkRequiredJob (
       # project executables:
       [ jobs.native.nixops.x86_64-linux
+        jobs.native.nginxStable.x86_64-linux
+        jobs.native.nginxMainline.x86_64-linux
       ]
     );
   }

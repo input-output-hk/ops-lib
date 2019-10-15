@@ -3,6 +3,6 @@
 , crossSystem ? null
 , config ? {}}@args
 : with import ./nix args; {
-  inherit overlays nixops;
+  inherit overlays nixops nginxStable nginxMainline;
   shell = import ./shell.nix;
 }
