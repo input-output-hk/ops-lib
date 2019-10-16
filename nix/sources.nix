@@ -3,22 +3,14 @@
 # A record, from name to path, of the third-party packages
 with rec
 {
-  pkgs =
-    if hasNixpkgsPath
-    then
-        if hasThisAsNixpkgsPath
-        then import (builtins_fetchTarball { inherit (sources_nixpkgs) url sha256; }) {}
-        else import <nixpkgs> {}
-    else
-        import (builtins_fetchTarball { inherit (sources_nixpkgs) url sha256; }) {};
+  pkgs = import (builtins_fetchTarball { inherit (sources_nixpkgs) url sha256; }) {};
 
   sources_nixpkgs =
     if builtins.hasAttr "nixpkgs" sources
     then sources.nixpkgs
     else abort
     ''
-        Please specify either <nixpkgs> (through -I or NIX_PATH=nixpkgs=...) or
-        add a package called "nixpkgs" to your sources.json.
+        Please add a package called "nixpkgs" to your sources.json.
     '';
 
   sources_gitignore =
