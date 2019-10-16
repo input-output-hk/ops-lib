@@ -1,8 +1,7 @@
-{ sources ? import ./nix/sources.nix
-, system ? builtins.currentSystem
-, crossSystem ? null
-, config ? {}}@args
-: with import ./nix args; {
-  inherit overlays nixops nginxStable nginxMainline;
-  shell = import ./shell.nix;
+args: with import ./nix args; {
+  inherit nixops nginxStable nginxMainline;
+  overlays = import ./overlays sources;
+  shell = mkShell {
+    buildInputs = [ niv ];
+  };
 }

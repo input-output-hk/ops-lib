@@ -1,0 +1,38 @@
+{
+    "gitignore": {
+        "branch": "master",
+        "description": "Nix function for filtering local git sources",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "gitignore",
+        "rev": "f9e996052b5af4032fe6150bba4a6fe4f7b9d698",
+        "sha256": "0jrh5ghisaqdd0vldbywags20m2cxpkbbk5jjjmwaw0gr8nhsafv",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/gitignore/archive/f9e996052b5af4032fe6150bba4a6fe4f7b9d698.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixos-unstable",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "NixOS",
+        "repo": "nixpkgs-channels",
+        "rev": "94500c93dc239761bd144128a1684abcd08df6b7",
+        "sha256": "0p6bd16mb1k5c3zihl1c3d62m419rii102xfb340pccgbd8j34bc",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/94500c93dc239761bd144128a1684abcd08df6b7.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ops-lib": {
+        "branch": "master",
+        "description": "NixOps deployment configuration library for IOHK devops ",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "ops-lib",
+        "rev": "66b4f9dba633451f23b805dd04ccfdd277a229b3",
+        "sha256": "1rvlaysiap8bb75pmj88icjfb5xyspkblzdshnfllry4a5bn568s",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/66b4f9dba633451f23b805dd04ccfdd277a229b3.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

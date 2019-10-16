@@ -27,11 +27,6 @@ in {
 
   environment.variables.TERM = "xterm-256color";
 
-  boot.kernel.sysctl = {
-    ## DEVOPS-592
-    "kernel.unprivileged_bpf_disabled" = 1;
-  };
-
   users.mutableUsers = false;
   users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
 

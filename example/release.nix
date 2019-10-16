@@ -23,7 +23,7 @@
 , scrubJobs ? true
 
 # Import pkgs
-, pkgs ? import ../nix {}
+, pkgs ? import ./nix {}
 }:
 
 with import ((import pkgs.sources.iohk-nix) {}).release-lib {

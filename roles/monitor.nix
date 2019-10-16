@@ -1,6 +1,7 @@
-{ pkgs, lib, config, nodes, resources, globals,  ... }:
+{ pkgs, lib, config, nodes, resources,  ... }:
 let
-  inherit (globals) domain applicationMonitoringPortsFor;
+
+  inherit (pkgs.globals) domain applicationMonitoringPortsFor;
   inherit (lib) mapAttrs hasPrefix listToAttrs attrValues nameValuePair;
 
   mkMonitoredNodes = suffix:
@@ -28,11 +29,12 @@ in {
     webhost = config.node.fqdn;
     enableACME = config.deployment.targetEnv != "libvirtd";
 
-    deadMansSnitch = import ../secrets/dead-mans-snitch.nix;
-    grafanaCreds = import ../secrets/grafana-creds.nix;
-    graylogCreds = import ../secrets/graylog-creds.nix;
-    oauth = import ../secrets/oauth.nix;
-    pagerDuty = import ../secrets/pager-duty.nix;
+    inherit (pkgs.secrets)
+      deadMansSnitch
+      grafanaCreds
+      graylogCreds
+      oauth
+      pagerDuty;
 
     monitoredNodes = monitoredNodes.${config.deployment.targetEnv};
   };
