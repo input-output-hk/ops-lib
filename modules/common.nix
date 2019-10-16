@@ -1,6 +1,6 @@
 { pkgs, lib, name, config, ... }:
 let
-  inherit (pkgs.iohk-ssh-keys) allKeysFrom devOps;
+  inherit (pkgs.iohk-ops-lib.ssh-keys) allKeysFrom devOps;
   devOpsKeys = allKeysFrom devOps;
 in {
 

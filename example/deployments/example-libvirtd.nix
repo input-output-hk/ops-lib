@@ -1,3 +1,4 @@
 with import <nixpkgs> {};
-
-pkgs.callPackage ../clusters/example.nix iohk-ops-lib.physical.libvirtd
+import ../clusters/example.nix
+  { inherit lib iohk-ops-lib pkgs; }
+  iohk-ops-lib.physical.libvirtd

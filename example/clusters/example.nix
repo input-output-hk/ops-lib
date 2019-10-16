@@ -1,29 +1,27 @@
-{ callPackage
+{ pkgs
 , lib
 , iohk-ops-lib
-, targetEnv
+}:
+{ targetEnv
 , tiny, large
-, ...
 }:
 let
 
+  inherit (pkgs) sources;
   inherit (lib) recursiveUpdate mapAttrs;
   inherit (iohk-ops-lib) roles modules;
 
-  mkNode = args:
-    recursiveUpdate {
-      imports = args.imports ++ [ modules.common ];
-      deployment.targetEnv = targetEnv;
-    } args;
-
-  mkNodes = mapAttrs (_: mkNode);
-
   nodes = {
+    defaults = {
+      imports = [ modules.common ];
+      deployment.targetEnv = targetEnv;
+      nixpkgs.overlays = pkgs.overlays;
+    };
+
     monitoring = {
       imports = [ tiny ];
       deployment.ec2.region = "eu-central-1";
       deployment.packet.facility = "ams1";
-      deployment.targetEnv = targetEnv;
     };
   };
 

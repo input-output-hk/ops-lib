@@ -1,4 +1,4 @@
-globals: { pkgs, lib, config, nodes, resources,  ... }:
+{ pkgs, lib, config, nodes, resources, globals,  ... }:
 let
   inherit (globals) domain applicationMonitoringPortsFor;
   inherit (lib) mapAttrs hasPrefix listToAttrs attrValues nameValuePair;
