@@ -1,4 +1,4 @@
-{ user ? null, password ? null, pkgs ? import ../nix { } }:
+{ user ? null, password ? null, pkgs ? import ../nix { }, staticPath }:
 pkgs.mkShell {
   name = "gen-graylog-creds";
   buildInputs = with pkgs; [ pwgen gnused ];
@@ -10,7 +10,7 @@ pkgs.mkShell {
     password="${toString password}"      # password supplied by cli arg
     passwordChar="32"                    # Default graylog password length
     passwordHash=""                      # Sha256 hash of the plaintext password
-    staticPath=${toString ../static}     # Absolute path to the static dir
+    staticPath=${toString staticPath}     # Absolute path to the static dir
     user="${toString user}"              # user supplied by cli arg
 
     if [[ -e "$staticPath/$credsFilename" ]]; then

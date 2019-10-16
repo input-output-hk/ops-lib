@@ -1,5 +1,5 @@
 { pkgs, lib, ... }: {
-  imports = [ ./. ];
+  imports = [ ./common.nix ];
   deployment.ec2 = {
     instanceType = "t3.xlarge";
     ebsInitialRootDiskSize = 1000;

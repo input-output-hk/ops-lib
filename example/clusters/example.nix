@@ -10,23 +10,13 @@ let
 
   nodes = {
     defaults = { ... }: {
-      network.firewall.enable = false;
-      #imports = [ modules.common ];
+      imports = [ modules.common ];
       deployment.targetEnv = targetEnv;
-      #nixpkgs.overlays = import ../overlays sources;
-      boot.kernelParams = [ "console=ttyS0,115200" ];
-      deployment.libvirtd.extraDevicesXML = ''
-        <serial type='pty'>
-          <target port='0'/>
-        </serial>
-        <console type='pty'>
-          <target type='serial' port='0'/>
-        </console>
-      '';
+      nixpkgs.overlays = import ../overlays sources;
     };
 
     monitoring = { ... }: {
-      imports = [ large ];
+      imports = [ large roles.monitor ];
       deployment.ec2.region = "eu-central-1";
       deployment.packet.facility = "ams1";
     };

@@ -8,7 +8,7 @@
 ############################################################################
 
 # The project sources
-{ ops-lib ? { outPath = ./.; rev = "abcdef"; }
+{ ops-lib-example ? { outPath = ./.; rev = "abcdef"; }
 
 # Function arguments to pass to the project
 , projectArgs ? { config = { allowUnfree = false; inHydra = true; }; }

@@ -1,5 +1,5 @@
 { pkgs, lib, name, config, resources, ... }:
-let inherit (import ../../globals.nix) domain packet;
+let inherit (pkgs.globals) domain packet;
 in {
   deployment.packet = {
     keyPair = resources.packetKeyPairs.global;

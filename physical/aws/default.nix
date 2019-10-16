@@ -1,36 +1,10 @@
-{ name, config, resources, pkgs, lib, ... }:
-let
-  inherit (lib) mkDefault;
-  inherit (config.deployment.ec2) region;
+{
+  targetEnv = "ec2";
 
-  inherit (import ../../globals.nix) ec2;
-  inherit (ec2.credentials) accessKeyId;
-  inherit (ec2) domain;
-in {
-  imports = [ ../../modules/aws.nix ];
+  t2large = import ./t2.large.nix;
+  t2nano = import ./t2.nano.nix;
+  t2xlarge = import ./t2.xlarge.nix;
+  t3xlarge = import ./t3.xlarge.nix;
 
-  deployment.ec2 = {
-
-    ebsInitialRootDiskSize = mkDefault 30;
-
-    elasticIPv4 = resources.elasticIPs."${name}-ip" or "";
-
-    securityGroups = [
-      resources.ec2SecurityGroups."allow-deployer-ssh-${region}"
-      resources.ec2SecurityGroups."allow-monitoring-collection-${region}"
-    ];
-  };
-
-  networking.hostName = mkDefault
-    "${config.deployment.name}.${config.deployment.targetEnv}.${name}";
-
-  deployment.route53 = lib.mkIf (config.node.fqdn != null) {
-    inherit (config.node) accessKeyId;
-    hostName = config.node.fqdn;
-  };
-
-  node = {
-    inherit accessKeyId region;
-    fqdn = "${name}.${domain}";
-  };
+  security-groups = import ./security-groups;
 }

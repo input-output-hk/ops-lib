@@ -16,6 +16,11 @@ if [ ! -d /var/lib/libvirt/images ]; then
   sudo chmod g+w /var/lib/libvirt/images
 fi
 
+# Credential setup
+if [ ! -f ./static/graylog-creds.nix ]; then
+  nix-shell -A gen-graylog-creds
+fi
+
 # NixOps setup
 export NIXOPS_DEPLOYMENT=example-libvirtd
 export NIX_PATH="nixpkgs=$(nix eval '(import ./nix {}).path')"

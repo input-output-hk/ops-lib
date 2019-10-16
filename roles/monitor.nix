@@ -1,7 +1,7 @@
 { pkgs, lib, config, nodes, resources,  ... }:
 let
 
-  inherit (pkgs.globals) domain applicationMonitoringPortsFor;
+  inherit (pkgs.globals) domain applicationMonitoringPortsFor static;
   inherit (lib) mapAttrs hasPrefix listToAttrs attrValues nameValuePair;
 
   mkMonitoredNodes = suffix:
@@ -29,7 +29,7 @@ in {
     webhost = config.node.fqdn;
     enableACME = config.deployment.targetEnv != "libvirtd";
 
-    inherit (pkgs.secrets)
+    inherit (static)
       deadMansSnitch
       grafanaCreds
       graylogCreds

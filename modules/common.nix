@@ -81,7 +81,7 @@ in {
   };
 
   system.extraSystemBuilderCmds = ''
-    ln -sv ${(import ../nix { }).path} $out/nixpkgs
+    ln -sv ${pkgs.path} $out/nixpkgs
   '';
 
   # Mosh
