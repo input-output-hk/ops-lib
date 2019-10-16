@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell --pure -I nixpkgs=../nix -i bash -p nixops nix cacert qemu which
 
 set -euxo pipefail
 
@@ -16,11 +17,14 @@ if [ ! -d /var/lib/libvirt/images ]; then
   sudo chmod g+w /var/lib/libvirt/images
 fi
 
+which --all nixops
+
 # NixOps setup
 export NIXOPS_DEPLOYMENT=example-libvirtd
-export NIX_PATH="nixpkgs=$(nix eval '(import ./nix {}).path')"
+export NIXOPS_STATEFILE=nixops.state
+export NIX_PATH="nixpkgs=$(nix eval '(import ../nix {}).path')"
 
 nixops destroy || true
 nixops delete || true
-nixops create ./deployments/example-libvirtd.nix -I nixpkgs=./nix
+nixops create ./deployments/example-libvirtd.nix -I nixpkgs=../nix
 nixops deploy --show-trace

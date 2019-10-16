@@ -36,15 +36,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-libvirtd": {
-        "branch": "master",
+        "branch": "fix-for-latest-nix",
         "description": "NixOps libvirtd backend plugin [maintainer=@AmineChikhaoui]",
         "homepage": "",
-        "owner": "nix-community",
+        "owner": "input-output-hk",
         "repo": "nixops-libvirtd",
-        "rev": "8c278af0311caa29c1aa9a2cc63958316562ee3d",
-        "sha256": "06df6idmhmm0i4v40qyis9ckck4hy2nddrg5c0k7p7nc2ha32wds",
+        "rev": "efb48a99837403622d8b89a051a3df4ac52cee51",
+        "sha256": "0dh799qq24wigvys8zkw8q4lkjsif6yx5h0kvndr8f8b17vb439j",
         "type": "tarball",
-        "url": "https://github.com/nix-community/nixops-libvirtd/archive/8c278af0311caa29c1aa9a2cc63958316562ee3d.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-libvirtd/archive/efb48a99837403622d8b89a051a3df4ac52cee51.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-packet": {
