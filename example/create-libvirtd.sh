@@ -20,7 +20,7 @@ fi
 export NIXOPS_DEPLOYMENT=example-libvirtd
 export NIX_PATH="nixpkgs=$(nix eval '(import ./nix {}).path')"
 
-#nixops destroy || true
-#nixops delete || true
-#nixops create ./deployments/example-libvirtd.nix -I nixpkgs=./nix
+nixops destroy || true
+nixops delete || true
+nixops create ./deployments/example-libvirtd.nix -I nixpkgs=./nix
 nixops deploy --show-trace
