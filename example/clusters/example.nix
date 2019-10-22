@@ -1,6 +1,6 @@
 pkgs:
 { targetEnv
-, tiny, large
+, tiny, medium, large
 }:
 let
 
@@ -16,7 +16,7 @@ let
     };
 
     monitoring = { ... }: {
-      imports = [ large roles.monitor ];
+      imports = [ tiny roles.monitor ];
       deployment.ec2.region = "eu-central-1";
       deployment.packet.facility = "ams1";
     };
