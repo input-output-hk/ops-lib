@@ -80,10 +80,6 @@ in {
     ];
   };
 
-  system.extraSystemBuilderCmds = ''
-    ln -sv ${pkgs.path} $out/nixpkgs
-  '';
-
   # Mosh
   networking.firewall.allowedUDPPortRanges = [{
     from = 60000;
