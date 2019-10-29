@@ -31,6 +31,14 @@ in {
         '';
       };
 
+      statsdPort = mkOption {
+        type = types.int;
+        default = 8125;
+        description = ''
+          Local statsd listenning port.
+        '';
+      };
+
       logging = mkOption {
         type = types.bool;
         default = true;
@@ -89,7 +97,7 @@ in {
         requires = [ "network.target" ];
         after = [ "network.target" ];
         serviceConfig.ExecStart =
-          "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:8125 --web.listen-address=:9102";
+          "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:${toString cfg.statsdPort} --web.listen-address=:9102";
       };
 
       services = {
