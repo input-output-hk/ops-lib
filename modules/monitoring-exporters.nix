@@ -45,7 +45,7 @@ in {
         description = ''
           Ports of application specific prometheus exporters.
         '';
-      }
+      };
 
       logging = mkOption {
         type = types.bool;
