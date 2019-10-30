@@ -1,14 +1,14 @@
 { pkgs, lib, config, nodes, resources,  ... }:
 let
 
-  inherit (pkgs.globals) domain applicationMonitoringPortsFor static;
+  inherit (pkgs.globals) domain static;
   inherit (lib) mapAttrs hasPrefix listToAttrs attrValues nameValuePair;
 
   mkMonitoredNodes = suffix:
     listToAttrs (attrValues
       (mapAttrs (name: node: nameValuePair "${name}${suffix}" {
         hasNginx = node.config.services.nginx.enable;
-        applicationMonitoringPorts = applicationMonitoringPortsFor name node;
+        applicationMonitoringPorts = node.config.services.monitoring-exporters.extraPrometheusExportersPorts;
       }) nodes));
 
   monitoredNodes = {

@@ -39,6 +39,14 @@ in {
         '';
       };
 
+      extraPrometheusExportersPorts = mkOption {
+        type = types.listOf types.int;
+        default = [];
+        description = ''
+          Ports of application specific prometheus exporters.
+        '';
+      }
+
       logging = mkOption {
         type = types.bool;
         default = true;
