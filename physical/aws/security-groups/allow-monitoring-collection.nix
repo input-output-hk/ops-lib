@@ -1,4 +1,4 @@
-{ region, accessKeyId, ... }: {
+{extraPrometheusExportersPorts ? []}: { region, accessKeyId, ... }: {
   "allow-monitoring-collection-${region}" = { nodes, resources, lib, ... }:
     let monitoringSourceIp = resources.elasticIPs.monitoring-ip;
     in {
@@ -15,9 +15,6 @@
           9100 # prometheus exporters
           9102 # statd exporter
           9113 # nginx exporter
-        ] ++ lib.unique (lib.concatMap
-          (n: n.config.services.monitoring-exporters.extraPrometheusExportersPorts)
-          (lib.attrValues nodes)
-        ));
+        ] ++ extraPrometheusExportersPorts);
     };
 }

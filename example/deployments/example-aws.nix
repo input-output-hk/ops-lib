@@ -25,7 +25,9 @@ let
     allow-all
     allow-ssh
     # allow-deployer-ssh
-    allow-monitoring-collection
+    (allow-monitoring-collection {
+      extraPrometheusExportersPorts = [];
+    })
     allow-public-www-https
     allow-graylog
   ];

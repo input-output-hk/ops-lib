@@ -135,7 +135,7 @@ in {
           ];
         };
       };
-      networking.firewall.allowedTCPPorts = [ 9100 9102 ];
+      networking.firewall.allowedTCPPorts = [ 9100 9102 ] ++ cfg.extraPrometheusExportersPorts;
     })
 
     (mkIf cfg.logging {
