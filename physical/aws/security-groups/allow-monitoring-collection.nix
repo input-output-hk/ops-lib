@@ -16,6 +16,8 @@
           9102 # statd exporter
           9113 # nginx exporter
         ] ++ lib.unique (lib.concatMap
-          (n: n.config.services.monitoring-exporters.extraPrometheusExportersPorts) nodes));
+          (n: n.config.services.monitoring-exporters.extraPrometheusExportersPorts)
+          (lib.attrValues nodes)
+        ));
     };
 }
