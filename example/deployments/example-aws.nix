@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import ../nix {};
 let
   inherit (pkgs.lib)
     attrValues filter filterAttrs flatten foldl' hasAttrByPath listToAttrs
@@ -27,14 +27,15 @@ let
     # allow-deployer-ssh
     allow-monitoring-collection
     allow-public-www-https
+    allow-graylog
   ];
 
   importSecurityGroup = region: securityGroup:
-    securityGroup { inherit region accessKeyId; };
+    securityGroup { inherit lib region accessKeyId nodes; };
 
   mkEC2SecurityGroup = region:
     foldl' recursiveUpdate { }
-    (map (importSecurityGroup region) securityGroupFiles);
+    (map (importSecurityGroup region) securityGroups);
 
   settings = {
     resources = {
@@ -48,7 +49,7 @@ let
         }) nodes;
 
       ec2KeyPairs = listToAttrs (map (region:
-        nameValuePair "${config.deployment.name}-${region}" { inherit region accessKeyId; })
+        nameValuePair "${globals.deploymentName}-${region}" { inherit region accessKeyId; })
         regions);
     };
   };

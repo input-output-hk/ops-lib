@@ -1,7 +1,7 @@
 { pkgs, lib, config, nodes, resources,  ... }:
 let
 
-  inherit (pkgs.globals) domain static;
+  inherit (pkgs.globals) static;
   inherit (lib) mapAttrs hasPrefix listToAttrs attrValues nameValuePair;
 
   mkMonitoredNodes = suffix:

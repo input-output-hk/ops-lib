@@ -3,14 +3,13 @@ let
   inherit (lib) mkDefault;
   inherit (config.deployment.ec2) region;
 
-  inherit (pkgs.globals) ec2;
+  inherit (pkgs.globals) ec2 domain;
   inherit (ec2.credentials) accessKeyId;
-  inherit (ec2) domain;
 in {
   imports = [ ../../modules/aws.nix ];
 
   deployment.ec2 = {
-    keyPair = mkDefault resources.ec2KeyPairs."${config.deployment.name}-${region}";
+    keyPair = mkDefault resources.ec2KeyPairs."${pkgs.globals.deploymentName}-${region}";
 
     ebsInitialRootDiskSize = mkDefault 30;
 
@@ -21,9 +20,6 @@ in {
       resources.ec2SecurityGroups."allow-monitoring-collection-${region}"
     ];
   };
-
-  networking.hostName = mkDefault
-    "${config.deployment.name}.${config.deployment.targetEnv}.${name}";
 
   deployment.route53 = lib.mkIf (config.node.fqdn != null) {
     inherit (config.node) accessKeyId;
