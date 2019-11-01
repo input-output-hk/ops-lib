@@ -11,6 +11,8 @@ in {
   deployment.ec2 = {
     keyPair = mkDefault resources.ec2KeyPairs."${pkgs.globals.deploymentName}-${region}";
 
+    accessKeyId = mkDefault accessKeyId;
+
     ebsInitialRootDiskSize = mkDefault 30;
 
     elasticIPv4 = resources.elasticIPs."${name}-ip" or "";
