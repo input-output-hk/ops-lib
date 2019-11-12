@@ -31,6 +31,11 @@ with types; {
         default = "eu-central-1";
       };
 
+      isMonitoring = mkOption {
+        type = bool;
+        default = false;
+      };
+
       accessKeyId = mkOption {
         type = str;
         description = "Access key ID.";

@@ -20,6 +20,8 @@ let
 in {
   imports = [ ../modules/monitoring-services.nix ../modules/common.nix ];
 
+  node.isMonitoring = true;
+
   deployment.ec2.securityGroups = [
     resources.ec2SecurityGroups."allow-public-www-https-${config.node.region}"
   ];
