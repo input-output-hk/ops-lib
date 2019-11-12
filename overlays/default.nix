@@ -1,2 +1,2 @@
-sources: map import (import ./overlay-list.nix) ++
-  [(self: super: { inherit sources; })]
+sourcePaths: map import (import ./overlay-list.nix) ++
+  [(self: super: { inherit sourcePaths; })]

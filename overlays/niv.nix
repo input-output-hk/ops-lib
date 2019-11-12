@@ -1,3 +1,3 @@
 self: super: {
-  inherit (import self.sources.niv {}) niv;
+  inherit (import self.sourcePaths.niv {}) niv;
 }

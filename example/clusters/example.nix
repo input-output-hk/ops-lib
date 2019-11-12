@@ -4,7 +4,7 @@ pkgs:
 }:
 let
 
-  inherit (pkgs) sources lib iohk-ops-lib;
+  inherit (pkgs) soursourcesPathsces lib iohk-ops-lib;
   inherit (lib) recursiveUpdate mapAttrs;
   inherit (iohk-ops-lib) roles modules;
 
@@ -12,7 +12,7 @@ let
     defaults = { ... }: {
       imports = [ modules.common ];
       deployment.targetEnv = targetEnv;
-      nixpkgs.overlays = import ../overlays sources;
+      nixpkgs.overlays = import ../overlays sourcePaths;
     };
 
     monitoring = { ... }: {

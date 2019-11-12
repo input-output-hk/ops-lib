@@ -1,4 +1,4 @@
-{ sources ? import ./nix/sources.nix
+{ sourcePaths ? import ./nix/sources.nix
 , system ? builtins.currentSystem
 , crossSystem ? null
 , config ? {}
