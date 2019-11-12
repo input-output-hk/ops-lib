@@ -1,5 +1,5 @@
-{extraPrometheusExportersPorts ? []}: { region, accessKeyId, ... }: {
-  "allow-monitoring-collection-${region}" = { nodes, resources, lib, ... }:
+{ region, accessKeyId, ... }: {
+  "allow-monitoring-collection-${region}" = { nodes, resources, lib, pkgs, ... }:
     let monitoringSourceIp = resources.elasticIPs.monitoring-ip;
     in {
       inherit region accessKeyId;
@@ -15,6 +15,6 @@
           9100 # prometheus exporters
           9102 # statd exporter
           9113 # nginx exporter
-        ] ++ extraPrometheusExportersPorts);
+        ] ++ (pkgs.globals.extraPrometheusExportersPorts ? []));
     };
 }
