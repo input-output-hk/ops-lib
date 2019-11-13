@@ -1,6 +1,7 @@
-{ region, accessKeyId, ... }: {
-  "allow-all-${region}" = {
-    inherit region accessKeyId;
+{ region, org, lib, pkgs, ... }: {
+  "allow-all-${region}-${org}" = {
+    inherit region;
+    accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${org};
     _file = ./allow-all.nix;
     description = "Allow all ${region}";
     rules = [{

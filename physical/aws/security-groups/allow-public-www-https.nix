@@ -1,7 +1,8 @@
-{ region, accessKeyId, ... }: {
-  "allow-public-www-https-${region}" = {
+{ region, org, pkgs, ... }: {
+  "allow-public-www-https-${region}-${org}" = {
     _file = ./allow-public-www-https.nix;
-    inherit region accessKeyId;
+    inherit region;
+    accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${org};
     description = "WWW-http(s)";
     rules = [
       {

@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, config, pkgs, ... }:
 with lib;
 with types; {
   options = {
@@ -31,8 +31,12 @@ with types; {
         default = "eu-central-1";
       };
 
-      isMonitoring = mkOption {
-        type = bool;
+      org = lib.mkOption {
+        type = lib.types.enum (lib.attrNames pkgs.globals.ec2.credentials.accessKeyIds);
+      };
+
+      roles.isMonitor = lib.mkOption {
+        type = lib.types.bool;
         default = false;
       };
 

@@ -1,16 +1,16 @@
 with import ../nix {};
 let
   inherit (pkgs.lib)
-    attrValues filter filterAttrs flatten foldl' hasAttrByPath listToAttrs
-    mapAttrs' nameValuePair recursiveUpdate unique;
+    attrValues attrNames filter filterAttrs flatten foldl' hasAttrByPath listToAttrs
+    mapAttrs' mapAttrs nameValuePair recursiveUpdate unique optional any concatMap;
 
-  inherit (globals.ec2) credentials;
-  inherit (credentials) accessKeyId;
+  inherit (globals.ec2.credentials) accessKeyIds;
   inherit (iohk-ops-lib.physical) aws;
 
   cluster = import ../clusters/example.nix pkgs {
     inherit (aws) targetEnv;
     tiny = aws.t2nano;
+    medium = aws.t2xlarge;
     large = aws.t3xlarge;
   };
 
@@ -21,36 +21,71 @@ let
   regions =
     unique (map (node: node.deployment.ec2.region) (attrValues nodes));
 
+  orgs =
+    unique (map (node: node.node.org) (attrValues nodes));
+
   securityGroups = with aws.security-groups; [
-    allow-all
-    allow-ssh
-    # allow-deployer-ssh
-    allow-monitoring-collection
-    allow-public-www-https
-    allow-graylog
+    {
+      nodes = filterAttrs (_: n: n.node.roles.isMonitor) nodes;
+      groups = [
+        allow-public-www-https
+        allow-graylog
+      ];
+    }
+    {
+      inherit nodes;
+      groups = [
+        allow-deployer-ssh
+      ]
+      ++ optional (any (n: n.node.roles.isMonitor) (attrValues nodes))
+        allow-monitoring-collection;
+    }
   ];
 
-  importSecurityGroup = region: securityGroup:
-    securityGroup { inherit lib region accessKeyId nodes; };
+  importSecurityGroup =  node: securityGroup:
+    securityGroup {
+      inherit pkgs lib nodes;
+      region = node.deployment.ec2.region;
+      org = node.node.org;
+      accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${node.node.org};
+    };
 
-  mkEC2SecurityGroup = region:
-    foldl' recursiveUpdate { }
-    (map (importSecurityGroup region) securityGroups);
+
+  importSecurityGroups = {nodes, groups}:
+    mapAttrs
+      (_: n: foldl' recursiveUpdate {} (map (importSecurityGroup n) groups))
+      nodes;
+
+  securityGroupsByNode =
+    foldl' recursiveUpdate {} (map importSecurityGroups securityGroups);
 
   settings = {
     resources = {
       ec2SecurityGroups =
-        foldl' recursiveUpdate { } (map mkEC2SecurityGroup regions);
+        foldl' recursiveUpdate {} (attrValues securityGroupsByNode);
 
       elasticIPs = mapAttrs' (name: node:
         nameValuePair "${name}-ip" {
-          inherit accessKeyId;
+          accessKeyId = accessKeyIds.${node.node.org};
           inherit (node.deployment.ec2) region;
         }) nodes;
 
-      ec2KeyPairs = listToAttrs (map (region:
-        nameValuePair "${globals.deploymentName}-${region}" { inherit region accessKeyId; })
+      ec2KeyPairs = listToAttrs (concatMap (region:
+        map (org:
+          nameValuePair "example-keypair-${org}-${region}" {
+            inherit region;
+            accessKeyId = accessKeyIds.${org};
+          }
+        ) orgs)
         regions);
+    };
+    defaults = { name, resources, config, ... }: {
+      _file = ./example-aws.nix;
+      deployment.ec2 = {
+        keyPair = resources.ec2KeyPairs."example-keypair-${config.node.org}-${config.deployment.ec2.region}";
+        securityGroups = map (sgName: resources.ec2SecurityGroups.${sgName})
+          (attrNames (securityGroupsByNode.${name} or {}));
+      };
     };
   };
 in

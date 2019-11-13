@@ -1,5 +1,8 @@
 self: super: {
   globals = rec {
+
+    deployerIp = "127.0.0.1";
+
     static = import ./static;
 
     deploymentName = "example";
@@ -10,7 +13,9 @@ self: super: {
 
     ec2 = {
       credentials = {
-        accessKeyId = builtins.getEnv "AWS_ACCESS_KEY_ID";
+        accessKeyIds = {
+          default = "default";
+        };
       };
     };
   };
