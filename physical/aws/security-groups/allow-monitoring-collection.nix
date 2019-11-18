@@ -1,5 +1,5 @@
 { region, org, pkgs, ... }: {
-  "allow-monitoring-collection-${region}-${org}" = { nodes, resources, lib, pkgs, ... }:
+  "allow-monitoring-collection-${region}-${org}" = { nodes, resources, lib, ... }:
     let monitoringSourceIp = resources.elasticIPs.monitoring-ip;
     in {
       inherit region;
