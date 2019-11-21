@@ -802,7 +802,7 @@ in {
               static_configs = let
                 makeNodeConfig = key: value: {
                   targets = [ "${key}:9100" "${key}:9102" ]
-                    ++ map (p: "${key}:${p}") value.applicationMonitoringPorts;
+                    ++ map (p: "${key}:${toString p}") value.applicationMonitoringPorts;
                   labels = { alias = key; } // value.labels;
                 };
               in mapAttrsToList makeNodeConfig cfg.monitoredNodes;
