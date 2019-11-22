@@ -57,7 +57,7 @@ with types; {
       instanceType = mkOption {
         type = str;
         description = "Instance type.";
-        default = "t2.large";
+        default = "t3a.medium";
       };
 
       spotInstancePrice = mkOption {

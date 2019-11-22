@@ -20,7 +20,7 @@ in {
   };
 
   deployment.route53 = lib.mkIf (config.node.fqdn != null) {
-    inherit (config.node) accessKeyId;
+    accessKeyId = accessKeyIds.dns or config.node.accessKeyId;
     hostName = config.node.fqdn;
   };
 
