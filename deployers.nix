@@ -31,7 +31,7 @@ in {
       };
     };
   };
-  mainnet-deployer = { pkgs, ... }: {
+  mainnet-deployer = { pkgs, lib, nodes, ... }: {
     local.username = "mainnet";
     users.users.ci = {
       openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
