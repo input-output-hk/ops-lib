@@ -5,81 +5,98 @@ let
 in {
 
   imports = [ ./aws.nix ./monitoring-exporters.nix ];
+  options = {
+    local.commonGivesVim = lib.mkOption {
+      default = true;
+      type = lib.types.bool;
+      description = "allows making common.nix not install a vim";
+    };
+  };
+  config = {
+    networking.hostName = name;
 
-  networking.hostName = name;
+    environment.systemPackages = with pkgs; [
+      (ruby.withPackages (ps: with ps; [ sequel pry sqlite3 nokogiri ]))
+      bat
+      git
+      graphviz
+      htop
+      iptables
+      jq
+      lsof
+      mosh
+      ncdu
+      screen
+      sqlite-interactive
+      sysstat
+      tcpdump
+      tig
+      tmux
+      tree
+    ] ++ (lib.optional config.local.commonGivesVim vim);
 
-  environment.systemPackages = with pkgs; [
-    bat
-    git
-    graphviz
-    htop
-    iptables
-    jq
-    lsof
-    mosh
-    ncdu
-    sysstat
-    tcpdump
-    tig
-    tree
-    vim
-  ];
+    environment.variables.TERM = "xterm-256color";
 
-  environment.variables.TERM = "xterm-256color";
+    users.mutableUsers = false;
+    users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
 
-  users.mutableUsers = false;
-  users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
+    services = {
+      monitoring-exporters.graylogHost =
+        if config.deployment.targetEnv == "ec2"
+        then "monitoring-ip:5044"
+        else "monitoring:5044";
 
-  services = {
-    monitoring-exporters.graylogHost =
-      if config.deployment.targetEnv == "ec2"
-      then "monitoring-ip:5044"
-      else "monitoring:5044";
+      openssh = {
+        passwordAuthentication = false;
+        authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
+        extraConfig = lib.mkOrder 9999 ''
+          Match User root
+            AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2 /etc/ssh/authorized_keys.d/%u
+        '';
+      };
 
-    openssh = {
-      passwordAuthentication = false;
-      authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
-      extraConfig = lib.mkOrder 9999 ''
-        Match User root
-          AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2 /etc/ssh/authorized_keys.d/%u
-      '';
+      ntp.enable = true;
+      cron.enable = true;
     };
 
-    ntp.enable = true;
-    cron.enable = true;
+    nix = rec {
+      # use nix sandboxing for greater determinism
+      useSandbox = true;
+
+      # make sure we have enough build users
+      nrBuildUsers = 32;
+
+      # if our hydra is down, don't wait forever
+      extraOptions = ''
+        connect-timeout = 10
+        http2 = true
+        show-trace = true
+      '';
+
+      # use all cores
+      buildCores = 0;
+
+      nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
+
+      # use our hydra builds
+      binaryCaches = [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
+      binaryCachePublicKeys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      ];
+    };
+
+    # Mosh
+    networking.firewall.allowedUDPPortRanges = [{
+      from = 60000;
+      to = 61000;
+    }];
+    programs = {
+      screen.screenrc = ''
+        defscrollback 5000
+        caption always
+        maptimeout 5
+      '';
+    };
   };
-
-  nix = rec {
-    # use nix sandboxing for greater determinism
-    useSandbox = true;
-
-    # make sure we have enough build users
-    nrBuildUsers = 32;
-
-    # if our hydra is down, don't wait forever
-    extraOptions = ''
-      connect-timeout = 10
-      http2 = true
-      show-trace = true
-    '';
-
-    # use all cores
-    buildCores = 0;
-
-    nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
-
-    # use our hydra builds
-    trustedBinaryCaches = [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
-    binaryCaches = trustedBinaryCaches;
-    binaryCachePublicKeys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-    ];
-  };
-
-  # Mosh
-  networking.firewall.allowedUDPPortRanges = [{
-    from = 60000;
-    to = 61000;
-  }];
 }
