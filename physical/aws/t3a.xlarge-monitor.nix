@@ -1,7 +1,7 @@
 { pkgs, lib, ... }: {
   imports = [ ./common.nix ];
   deployment.ec2 = {
-    instanceType = "t3.xlarge";
+    instanceType = "t3a.xlarge";
     ebsInitialRootDiskSize = 1000;
     associatePublicIpAddress = true;
   };
