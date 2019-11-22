@@ -26,6 +26,7 @@ in {
       ];
       users.users = {
         ${config.local.username} = {
+          isNormalUser = true;
           openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
         };
       };
