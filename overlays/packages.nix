@@ -3,7 +3,7 @@ self: super: {
     physical = import ../physical;
     roles = import ../roles;
     modules = import ../modules;
-    ssh-keys = import ./ssh-keys.nix self.pkgs.lib;
+    ssh-keys = import ./ssh-keys.nix self.lib;
     scripts = {
       gen-graylog-creds = import ../scripts/gen-graylog-creds.nix;
     };
