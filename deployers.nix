@@ -1,5 +1,6 @@
 let
-  region = "us-east-1";
+  region = "eu-central-1";
+  accessKeyId = "root-account";
 in {
   defaults = { pkgs, resources, name, config, lib, nodes, ... }: {
     options = {
@@ -14,8 +15,7 @@ in {
     config = {
       deployment.targetEnv = "ec2";
       deployment.ec2 = {
-        accessKeyId = "test";
-        inherit region;
+        inherit region accessKeyId;
         keyPair = resources.ec2KeyPairs.deployers;
         instanceType = "t2.large";
         ebsInitialRootDiskSize = 200;
@@ -29,17 +29,20 @@ in {
           openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
         };
       };
-      # temporary idea
-      environment.etc."client_ssh_sample".text = lib.concatStringsSep "\n" (map
-        (name: ''
-          Host ${name}
-            User ${nodes.${name}.config.local.username}
-            HostName ${toString nodes.${name}.config.networking.publicIPv4}
-        '') [ "mainnet-deployer" "staging-deployer" "testnet-deployer" ]);
     };
   };
-  mainnet-deployer = {
-    local.username = "live-production";
+  mainnet-deployer = { pkgs, ... }: {
+    local.username = "mainnet";
+    users.users.ci = {
+      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
+      isNormalUser = true;
+    };
+    environment.etc."client_ssh_sample".text = lib.concatStringsSep "\n" (map
+      (name: ''
+        Host ${name}
+          User ${nodes.${name}.config.local.username}
+          HostName ${toString nodes.${name}.config.networking.publicIPv4}
+      '') [ "mainnet-deployer" "staging-deployer" "testnet-deployer" "dev-deployer" ]);
   };
   staging-deployer = {
     local.username = "staging";
@@ -47,20 +50,22 @@ in {
   testnet-deployer = {
     local.username = "testnet";
   };
+  dev-deployer = {
+    local.username = "dev";
+  };
   resources = {
     elasticIPs = let
       ip = {
-        accessKeyId = "todo";
-        inherit region;
+        inherit region accessKeyId;
       };
     in {
       mainnet-deployer-ip = ip;
       staging-deployer-ip = ip;
       testnet-deployer-ip = ip;
+      dev-deployer-ip = ip;
     };
     ec2KeyPairs.deployers = {
-      accessKeyId = "test";
-      inherit region;
+      inherit region accessKeyId;
     };
   };
 }
