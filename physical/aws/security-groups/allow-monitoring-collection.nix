@@ -13,11 +13,9 @@
           toPort = p; # prometheus exporters
           sourceIp = monitoringSourceIp;
         }) ([
-          8080  # explorer exporter
           9100  # prometheus exporters
           9102  # statd exporter
           9113  # nginx exporter
-          12798 # haskell prometheus exporter
         ] ++ (pkgs.globals.extraPrometheusExportersPorts or []));
     };
 }
