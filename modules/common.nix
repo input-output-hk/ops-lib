@@ -18,6 +18,9 @@ in {
     environment.systemPackages = with pkgs; [
       (ruby.withPackages (ps: with ps; [ sequel pry sqlite3 nokogiri ]))
       bat
+      di
+      fd
+      file
       git
       graphviz
       htop
@@ -26,6 +29,7 @@ in {
       lsof
       mosh
       ncdu
+      ripgrep
       screen
       sqlite-interactive
       sysstat
@@ -71,18 +75,20 @@ in {
         connect-timeout = 10
         http2 = true
         show-trace = true
+        narinfo-cache-negative-ttl = 0
       '';
 
       # use all cores
       buildCores = 0;
 
-      nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
+      #nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
 
       # use our hydra builds
-      binaryCaches = [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
+      binaryCaches = [ "https://cache.nixos.org" "https://hydra.iohk.io" "https://iohk.cachix.org" ];
       binaryCachePublicKeys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+        "iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo="
       ];
     };
 
@@ -92,10 +98,31 @@ in {
       to = 61000;
     }];
     programs = {
+      mosh.enable = true;
       screen.screenrc = ''
-        defscrollback 5000
-        caption always
+        defscrollback 10000
+        #caption always
         maptimeout 5
+        escape ^aa  # default
+        autodetach            on              # default: on
+        crlf                  off             # default: off
+        hardcopy_append       on              # default: off
+        startup_message       off             # default: on
+        vbell                 off             # default: ???
+        defmonitor            on
+        defscrollback         1000            # default: 100
+        silencewait           15              # default: 30
+        shelltitle "Shell"
+        hardstatus alwayslastline "%{b}[ %{B}%H %{b}][ %{w}%?%-Lw%?%{b}(%{W}%n*%f %t%?(%u)%?%{b})%{w}%?%+Lw%?%?%= %{b}][%{B} %Y-%m-%d %{W}%c %{b}]"
+        sorendition   gk  #red    on white
+        bell                  "%C -> %n%f %t Bell!~"
+        pow_detach_msg        "BYE"
+        vbell_msg             " *beep* "
+        bind .
+        bind ^\
+        bind \\
+        bind e mapdefault
+        msgwait 2
       '';
     };
   };
