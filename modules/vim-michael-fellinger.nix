@@ -8,7 +8,7 @@ let
         set gcr=a:blinkon0              " turn off blinking in gvim
         set t_Co=256                    " 256 Colors
         set t_vb=                       " turn off visual bell
-        set mouse=a                     " disable mouse
+        set mouse=                      " disable mouse
         set hidden                      " don't abadon buffers
         set diffopt+=iwhite             " ignore whitespace in diff-mode
         set autoread                    " update changed files

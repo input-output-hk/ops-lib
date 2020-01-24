@@ -17,9 +17,19 @@ in {
       deployment.ec2 = {
         inherit region accessKeyId;
         keyPair = resources.ec2KeyPairs.deployers;
-        instanceType = "t2.large";
+        instanceType = lib.mkDefault "r5a.xlarge";
         ebsInitialRootDiskSize = 200;
         elasticIPv4 = resources.elasticIPs."${name}-ip";
+      };
+      services.lorri.enable = true;
+      programs.bash.interactiveShellInit = ''
+        eval "$(direnv hook bash)"
+      '';
+      environment = {
+        systemPackages = with pkgs; [
+          direnv
+        ];
+        variables.DEPLOYER_IP = toString config.networking.publicIPv4;
       };
       nixpkgs.overlays = [
         (import ./overlays/packages.nix)
@@ -50,9 +60,13 @@ in {
   };
   testnet-deployer = {
     local.username = "testnet";
+    deployment.ec2.instanceType = "r5a.xlarge";
   };
-  dev-deployer = {
+  dev-deployer = { pkgs, ... }: {
     local.username = "dev";
+    users.users.dev = {
+      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom csl-developers;
+    };
   };
   resources = {
     elasticIPs = let
