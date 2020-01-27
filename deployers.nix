@@ -1,6 +1,8 @@
 let
   region = "eu-central-1";
+  org = "IOHK";
   accessKeyId = "root-account";
+  pkgs = import ./nix {};
 in {
   defaults = { pkgs, resources, name, config, lib, nodes, ... }: {
     options = {
@@ -20,6 +22,10 @@ in {
         instanceType = lib.mkDefault "r5a.xlarge";
         ebsInitialRootDiskSize = 200;
         elasticIPv4 = resources.elasticIPs."${name}-ip";
+        securityGroups = with resources; [
+          ec2SecurityGroups.allow-ssh
+          ec2SecurityGroups.allow-wireguard
+        ];
       };
       services.lorri.enable = true;
       programs.bash.interactiveShellInit = ''
@@ -40,6 +46,7 @@ in {
           openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
         };
       };
+      networking.firewall.allowedUDPPorts = [ 17777 ];
     };
   };
   mainnet-deployer = { pkgs, lib, nodes, ... }: {
@@ -54,6 +61,28 @@ in {
           User ${nodes.${name}.config.local.username}
           HostName ${toString nodes.${name}.config.networking.publicIPv4}
       '') [ "mainnet-deployer" "staging-deployer" "testnet-deployer" "dev-deployer" ]);
+
+    deployment.keys."mainnet-deployer.wgprivate" = {
+      destDir = "/etc/wireguard";
+      keyFile = ./secrets/mainnet-deployer.wgprivate;
+    };
+    networking.wireguard.interfaces.wg0 = {
+      ips = [ "10.90.1.1/32" ];
+      listenPort = 17777;
+      privateKeyFile = "/etc/wireguard/mainnet-deployer.wgprivate";
+      peers = [
+        { # mac-mini-1
+          publicKey = "nvKCarVUXdO0WtoDsEjTzU+bX0bwWYHJAM2Y3XhO0Ao=";
+          allowedIPs = [ "192.168.20.21/32" ];
+          persistentKeepalive = 25;
+        }
+        { # mac-mini-2
+          publicKey = "VcOEVp/0EG4luwL2bMmvGvlDNDbCzk7Vkazd3RRl51w=";
+          allowedIPs = [ "192.168.20.22/32" ];
+          persistentKeepalive = 25;
+        }
+      ];
+    };
   };
   staging-deployer = {
     local.username = "staging";
@@ -81,6 +110,12 @@ in {
     };
     ec2KeyPairs.deployers = {
       inherit region accessKeyId;
+    };
+    ec2SecurityGroups = let
+      fn = x: __head (__attrValues x);
+    in with (import ./physical/aws/security-groups); {
+      allow-ssh = fn (allow-ssh { inherit pkgs region org accessKeyId; });
+      allow-wireguard = fn (allow-wireguard { inherit pkgs region org accessKeyId; });
     };
   };
 }
