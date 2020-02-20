@@ -12,5 +12,7 @@
   t3a-xlargeMonitor = import ./t3a.xlarge-monitor.nix;
   t3a-2xlarge = import ./t3a.2xlarge.nix;
 
+  c4-large = import ./c4.large.nix;
+
   security-groups = import ./security-groups;
 }
