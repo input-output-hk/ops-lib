@@ -831,6 +831,9 @@ in {
         [ "Graylog passwords will be stored as plaintext in the Nix store!" ];
       networking.firewall.allowedTCPPorts = [ 5044 ];
       systemd.services.graylog = {
+        environment.JAVA_OPTS = ''
+          -Djava.library.path=${pkgs.graylog}/lib/sigar -Xms3g -Xmx3g -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseConcMarkSweepGC -XX:+CMSConcurrentMTEnabled -XX:+CMSClassUnloadingEnabled -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow
+        '';
         environment.JAVA_HOME =
           lib.mkForce pkgs.jre_headless; # until fix gets upstreamed
         # maybe upstream the post-start?
