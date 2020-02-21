@@ -5,6 +5,7 @@
   t2-large = import ./t2.large.nix;
   t2-xlarge = import ./t2.xlarge.nix;
 
+  t3a-nano = import ./t3a.nano.nix;
   t3a-small = import ./t3a.small.nix;
   t3a-medium = import ./t3a.medium.nix;
   t3a-large = import ./t3a.large.nix;
