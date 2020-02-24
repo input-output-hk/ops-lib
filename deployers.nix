@@ -55,6 +55,10 @@ in {
       openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
       isNormalUser = true;
     };
+    users.users.exchanges = {
+      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
+      isNormalUser = true;
+    };
     environment.etc."client_ssh_sample".text = lib.concatStringsSep "\n" (map
       (name: ''
         Host ${name}
