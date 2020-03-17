@@ -15,5 +15,7 @@
 
   c4-large = import ./c4.large.nix;
 
+  r5a-xlarge = import ./r5a.xlarge.nix;
+
   security-groups = import ./security-groups;
 }
