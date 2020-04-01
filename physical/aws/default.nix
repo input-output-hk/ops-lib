@@ -6,6 +6,7 @@
   t2-xlarge = import ./t2.xlarge.nix;
 
   t3-xlarge = import ./t3.xlarge.nix;
+  t3-2xlargeMonitor = import ./t3.2xlarge-monitor.nix;
 
   t3a-nano = import ./t3a.nano.nix;
   t3a-small = import ./t3a.small.nix;
