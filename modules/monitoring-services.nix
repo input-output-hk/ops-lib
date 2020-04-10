@@ -437,6 +437,7 @@ in {
     })
 
     (lib.mkIf cfg.metrics {
+      systemd.services.prometheus.serviceConfig.LimitNOFILE = "65535";
       services = {
         nginx = {
           enable = true;
