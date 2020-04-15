@@ -11,6 +11,7 @@ in {
     screen
     sqlite-interactive
     tmux
+    gnupg
   ];
 
   programs.screen.screenrc = ''
