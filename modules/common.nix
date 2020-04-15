@@ -16,11 +16,7 @@ in {
     networking.hostName = name;
 
     environment.systemPackages = with pkgs; [
-      (ruby.withPackages (ps: with ps; [ sequel pry sqlite3 nokogiri ]))
       bat
-      di
-      fd
-      file
       git
       graphviz
       htop
@@ -29,14 +25,14 @@ in {
       lsof
       mosh
       ncdu
-      ripgrep
-      screen
-      sqlite-interactive
       sysstat
       tcpdump
       tig
-      tmux
       tree
+      di
+      fd
+      file
+      ripgrep
     ] ++ (lib.optional config.local.commonGivesVim vim);
 
     environment.variables.TERM = "xterm-256color";
@@ -81,8 +77,6 @@ in {
       # use all cores
       buildCores = 0;
 
-      #nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
-
       # use our hydra builds
       binaryCaches = [ "https://cache.nixos.org" "https://hydra.iohk.io" "https://iohk.cachix.org" ];
       binaryCachePublicKeys = [
@@ -90,40 +84,20 @@ in {
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
         "iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo="
       ];
+
+      # nixpkgs path is created by 'extraSystemBuilderCmds' below:
+      nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
     };
+
+    system.extraSystemBuilderCmds = ''
+      ln -sv ${pkgs.path} $out/nixpkgs
+    '';
 
     # Mosh
     networking.firewall.allowedUDPPortRanges = [{
       from = 60000;
       to = 61000;
     }];
-    programs = {
-      mosh.enable = true;
-      screen.screenrc = ''
-        defscrollback 10000
-        #caption always
-        maptimeout 5
-        escape ^aa  # default
-        autodetach            on              # default: on
-        crlf                  off             # default: off
-        hardcopy_append       on              # default: off
-        startup_message       off             # default: on
-        vbell                 off             # default: ???
-        defmonitor            on
-        defscrollback         1000            # default: 100
-        silencewait           15              # default: 30
-        shelltitle "Shell"
-        hardstatus alwayslastline "%{b}[ %{B}%H %{b}][ %{w}%?%-Lw%?%{b}(%{W}%n*%f %t%?(%u)%?%{b})%{w}%?%+Lw%?%?%= %{b}][%{B} %Y-%m-%d %{W}%c %{b}]"
-        sorendition   gk  #red    on white
-        bell                  "%C -> %n%f %t Bell!~"
-        pow_detach_msg        "BYE"
-        vbell_msg             " *beep* "
-        bind .
-        bind ^\
-        bind \\
-        bind e mapdefault
-        msgwait 2
-      '';
-    };
+    programs.mosh.enable = true;
   };
 }

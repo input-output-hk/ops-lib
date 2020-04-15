@@ -3,6 +3,7 @@
 , crossSystem ? null
 , config ? {} }:
 import sourcePaths.nixpkgs {
-  overlays = import ../overlays sourcePaths;
+  overlays = (import ../overlays sourcePaths) ++
+    [ (import ../globals-deployers.nix) ];
   inherit system crossSystem config;
 }

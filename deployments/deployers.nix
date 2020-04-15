@@ -2,7 +2,7 @@ let
   region = "eu-central-1";
   org = "IOHK";
   accessKeyId = "root-account";
-  pkgs = import ./nix {};
+  pkgs = import ../nix {};
 in {
   defaults = { pkgs, resources, name, config, lib, nodes, ... }: {
     options = {
@@ -11,8 +11,8 @@ in {
       };
     };
     imports = [
-      ./modules/common.nix
-      ./modules/vims.nix
+      ../modules/deployer.nix
+      ../modules/vims.nix
     ];
     config = {
       deployment.targetEnv = "ec2";
@@ -38,7 +38,7 @@ in {
         variables.DEPLOYER_IP = toString config.networking.publicIPv4;
       };
       nixpkgs.overlays = [
-        (import ./overlays/packages.nix)
+        (import ../overlays/packages.nix)
       ];
       users.users = {
         ${config.local.username} = {
@@ -68,7 +68,7 @@ in {
 
     deployment.keys."mainnet-deployer.wgprivate" = {
       destDir = "/etc/wireguard";
-      keyFile = ./secrets/mainnet-deployer.wgprivate;
+      keyFile = ../secrets/mainnet-deployer.wgprivate;
     };
     networking.wireguard.interfaces.wg0 = {
       ips = [ "10.90.1.1/32" ];
@@ -117,7 +117,7 @@ in {
     };
     ec2SecurityGroups = let
       fn = x: __head (__attrValues x);
-    in with (import ./physical/aws/security-groups); {
+    in with (import ../physical/aws/security-groups); {
       allow-ssh = fn (allow-ssh { inherit pkgs region org accessKeyId; });
       allow-wireguard = fn (allow-wireguard { inherit pkgs region org accessKeyId; });
     };
