@@ -1,8 +1,24 @@
-{ sourcePaths ? import ./sources.nix
-, system ? builtins.currentSystem
+{ system ? builtins.currentSystem
 , crossSystem ? null
-, config ? {} }:
-import sourcePaths.nixpkgs {
-  overlays = import ../overlays sourcePaths;
-  inherit system crossSystem config;
-}
+, config ? {}
+, sourcesOverride ? {} }:
+let
+  sourcePaths = import ./sources.nix { inherit pkgs; }
+    // sourcesOverride;
+
+  iohkNix = import sourcePaths.iohk-nix {};
+
+  # use our own nixpkgs if it exists in our sources,
+  # otherwise use iohkNix default nixpkgs.
+  nixpkgs = if (sourcePaths ? nixpkgs)
+    then sourcePaths.nixpkgs
+    else iohkNix.nixpkgs;
+
+  overlays = (import ../overlays sourcePaths) ++
+    [ (import ../globals-deployers.nix) ];
+
+  pkgs = import nixpkgs {
+    inherit config system crossSystem overlays;
+  };
+
+in pkgs

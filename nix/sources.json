@@ -5,10 +5,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "61eeda0bd3e64cad648c5a5c3f0e0c806dd9234b",
-        "sha256": "06ki4bjwahvfiixyyml0g1d7zr2w6fqj4jqksp1q3lb3rwlfb5fz",
+        "rev": "dfce0e88fee7d5c29fd6f128d02be3594ae39c88",
+        "sha256": "0z9wn2j2ss03w83n298fcapdw9w3cs13w5hrlp3apwjr9iq7x720",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/61eeda0bd3e64cad648c5a5c3f0e0c806dd9234b.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/dfce0e88fee7d5c29fd6f128d02be3594ae39c88.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -57,18 +57,6 @@
         "sha256": "15b7x6rilhmg42wmprqjaqadwcn8351a4wkf76m90rfqsk1piw64",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/nixops-packet/archive/b96a78c57d315bb292318f7fb4f198b1483e188b.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "nixpkgs": {
-        "branch": "nixos-unstable",
-        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
-        "homepage": "https://github.com/NixOS/nixpkgs",
-        "owner": "NixOS",
-        "repo": "nixpkgs-channels",
-        "rev": "94500c93dc239761bd144128a1684abcd08df6b7",
-        "sha256": "0p6bd16mb1k5c3zihl1c3d62m419rii102xfb340pccgbd8j34bc",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/94500c93dc239761bd144128a1684abcd08df6b7.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
