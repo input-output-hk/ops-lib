@@ -19,7 +19,7 @@ google-cloud-core
 google-cloud-bigtable
 # google-cloud-pubsub
 google-cloud-storage
-googleapis-common-protos
+googleapis-common-protos==1.6.0
 ipaddress
 jsonschema
 kombu
