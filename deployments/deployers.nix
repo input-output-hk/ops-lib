@@ -37,9 +37,12 @@ in {
         ];
         variables.DEPLOYER_IP = toString config.networking.publicIPv4;
       };
-      nixpkgs.overlays = [
-        (import ../overlays/packages.nix)
-      ];
+      nixpkgs = {
+        config.allowUnfree = true;
+        overlays = [
+          (import ../overlays/packages.nix)
+        ];
+      };
       users.users = {
         ${config.local.username} = {
           isNormalUser = true;
@@ -87,18 +90,54 @@ in {
         }
       ];
     };
+    services.tarsnap = {
+      enable = true;
+      keyfile = "/run/keys/tarsnap";
+      archives = { inherit (import ../secrets/tarsnap-archives.nix) mainnet-deployer; };
+    };
+    deployment.keys.tarsnap = {
+      destDir = "/run/keys";
+      keyFile = ../secrets/tarsnap-mainnet-deployer-readwrite.secret;
+    };
   };
   staging-deployer = {
     local.username = "staging";
+    services.tarsnap = {
+      enable = true;
+      keyfile = "/run/keys/tarsnap";
+      archives = { inherit (import ../secrets/tarsnap-archives.nix) staging-deployer; };
+    };
+    deployment.keys.tarsnap = {
+      destDir = "/run/keys";
+      keyFile = ../secrets/tarsnap-staging-deployer-readwrite.secret;
+    };
   };
   testnet-deployer = {
     local.username = "testnet";
     deployment.ec2.instanceType = "r5a.xlarge";
+    services.tarsnap = {
+      enable = true;
+      keyfile = "/run/keys/tarsnap";
+      archives = { inherit (import ../secrets/tarsnap-archives.nix) testnet-deployer; };
+    };
+    deployment.keys.tarsnap = {
+      destDir = "/run/keys";
+      keyFile = ../secrets/tarsnap-testnet-deployer-readwrite.secret;
+    };
   };
   dev-deployer = { pkgs, ... }: {
     local.username = "dev";
     users.users.dev = {
       openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom csl-developers;
+    };
+    services.tarsnap = {
+      enable = true;
+      keyfile = "/run/keys/tarsnap";
+      archives = { inherit (import ../secrets/tarsnap-archives.nix) dev-deployer; };
+    };
+    deployment.keys.tarsnap = {
+      destDir = "/run/keys";
+      keyFile = ../secrets/tarsnap-dev-deployer-readwrite.secret;
     };
   };
   resources = {
