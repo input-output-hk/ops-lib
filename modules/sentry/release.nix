@@ -1,6 +1,7 @@
 { pkgs ? import ../../nix {} }:
 
 let
+
   overlay = import ./overrides.nix { inherit pkgs; };
 
   packageOverrides = pkgs.lib.foldr pkgs.lib.composeExtensions (self: super: {}) [overlay];
@@ -47,5 +48,16 @@ in
   };
 
   inherit py pkgs;
+
+  semaphoreSrc = pkgs.fetchFromGitHub {
+    owner = "getsentry";
+    repo = "relay";
+    rev = "refs/tags/0.4.65";
+    sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
+  }.overrideAttrs(drv: {
+    postUnpack = ''
+    '';
+  });
 }
+
 

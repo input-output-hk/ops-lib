@@ -1,5 +1,30 @@
 { pkgs, system ? builtins.currentSystem }:
 
+let
+  semaphoreSrc = pkgs.fetchFromGitHub {
+    owner = "getsentry";
+    repo = "relay";
+    rev = "refs/tags/0.4.65";
+    sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
+  };
+
+  semaphoreRust = pkgs.naersk.buildPackage rec {
+    pname = "semaphore";
+    version = "0.4.65";
+  
+    src = semaphoreSrc;  
+
+    nativeBuildInputs = [ pkgs.breakpointHook ];
+
+    override = (x: {
+      postPatch = ''
+        sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\"\]\n/g" Cargo.toml
+        cat Cargo.toml
+      '';
+    });
+  };
+in
+
 self: super:
 
 {
@@ -85,17 +110,24 @@ self: super:
     };
   });
 
-  # semaphore = self.buildPythonPackage rec {
-  #   pname = "semaphore";
-  #   version = "0.4.65";
+  semaphore = self.buildPythonPackage rec {
+    pname = "semaphore";
+    version = "0.4.65";
 
-  #   src = self.fetchPypi {
-  #     inherit pname version;
-  #     sha256 = "0ly1v2ya4gm7qfam7r2vfnz5qdfl7khmjb1dklaca7spxzjwmfzw";
-  #     extension = "zip";
-  #   };
+    src = pkgs.fetchFromGitHub {
+      owner = "getsentry";
+      repo = "relay";
+      rev = "refs/tags/0.4.65";
+      sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
+    };
 
-  #   propagatedBuildInputs = [ self.milksnake ];
-  # };
-
+    nativeBuildInputs = [ pkgs.breakpointHook pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
+    propagatedBuildInputs = [ self.milksnake pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
+    preBuild = ''
+      set -euxo
+      cd py
+      # cp -f /nix/store/fscd8f71wmpwphcmi5mx8qnif2402x9m-run_setup.py nix_run_setup
+      # exit 1
+    '';
+  };
 }

@@ -6,6 +6,7 @@
 , nodejs
 , yarn
 , fetchPypi
+, googleapis_common_protos
 }:
 
 let
@@ -29,9 +30,9 @@ buildPythonPackage rec {
     python = "py27";
   };
 
-  # nativeBuildInputs = [ xtrace googleapis_common_protos ];
-  # buildInputs = [ xtrace googleapis_common_protos ];
-  # propagatedBuildInputs = [ googleapis_common_protos xtrace ];
+  # nativeBuildInputs = [ googleapis_common_protos ];
+  # buildInputs = [  googleapis_common_protos ];
+  propagatedBuildInputs = [ googleapis_common_protos ];
 
   preInstall = ''
     set -euxo

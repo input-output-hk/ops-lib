@@ -8,4 +8,7 @@ self: super: {
       gen-graylog-creds = import ../scripts/gen-graylog-creds.nix;
     };
   };
+
+  naersk = self.callPackage self.sourcePaths.naersk {};
+
 }
