@@ -1,13 +1,18 @@
-{ pkgs ? import (import ../../nix/sources.nix).nixpkgs { overlays = []; } }:
+{ pkgs ? import ../../nix {} }:
 
 let
-  # callPackage = pkgs.lib.callPackageWith pkgs;
+  overlay = import ./overrides.nix { inherit pkgs; };
+
+  packageOverrides = pkgs.lib.foldr pkgs.lib.composeExtensions (self: super: {}) [overlay];
+
+  py = pkgs.python.override { inherit packageOverrides; self = py; };
 in
 {
   sentry = pkgs.callPackage ./. {
-    inherit (pkgs.python27Packages) buildPythonPackage fetchPypi;
+    inherit (py.pkgs) buildPythonPackage fetchPypi;
+    python = py;
   };
 
-  inherit pkgs;
+  inherit py pkgs;
 }
 
