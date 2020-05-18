@@ -176,6 +176,14 @@ in {
         '';
       };
 
+      publicGrafana = mkOption {
+        type = types.bool;
+        default = true;
+        description = ''
+          Make grafana dashboards public
+        '';
+      };
+
       graylogCreds = mkOption {
         type = types.attrs;
         description = ''
@@ -334,11 +342,12 @@ in {
           setXauthrequest = true;
         };
         nginx.virtualHosts."${cfg.webhost}".locations = {
-          "/grafana/".extraConfig = oauthProxyConfig;
           "/prometheus/".extraConfig = oauthProxyConfig;
           "/alertmanager/".extraConfig = oauthProxyConfig;
           "/graylog/".extraConfig = oauthProxyConfig;
-        };
+        } // (optionalAttrs (!cfg.publicGrafana) {
+          "/grafana/".extraConfig = oauthProxyConfig;
+        });
       };
     }))
     {
@@ -467,6 +476,7 @@ in {
         };
         grafana = {
           enable = true;
+          auth.anonymous.enable = cfg.publicGrafana;
           users.allowSignUp = false;
           addr = "";
           domain = "${cfg.webhost}";
