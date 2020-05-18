@@ -54,10 +54,11 @@ in
     repo = "relay";
     rev = "refs/tags/0.4.65";
     sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
-  }.overrideAttrs(drv: {
-    postUnpack = ''
+    postFetch = ''
+      sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\"\]\n/g" Cargo.toml
+      cat Cargo.toml
     '';
-  });
+  };
 }
 
 
