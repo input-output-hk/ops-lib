@@ -25,7 +25,7 @@ let
       owner = "mitsuhiko";
       repo = "redis-rs";
       rev = "refs/tags/0.15.1";
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "1zavsrkp0wbispkq18kkq7105dvb3jvmmvgs2scfhj31nygp6kf2";
       extraPostFetch = ''
         cp ${./rust-redis/Cargo.lock} $out/Cargo.lock
         cat $out/Cargo.lock
@@ -37,7 +37,7 @@ let
     owner = "getsentry";
     repo = "relay";
     rev = "refs/tags/0.4.65";
-    sha256 = "08526r5kdmkzq6bwjyhr08nmsz1n3zs3haqy3fnqwfq5i72mjak7";
+    sha256 = "1lin6i65m8rvnnzc6hyz111l3z6xlsy2q3ybb0wf496qm0c9bci4";
     # postFetch = ''
     #   # ls -lah $out
     #   # sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\",\]\n/g" Cargo.toml
