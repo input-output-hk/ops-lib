@@ -28,11 +28,7 @@ let
       );
 in
 {
-  sentry = pkgs.callPackage ./. {
-    inherit (py.pkgs) buildPythonPackage fetchPypi googleapis_common_protos;
-  };
-
-  sentryNew = iohkMkPythonApplication rec {
+  sentry = iohkMkPythonApplication rec {
     pname   = "sentry";
     version = "10.0.0";
     format = "wheel";
@@ -48,17 +44,6 @@ in
   };
 
   inherit py pkgs;
-
-  semaphoreSrc = pkgs.fetchFromGitHub {
-    owner = "getsentry";
-    repo = "relay";
-    rev = "refs/tags/0.4.65";
-    sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
-    postFetch = ''
-      sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\"\]\n/g" Cargo.toml
-      cat Cargo.toml
-    '';
-  };
 }
 
 
