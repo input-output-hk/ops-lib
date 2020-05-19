@@ -23,7 +23,7 @@ let
     owner = "getsentry";
     repo = "relay";
     rev = "refs/tags/0.4.65";
-    sha256 = "0wxlkbsxn23gqx18mnmba512876ak01dq1rxka1bblzrqsv5iw0m";
+    sha256 = "0yq1iwccqv3k4w44xjsjp2ky54mv6ravpab0kansrlw7k86v7rac";
     # fetchSubmodules = true;
     # postFetch = ''
     #   # ls -lah $out
@@ -33,14 +33,24 @@ let
     #   substituteInPlace $out --replace ".toml" ".toml2"
     # '';
     extraPostFetch = ''
-      sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\",\"general\",\"general\/derive\",\"server\"\]\n/g" $out/Cargo.toml
+      sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\",\"general\",\"general\/derive\",\"server\"\,\"json-forensics\",\"redis\"]\n/g" $out/Cargo.toml
       # Revision closest to date of release
       # Version of redis-rs including the no-longer existent "feature/cluster" branch
       substituteInPlace $out/server/Cargo.toml \
         --replace 'json-forensics = { version = "*", git = "https://github.com/getsentry/rust-json-forensics" }' \
-                  'json-forensics = { path = "${rust-json-forensics-src}", version = "0.1.0" }' \
+                  'json-forensics = { path = "../json-forensics", version = "0.1.0" }' \
         --replace 'redis = { git = "https://github.com/mitsuhiko/redis-rs", optional = true, branch = "feature/cluster", features = ["cluster", "r2d2"] }' \
-                  'redis = { path = "${rust-redis-src}", version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
+                  'redis = { path = "../redis", version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
+      cp ${./Cargo.lock} $out/Cargo.lock
+      mkdir $out/json-forensics
+      mkdir $out/redis
+      cp -r ${rust-json-forensics-src}/* $out/json-forensics
+      cp ${./rust-json-forensics/Cargo.lock} $out/json-forensics/Cargo.lock
+      cp -r ${rust-redis-src}/* $out/redis
+      cp ${./rust-redis/Cargo.lock} $out/redis/Cargo.lock
+      ls -lah $out
+      ls -lah $out/json-forensics
+      ls -lah $out/redis
       cat $out/Cargo.toml
       cat $out/general/Cargo.toml
       cat $out/server/Cargo.toml
