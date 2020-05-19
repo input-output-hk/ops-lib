@@ -11,4 +11,6 @@ self: super: {
 
   naersk = self.callPackage self.sourcePaths.naersk {};
 
+  rustc = self.rustc_1_41;
+  cargo = self.cargo_1_41;
 }

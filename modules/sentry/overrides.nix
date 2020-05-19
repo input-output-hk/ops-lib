@@ -1,43 +1,30 @@
 { pkgs, system ? builtins.currentSystem }:
 
 let
-  rust-json-forensics = pkgs.naersk.buildPackage rec {
-    pname = "json-forensics";
-    version = "0.0.0";
+  rust-json-forensics = pkgs.callPackage ./rust-json-forensics {};
 
-    src = pkgs.fetchFromGitHub {
-      owner = "getsentry";
-      repo = "rust-json-forensics";
-      rev = "3896ab98bae363570b7fc0e0af353f287ab17282";
-      sha256 = "1brbnjl44xm3r337hq0rwdcdx880606v1dfjk45000xjj49lk9qv";
-      extraPostFetch = ''
-        cp ${./rust-json-forensics/Cargo.lock} $out/Cargo.lock
-        cat $out/Cargo.lock
-      '';
-    };
+  rust-redis = pkgs.callPackage ./rust-redis {};
+
+  rust-json-forensics-src = pkgs.fetchFromGitHub {
+    owner = "getsentry";
+    repo = "rust-json-forensics";
+    rev = "3896ab98bae363570b7fc0e0af353f287ab17282";
+    sha256 = "0vmqnqdh767gqxz2i0nlm5xyjg61fbn9370slrzzpkv9hpdprx5r";
   };
 
-  rust-redis = pkgs.naersk.buildPackage rec {
-    pname = "redis";
-    version = "0.15.1";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "mitsuhiko";
-      repo = "redis-rs";
-      rev = "refs/tags/0.15.1";
-      sha256 = "1zavsrkp0wbispkq18kkq7105dvb3jvmmvgs2scfhj31nygp6kf2";
-      extraPostFetch = ''
-        cp ${./rust-redis/Cargo.lock} $out/Cargo.lock
-        cat $out/Cargo.lock
-      '';
-    };
+  rust-redis-src = pkgs.fetchFromGitHub {
+    owner = "mitsuhiko";
+    repo = "redis-rs";
+    rev = "refs/tags/0.15.1";
+    sha256 = "01m06riirhy271x5y1kzib3rjw3a4bqb4smawdfzwsic7gm51as2";
   };
 
   semaphoreSrc = pkgs.fetchFromGitHub {
     owner = "getsentry";
     repo = "relay";
     rev = "refs/tags/0.4.65";
-    sha256 = "1lin6i65m8rvnnzc6hyz111l3z6xlsy2q3ybb0wf496qm0c9bci4";
+    sha256 = "0wxlkbsxn23gqx18mnmba512876ak01dq1rxka1bblzrqsv5iw0m";
+    # fetchSubmodules = true;
     # postFetch = ''
     #   # ls -lah $out
     #   # sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\",\]\n/g" Cargo.toml
@@ -51,9 +38,9 @@ let
       # Version of redis-rs including the no-longer existent "feature/cluster" branch
       substituteInPlace $out/server/Cargo.toml \
         --replace 'json-forensics = { version = "*", git = "https://github.com/getsentry/rust-json-forensics" }' \
-                  'json-forensics = "0.0.0"' \
+                  'json-forensics = { path = "${rust-json-forensics-src}", version = "0.1.0" }' \
         --replace 'redis = { git = "https://github.com/mitsuhiko/redis-rs", optional = true, branch = "feature/cluster", features = ["cluster", "r2d2"] }' \
-                  'redis = { version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
+                  'redis = { path = "${rust-redis-src}", version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
       cat $out/Cargo.toml
       cat $out/general/Cargo.toml
       cat $out/server/Cargo.toml
@@ -67,12 +54,10 @@ let
     src = semaphoreSrc;  
 
     nativeBuildInputs = [ pkgs.breakpointHook ];
-    propagatedBuildInputs = [ rust-json-forensics rust-redis ];
 
-    override = (x: {
-      postPatch = ''
-        cat Cargo.toml
-        set -euxo
+    override = (drv: {
+      postConfigure = ''
+        echo $CARGO_HOME
       '';
     });
   };
