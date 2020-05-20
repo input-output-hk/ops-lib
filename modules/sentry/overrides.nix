@@ -282,6 +282,15 @@ self: super:
 
   setproctitle = super.setproctitle;
 
+  sentry-sdk = self.buildPythonPackage rec {
+    pname = "sentry-sdk";
+    version = "0.13.5";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
+    };
+  };
+
   sqlparse = super.sqlparse;
 
   qrcode = self.buildPythonPackage rec {
