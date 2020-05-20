@@ -1,9 +1,9 @@
 { pkgs, system ? builtins.currentSystem }:
 
 let
-  rust-json-forensics = pkgs.callPackage ./rust-json-forensics {};
+  # rust-json-forensics = pkgs.callPackage ./rust-json-forensics {};
 
-  rust-redis = pkgs.callPackage ./rust-redis {};
+  # rust-redis = pkgs.callPackage ./rust-redis {};
 
   rust-json-forensics-src = pkgs.fetchFromGitHub {
     owner = "getsentry";
@@ -23,7 +23,7 @@ let
     owner = "getsentry";
     repo = "relay";
     rev = "refs/tags/0.4.65";
-    sha256 = "0yq1iwccqv3k4w44xjsjp2ky54mv6ravpab0kansrlw7k86v7rac";
+    sha256 = "1111111111111111111111111111111111111111111111111111";
     # fetchSubmodules = true;
     # postFetch = ''
     #   # ls -lah $out
@@ -38,19 +38,10 @@ let
       # Version of redis-rs including the no-longer existent "feature/cluster" branch
       substituteInPlace $out/server/Cargo.toml \
         --replace 'json-forensics = { version = "*", git = "https://github.com/getsentry/rust-json-forensics" }' \
-                  'json-forensics = { path = "../json-forensics", version = "0.1.0" }' \
+                  'json-forensics = { path = "${rust-json-forensics-src}", version = "0.1.0" }' \
         --replace 'redis = { git = "https://github.com/mitsuhiko/redis-rs", optional = true, branch = "feature/cluster", features = ["cluster", "r2d2"] }' \
-                  'redis = { path = "../redis", version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
+                  'redis = { path = "${rust-redis-src}", version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
       cp ${./Cargo.lock} $out/Cargo.lock
-      mkdir $out/json-forensics
-      mkdir $out/redis
-      cp -r ${rust-json-forensics-src}/* $out/json-forensics
-      cp ${./rust-json-forensics/Cargo.lock} $out/json-forensics/Cargo.lock
-      cp -r ${rust-redis-src}/* $out/redis
-      cp ${./rust-redis/Cargo.lock} $out/redis/Cargo.lock
-      ls -lah $out
-      ls -lah $out/json-forensics
-      ls -lah $out/redis
       cat $out/Cargo.toml
       cat $out/general/Cargo.toml
       cat $out/server/Cargo.toml
@@ -87,6 +78,17 @@ self: super:
     checkInputs = [ self.mock self.coverage self.nose-cover3 self.unittest2 ];
   };
 
+  croniter = self.buildPythonPackage rec {
+    pname = "croniter";
+    version = "0.3.28";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1d0h2a6izkh2yijc501gsvhsvjlsfrbzm2skcb9q268bkdmdy6n3";
+    };
+
+    propagatedBuildInputs = [ self.python-dateutil ];
+  };
+
   django-crispy-forms = self.buildPythonPackage rec {
     pname = "django-crispy-forms";
     version = "1.6.1";
@@ -96,6 +98,15 @@ self: super:
     };
 
     doCheck = false;
+  };
+
+  django-sudo = self.buildPythonPackage rec {
+    pname = "django-sudo";
+    version = "3.0.0";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1wnp57jq25xxpvvni1kr8k0ym3fbpvmq3iq2l0wy9mbjv9q9dr5i";
+    };
   };
 
   email_reply_parser = self.buildPythonPackage rec {
@@ -140,6 +151,35 @@ self: super:
     };
   });
 
+  google_cloud_pubsub = super.google_cloud_pubsub.overrideAttrs ( oldAttrs: rec {
+    pname = "google-cloud-pubsub";
+    version = "0.35.4";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "11jc4i2hbjx93qrmv7f8lyh54qafg6dg23g3k9w9jgxl5mvcwv6k";
+    };
+  });
+
+  google_cloud_storage = super.google_cloud_storage.overrideAttrs ( oldAttrs: rec {
+    pname = "google-cloud-storage";
+    version = "1.13.3";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1fdi8s0afjw2cdbvv9wdpw3hdbslw8x1y7p72p8ysg545zs4zay8";
+    };
+  });
+
+  loremipsum = self.buildPythonPackage rec {
+    pname = "loremipsum";
+    version = "1.0.5";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1x9sabp50zyi2j8dkpxgdkcnj5wrbd4w1v15zsnjpxf30n9wcjdq";
+    };
+
+    doCheck = false;
+  };
+
   mmh3 = self.buildPythonPackage rec {
     pname = "mmh3";
     version = "2.3.1";
@@ -149,12 +189,69 @@ self: super:
     };
   };
 
+  PyJWT = self.buildPythonPackage rec {
+    pname = "PyJWT";
+    version = "1.5.0";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0jy5sxaajm0l00c80xx6nk4mdlsnjb8269lvkll4rw0kimr2n67x";
+    };
+
+    doCheck = false;
+  };
+
   parsimonious = super.parsimonious.overrideAttrs ( oldAttrs: rec {
     pname = "parsimonious";
     version = "0.8.0";
     src = self.fetchPypi {
       inherit pname version;
       sha256 = "0sq81p00vsilvwyqpzp66vwbygp791bmyfii4hzp0mvf5bbnj25f";
+    };
+  });
+
+  petname = self.buildPythonPackage rec {
+    pname = "petname";
+    version = "2.6";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0k4y9jrxb68wgb37hid1xmch2bhhgk3bf6qdcirs6mi3fzpk274q";
+    };
+  };
+
+  phonenumberslite = self.buildPythonPackage rec {
+    pname = "phonenumberslite";
+    version = "7.7.5";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "08pn0awqka9byhf42p27kbycy8b0iczcpahh1cyaw82ldzzjk0j9";
+    };
+
+    doCheck = false;
+  };
+
+  setproctitle = super.setproctitle;
+
+  sqlparse = super.sqlparse;
+
+  qrcode = self.buildPythonPackage rec {
+    pname = "qrcode";
+    version = "5.2.2";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "06fyqfnwxk8zxlk5rppks73c2s1l0y8q39a6jx840ww0q6hjhrnr";
+    };
+
+    propagatedBuildInputs = [ self.colorama self.six ];
+
+    doCheck = false;
+  };
+
+  ua-parser = super.ua-parser.overrideAttrs ( oldAttrs: rec {
+    pname = "ua-parser";
+    version = "0.6.1";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1ygkvwphzf22yf7izwn5w930a4qimkziphmaw97vjxn8jghf8fbs";
     };
   });
 
@@ -169,13 +266,17 @@ self: super:
       sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
     };
 
-    nativeBuildInputs = [ pkgs.breakpointHook pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
-    propagatedBuildInputs = [ self.milksnake pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
+    postPatch = ''
+      substituteInPlace py/setup.py \
+        --replace 'milksnake_tasks=[build_native],' ""
+    '';
+
+    nativeBuildInputs = [ self.milksnake pkgs.breakpointHook pkgs.rustc pkgs.cargo ];
+    # nativeBuildInputs = [ pkgs.breakpointHook pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
+  #   propagatedBuildInputs = [ self.milksnake pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
     preBuild = ''
-      set -euxo
+      cat py/setup.py
       cd py
-      # cp -f /nix/store/fscd8f71wmpwphcmi5mx8qnif2402x9m-run_setup.py nix_run_setup
-      # exit 1
     '';
   };
 }
