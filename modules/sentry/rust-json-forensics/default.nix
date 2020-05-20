@@ -10,16 +10,10 @@ naersk.buildPackage rec {
     owner = "getsentry";
     repo = "rust-json-forensics";
     rev = "3896ab98bae363570b7fc0e0af353f287ab17282";
-    sha256 = "1ywdbpwik9q9i429wxwlx1sydv2cbyrxf40ja2gii27nz7z3qrw1";
+    sha256 = "sha256-Z8i58ENIR15yX83wOD8TNsZVF/LIzzgYEoXAauFPX9c=";
     extraPostFetch = ''
       cp ${./Cargo.lock} $out/Cargo.lock
-      cat $out/Cargo.lock
+      cp ${./Cargo.toml} $out/Cargo.toml
     '';
   };
-
-  override = (drv: {
-    preBuild = ''
-      exit 1
-    '';
-  });
 }

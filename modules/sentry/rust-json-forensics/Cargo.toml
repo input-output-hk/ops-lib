@@ -1,0 +1,22 @@
+[package]
+name = "json-forensics"
+version = "0.1.0"
+authors = ["Armin Ronacher <armin.ronacher@active-4.com>"]
+keywords = ["json", "python", "nan", "infinity", "serde_json"]
+description = "A crate that adds a read adapter to deal with bad Python caused JSON payloads (NaNs and Infinities)"
+license = "BSD-3-Clause"
+homepage = "https://github.com/mitsuhiko/python-json-read-adapter"
+edition = "2018"
+readme = "README.md"
+
+[dependencies]
+serde_json = { version = "1.0.33", optional = true }
+serde_self = { version = "1.0.82", optional = true, package = "serde" }
+
+[features]
+serde = ["serde_self", "serde_json"]
+
+[lib]
+name = "json_forensics"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
