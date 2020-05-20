@@ -209,6 +209,18 @@ self: super:
     };
   });
 
+  percy = self.buildPythonPackage rec {
+    pname = "percy";
+    version = "1.1.2";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1ra7wanlkchpxhjzhx457c30db68x63qjmwizjg0phlc5h527m1k";
+    };
+
+    propagatedBuildInputs = [ self.requests self.requests-mock ];
+    doCheck = false;
+  };
+
   petname = self.buildPythonPackage rec {
     pname = "petname";
     version = "2.6";
@@ -229,6 +241,45 @@ self: super:
     doCheck = false;
   };
 
+  progressbar2 = self.buildPythonPackage rec {
+    pname = "progressbar2";
+    version = "3.10.1";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0s9ixxgvjs66d1hm57hywb5gxqr4clq7mwq7iiln878wwjrnzx0b";
+    };
+
+    propagatedBuildInputs = [ self.pytest-runner self.python-utils ];
+
+    doCheck = false;
+  };
+
+  pytest-runner = self.buildPythonPackage rec {
+    pname = "pytest-runner";
+    version = "2.8";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0p0dd3878sjnk59sk17jl6n0j9is9160mi33smgzhld5vbnlvi0y";
+    };
+
+    propagatedBuildInputs = [ self.setuptools_scm ];
+
+    doCheck = false;
+  };
+
+  requests-oauthlib = self.buildPythonPackage rec {
+    pname = "requests-oauthlib";
+    version = "0.3.3";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1s87y2qgwm9k9d0pqqqw9gq330wb2j197p359hm0vxgfwd6pnm9p";
+    };
+
+    propagatedBuildInputs = [ self.oauthlib self.requests ];
+
+    doCheck = false;
+  };
+
   setproctitle = super.setproctitle;
 
   sqlparse = super.sqlparse;
@@ -244,6 +295,17 @@ self: super:
     propagatedBuildInputs = [ self.colorama self.six ];
 
     doCheck = false;
+  };
+
+  querystring_parser = self.buildPythonPackage rec {
+    pname = "querystring_parser";
+    version = "1.2.3";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1sladp7yikiz6vbl6jk5wlpsjahmz0vzmmncrs57m4kvqx3vacac";
+    };
+
+    propagatedBuildInputs = [ self.requests ];
   };
 
   ua-parser = super.ua-parser.overrideAttrs ( oldAttrs: rec {
