@@ -1,6 +1,7 @@
 { pkgs, system ? builtins.currentSystem }:
 
 let
+  rust-semaphore = pkgs.callPackage ./semaphore {};
 in
 
 self: super:
@@ -276,14 +277,13 @@ self: super:
       sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
     };
 
-    postPatch = ''
-      substituteInPlace py/setup.py \
-        --replace 'milksnake_tasks=[build_native],' ""
-    '';
+    # postPatch = ''
+    #   substituteInPlace py/setup.py \
+    #     --replace 'milksnake_tasks=[build_native],' ""
+    # '';
 
-    nativeBuildInputs = [ self.milksnake pkgs.breakpointHook pkgs.rustc pkgs.cargo semaphoreRust ];
-    # nativeBuildInputs = [ pkgs.breakpointHook pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
-  #   propagatedBuildInputs = [ self.milksnake pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
+    nativeBuildInputs = [ self.milksnake pkgs.breakpointHook pkgs.rustc pkgs.cargo rust-semaphore ];
+
     preBuild = ''
       cat py/setup.py
       cd py

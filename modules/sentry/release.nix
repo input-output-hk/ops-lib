@@ -45,9 +45,7 @@ rec {
 
   inherit py pkgs;
 
-  rust-json-forensics = pkgs.callPackage ./rust-json-forensics {};
-
-  semaphore = pkgs.callPackage ./semaphore { inherit rust-json-forensics; };
+  semaphore = pkgs.callPackage ./semaphore { };
 }
 
 

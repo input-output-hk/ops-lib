@@ -1,6 +1,4 @@
 { naersk
-, breakpointHook
-, rust-json-forensics
 , fetchFromGitHub
 , pkg-config
 , openssl
@@ -36,5 +34,5 @@ naersk.buildPackage {
     '';
   });
 
-  nativeBuildInputs = [ breakpointHook pkg-config openssl ];
+  nativeBuildInputs = [ pkg-config openssl ];
 }
