@@ -29,21 +29,18 @@ naersk.buildPackage rec {
     fetchSubmodules = true;
   }).overrideAttrs(drv: {
     postFetch = drv.postFetch + ''
+      # Add the local libraries to the workspace, required by naersk,
+      # probably good practice anyway
       sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\",\"general\",\"general\/derive\",\"server\",\"server\/json-forensics\"\]\n/g" $out/Cargo.toml
+
+      # Modify the server packages Cargo.toml to use a local version
+      # of json-forensics. If we try to use the Git version, it will
+      # fail due to not having a lock file present in the git repo:
+      # "the source ... requires a lock file to be present first
+      # before it can be used against vendored source code"
       cp ${./server/Cargo.toml} $out/server/Cargo.toml
       mkdir $out/server/json-forensics
       cp -r ${patched.json-forensics}/* $out/server/json-forensics
-      # sed -i "/json-forensics.*/d" $out/server/Cargo.toml
-      # sed -i "/redis =.*/d" $out/server/Cargo.toml
-      # substituteInPlace $out/server/Cargo.toml \
-      #   --replace 'json-forensics = { version = "*", git = "https://github.com/getsentry/rust-json-forensics" }' \
-      #             'json-forensics = { version = "0.1.0" }' \
-      #   --replace 'redis = { git = "https://github.com/mitsuhiko/redis-rs", optional = true, branch = "feature/cluster", features = ["cluster", "r2d2"] }' \
-      #             'redis = { version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
-      cat $out/Cargo.toml
-      cat $out/server/Cargo.toml
-      ls -lah $out
-      ls -lah $out/server/json-forensics
     '';
   });
 
