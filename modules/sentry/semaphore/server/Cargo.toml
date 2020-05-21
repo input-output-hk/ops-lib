@@ -25,6 +25,7 @@ clap = "2.33.0"
 failure = "0.1.5"
 flate2 = "1.0.9"
 futures = "0.1.28"
+json-forensics = { path = "./json-forensics" }
 lazy_static = "1.3.0"
 listenfd = "0.3.3"
 log = "0.4.8"
