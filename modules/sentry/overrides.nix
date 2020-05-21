@@ -222,14 +222,14 @@ self: super:
 
   setproctitle = super.setproctitle;
 
-  sentry-sdk = self.buildPythonPackage rec {
-    pname = "sentry-sdk";
-    version = "0.13.5";
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
-    };
-  };
+  # sentry-sdk = self.buildPythonPackage rec {
+  #   pname = "sentry-sdk";
+  #   version = "0.13.5";
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
+  #   };
+  # };
 
   sqlparse = super.sqlparse;
 
@@ -281,6 +281,8 @@ self: super:
     #   substituteInPlace py/setup.py \
     #     --replace 'milksnake_tasks=[build_native],' ""
     # '';
+
+    # NEXT Modify setup.py to include built semaphore-rust .so
 
     nativeBuildInputs = [ self.milksnake pkgs.breakpointHook pkgs.rustc pkgs.cargo rust-semaphore ];
 
