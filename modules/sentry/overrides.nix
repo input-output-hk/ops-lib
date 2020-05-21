@@ -1,67 +1,6 @@
 { pkgs, system ? builtins.currentSystem }:
 
 let
-  # rust-json-forensics = pkgs.callPackage ./rust-json-forensics {};
-
-  # rust-redis = pkgs.callPackage ./rust-redis {};
-
-  rust-json-forensics-src = pkgs.fetchFromGitHub {
-    owner = "getsentry";
-    repo = "rust-json-forensics";
-    rev = "3896ab98bae363570b7fc0e0af353f287ab17282";
-    sha256 = "0vmqnqdh767gqxz2i0nlm5xyjg61fbn9370slrzzpkv9hpdprx5r";
-  };
-
-  rust-redis-src = pkgs.fetchFromGitHub {
-    owner = "mitsuhiko";
-    repo = "redis-rs";
-    rev = "refs/tags/0.15.1";
-    sha256 = "01m06riirhy271x5y1kzib3rjw3a4bqb4smawdfzwsic7gm51as2";
-  };
-
-  semaphoreSrc = pkgs.fetchFromGitHub {
-    owner = "getsentry";
-    repo = "relay";
-    rev = "refs/tags/0.4.65";
-    sha256 = "1111111111111111111111111111111111111111111111111111";
-    # fetchSubmodules = true;
-    # postFetch = ''
-    #   # ls -lah $out
-    #   # sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\",\]\n/g" Cargo.toml
-    #   # cat Cargo.toml
-    #   file
-    #   substituteInPlace $out --replace ".toml" ".toml2"
-    # '';
-    extraPostFetch = ''
-      sed -i "s/\[workspace\]/[workspace]\nmembers = \[\"common\",\"general\",\"general\/derive\",\"server\"\,\"json-forensics\",\"redis\"]\n/g" $out/Cargo.toml
-      # Revision closest to date of release
-      # Version of redis-rs including the no-longer existent "feature/cluster" branch
-      substituteInPlace $out/server/Cargo.toml \
-        --replace 'json-forensics = { version = "*", git = "https://github.com/getsentry/rust-json-forensics" }' \
-                  'json-forensics = { path = "${rust-json-forensics-src}", version = "0.1.0" }' \
-        --replace 'redis = { git = "https://github.com/mitsuhiko/redis-rs", optional = true, branch = "feature/cluster", features = ["cluster", "r2d2"] }' \
-                  'redis = { path = "${rust-redis-src}", version = "0.15.1", optional = true, features = ["cluster", "r2d2"] }'
-      cp ${./Cargo.lock} $out/Cargo.lock
-      cat $out/Cargo.toml
-      cat $out/general/Cargo.toml
-      cat $out/server/Cargo.toml
-    '';
-  };
-
-  semaphoreRust = pkgs.naersk.buildPackage rec {
-    pname = "semaphore";
-    version = "0.4.65";
-  
-    src = semaphoreSrc;  
-
-    nativeBuildInputs = [ pkgs.breakpointHook ];
-
-    override = (drv: {
-      postConfigure = ''
-        echo $CARGO_HOME
-      '';
-    });
-  };
 in
 
 self: super:
@@ -342,7 +281,7 @@ self: super:
         --replace 'milksnake_tasks=[build_native],' ""
     '';
 
-    nativeBuildInputs = [ self.milksnake pkgs.breakpointHook pkgs.rustc pkgs.cargo ];
+    nativeBuildInputs = [ self.milksnake pkgs.breakpointHook pkgs.rustc pkgs.cargo semaphoreRust ];
     # nativeBuildInputs = [ pkgs.breakpointHook pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
   #   propagatedBuildInputs = [ self.milksnake pkgs.rustc pkgs.cargo self.setuptools semaphoreRust ];
     preBuild = ''

@@ -27,7 +27,7 @@ let
         }
       );
 in
-{
+rec {
   sentry = iohkMkPythonApplication rec {
     pname   = "sentry";
     version = "10.0.0";
@@ -44,6 +44,10 @@ in
   };
 
   inherit py pkgs;
+
+  rust-json-forensics = pkgs.callPackage ./rust-json-forensics {};
+
+  semaphore = pkgs.callPackage ./semaphore { inherit rust-json-forensics; };
 }
 
 
