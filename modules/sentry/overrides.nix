@@ -266,31 +266,5 @@ self: super:
     };
   });
 
-  semaphore = self.buildPythonPackage rec {
-    pname = "semaphore";
-    version = "0.4.65";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "getsentry";
-      repo = "relay";
-      rev = "refs/tags/0.4.65";
-      sha256 = "14akjzilcda8ncfv73khngv64f9f7c7airjqyksvad89k5dnkfd5";
-    };
-
-    postPatch = ''
-      patch --strip=1 < ${./setup-py.patch}
-      substituteInPlace py/setup.py \
-        --replace '@nixBuildDylib@' '${rust-semaphore}/lib/libsemaphore.so' \
-        --replace '@nixBuildHeader@' '${rust-semaphore}/include/semaphore.h'
-    '';
-
-    # NEXT Modify setup.py to include built semaphore-rust .so
-    # find_packages is just ["semaphore"]
-
-    nativeBuildInputs = [ self.milksnake pkgs.breakpointHook pkgs.rustc pkgs.cargo rust-semaphore ];
-
-    preBuild = ''
-      cd py
-    '';
-  };
+  semaphore = self.callPackage ./semaphore { };
 }
