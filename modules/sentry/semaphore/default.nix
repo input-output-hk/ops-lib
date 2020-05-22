@@ -2,7 +2,6 @@
 , fetchFromGitHub
 , pkg-config
 , openssl
-, breakpointHook
 }:
 
 let
@@ -14,7 +13,7 @@ let
   };
 in
 
-naersk.buildPackage {
+naersk.buildPackage rec {
   pname = "semaphore";
   version = "0.4.65";
 
@@ -22,7 +21,7 @@ naersk.buildPackage {
     owner = "getsentry";
     repo = "relay";
     rev = "refs/tags/0.4.65";
-    sha256 = "13fqk7q77wymqrin2zifjp2xq46xb460qhcm4sbhy25a4bfzj9jq";
+    sha256 = "0f67l8c1dd96jlm8ppg9kg9w354smh80q3cy955zsakn3fx6x4lk";
     fetchSubmodules = true;
   }).overrideAttrs(drv: {
     postFetch = drv.postFetch + ''
@@ -30,17 +29,21 @@ naersk.buildPackage {
       patch --directory=$out --strip=1 < ${./semaphore.patch}
 
       # Copy over the json-forensics crate
-      mkdir $out/json-forensics
-      cp -r ${json-forensics}/* $out/json-forensics/
+      cp -r ${json-forensics} $out/json-forensics
     '';
   });
 
   override = (drv: {
     preConfigure = ''
-      # Kinda hacky, but this works to build the cabi dylib
+      # Kinda hacky, but this works to build the cabi dylib with all
+      # the dependencies from the root project.
       cd cabi
+    '';
+
+    postInstall = ''
+      cp -r ${src}/cabi/include $out/include
     '';
   });
 
-  nativeBuildInputs = [ breakpointHook pkg-config openssl ];
+  nativeBuildInputs = [ pkg-config openssl ];
 }
