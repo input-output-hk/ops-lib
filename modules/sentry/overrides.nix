@@ -134,6 +134,53 @@ self: super:
 
   mistune = super.mistune;
 
+  memcached = self.buildPythonPackage rec {
+    pname = "memcached";
+    version = "1.53";
+
+    src = self.fetchPypi {
+      pname = "python-memcached";
+      inherit version;
+      sha256 = "0s48xy0mccdl1lqzjnh2rk5cqmkbwsm66ywa2sildfwpv5qi7xxw";
+    };
+  };
+
+  redis-py-cluster = self.buildPythonPackage rec {
+    pname = "redis-py-cluster";
+    version = "1.3.4";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0n7k4nqdryz1x34f5axbhj7xl6s1b6hlav02491nzy047bgdv29i";
+    };
+
+    propagatedBuildInputs = [ self.redis ];
+  };
+
+  click = self.buildPythonPackage rec {
+    pname = "click";
+    version = "5.1";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0njsm0wn31l21bi118g5825ma5sa3rwn7v2x4wjd7yiiahkri337";
+    };
+  };
+
+  cached-property = super.cached-property;
+
+  pillow = super.pillow.overrideAttrs (oldAttrs: rec {
+    pname = "Pillow";
+    version = "6.2.1";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1c8wkzc58f5wdh006jvmwdk3wxld1xgagcbdvj7iv17qi0m9fkmz";
+    };
+  });
+
+  maxmindb = super.maxminddb;
+
   six = self.buildPythonPackage rec {
     pname = "six";
     version = "1.10.0";
@@ -142,6 +189,8 @@ self: super:
       inherit pname version;
       sha256 = "0snmb8xffb3vsma0z67i0h0w2g2dy0p3gsgh9gi4i0kgc5l8spqh";
     };
+
+    doCheck = false;
   };
 
   mmh3 = self.buildPythonPackage rec {
@@ -227,6 +276,18 @@ self: super:
     };
 
     propagatedBuildInputs = [ self.setuptools_scm ];
+
+    doCheck = false;
+  };
+
+  phabricator = self.buildPythonPackage rec {
+    pname = "phabricator";
+    version = "0.6.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1bw88fww4k3lh7nf7ic95xi0qnxnid9sm0961qyky4lr640ldgc8";
+    };
 
     doCheck = false;
   };
