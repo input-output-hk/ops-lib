@@ -16,6 +16,8 @@ self: super:
     };
 
     checkInputs = [ self.mock self.coverage self.nose-cover3 self.unittest2 ];
+
+    doCheck = false;
   };
 
   croniter = self.buildPythonPackage rec {
@@ -27,6 +29,8 @@ self: super:
     };
 
     propagatedBuildInputs = [ self.python-dateutil ];
+
+    doCheck = false;
   };
 
   django-crispy-forms = self.buildPythonPackage rec {
@@ -47,6 +51,8 @@ self: super:
       inherit pname version;
       sha256 = "1wnp57jq25xxpvvni1kr8k0ym3fbpvmq3iq2l0wy9mbjv9q9dr5i";
     };
+
+    doCheck = false;
   };
 
   email_reply_parser = self.buildPythonPackage rec {
@@ -70,6 +76,8 @@ self: super:
 
     propagatedBuildInputs = [ self.amqp self.anyjson ];
     checkInputs = [ self.mock self.unittest2 self.nose self.redis ];
+
+    doCheck = false;
   };
 
   googleapis_common_protos = super.googleapis_common_protos.overrideAttrs ( oldAttrs: rec {
@@ -80,6 +88,8 @@ self: super:
       sha256 = "1im0ad5vdyjagy1hwp5xlw67l35i3griayvfgi46p5vbwgaqw6z6";
     };
     propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [ self.protobuf ];
+
+    doCheck = false;
   });
 
   google_api_core = super.google_api_core.overrideAttrs ( oldAttrs: rec {
@@ -90,6 +100,8 @@ self: super:
       inherit pname version;
       sha256 = "1ajppa7vyawxjpairjq18rylmkvpg3kvwig7l0l47azmjx5xr2nz";
     };
+
+    doCheck = false;
   });
 
   google_cloud_bigtable = super.google_cloud_bigtable.overrideAttrs ( oldAttrs: rec {
@@ -99,6 +111,8 @@ self: super:
       inherit pname version;
       sha256 = "1gd857075xjxbb9b729qswd0a0gildrnw5z2s05zfa62160grla0";
     };
+
+    doCheck = false;
   });
 
   google_cloud_pubsub = super.google_cloud_pubsub.overrideAttrs ( oldAttrs: rec {
@@ -108,6 +122,8 @@ self: super:
       inherit pname version;
       sha256 = "11jc4i2hbjx93qrmv7f8lyh54qafg6dg23g3k9w9jgxl5mvcwv6k";
     };
+
+    doCheck = false;
   });
 
   google_cloud_storage = super.google_cloud_storage.overrideAttrs ( oldAttrs: rec {
@@ -117,6 +133,8 @@ self: super:
       inherit pname version;
       sha256 = "1fdi8s0afjw2cdbvv9wdpw3hdbslw8x1y7p72p8ysg545zs4zay8";
     };
+
+    doCheck = false;
   });
 
   loremipsum = self.buildPythonPackage rec {
@@ -143,6 +161,8 @@ self: super:
       inherit version;
       sha256 = "0s48xy0mccdl1lqzjnh2rk5cqmkbwsm66ywa2sildfwpv5qi7xxw";
     };
+
+    doCheck = false;
   };
 
   redis-py-cluster = self.buildPythonPackage rec {
@@ -155,6 +175,8 @@ self: super:
     };
 
     propagatedBuildInputs = [ self.redis ];
+
+    doCheck = false;
   };
 
   click = self.buildPythonPackage rec {
@@ -165,6 +187,8 @@ self: super:
       inherit pname version;
       sha256 = "0njsm0wn31l21bi118g5825ma5sa3rwn7v2x4wjd7yiiahkri337";
     };
+
+    doCheck = false;
   };
 
   cached-property = super.cached-property;
@@ -177,6 +201,8 @@ self: super:
       inherit pname version;
       sha256 = "1c8wkzc58f5wdh006jvmwdk3wxld1xgagcbdvj7iv17qi0m9fkmz";
     };
+
+    doCheck = false;
   });
 
   maxmindb = super.maxminddb;
@@ -200,6 +226,8 @@ self: super:
       inherit pname version;
       sha256 = "0a795lk2gqj5ar0diwpd0gsgycv83pwlr0a91fki2ch9giaw7bgc";
     };
+
+    doCheck = false;
   };
 
   PyJWT = self.buildPythonPackage rec {
@@ -220,6 +248,8 @@ self: super:
       inherit pname version;
       sha256 = "0sq81p00vsilvwyqpzp66vwbygp791bmyfii4hzp0mvf5bbnj25f";
     };
+
+    doCheck = false;
   });
 
   percy = self.buildPythonPackage rec {
@@ -241,6 +271,8 @@ self: super:
       inherit pname version;
       sha256 = "0k4y9jrxb68wgb37hid1xmch2bhhgk3bf6qdcirs6mi3fzpk274q";
     };
+
+    doCheck = false;
   };
 
   phonenumberslite = self.buildPythonPackage rec {
@@ -355,11 +387,17 @@ self: super:
     };
 
     propagatedBuildInputs = [ self.six ];
+
+    doCheck = false;
   };
 
   msgpack = super.msgpack;
 
   unidiff = super.unidiff;
+
+  boto = super.boto.overrideAttrs (oldAttrs: {
+    doCheck = false;
+  });
 
   botocore = self.buildPythonPackage rec {
     pname = "botocore";
@@ -370,7 +408,7 @@ self: super:
       sha256 = "1wngbi4n9gchdrz65g5n9ny3b3j2m2gxbl5ms601d9sgc5aixvma";
     };
 
-    propagatedBuildInputs = [ self.python-dateutil self.jmespath self.docutils ];
+    propagatedBuildInputs = [ self.python-dateutil self.jmespath self.docutils self.urllib3 ];
 
     doCheck = false;
   };
@@ -388,6 +426,8 @@ self: super:
     };
 
     propagatedBuildInputs = [ self.urllib3 ];
+
+    doCheck = false;
   };
 
   sqlparse = super.sqlparse;
@@ -414,7 +454,84 @@ self: super:
     };
 
     propagatedBuildInputs = [ self.requests ];
+
+    doCheck = false;
   };
+
+  rb = self.buildPythonPackage rec {
+    pname = "rb";
+    version = "1.7";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1sjqia19dap042idbdibyqa951gck64jqgbxp78ammgxcnnaq499";
+    };
+
+    propagatedBuildInputs = [ self.redis ];
+
+    doCheck = false;
+  };
+
+  celery = self.buildPythonPackage rec {
+    pname = "celery";
+    version = "3.1.8";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1fdvfahb48187gw973wj7vfrx94632ja45l8dylvlmhn5smck1h7";
+    };
+
+    propagatedBuildInputs = [ self.kombu self.billiard self.pytz self.anyjson self.amqp self.eventlet ];
+
+    doCheck = false;
+  };
+
+  urllib3 = super.urllib3.overrideAttrs ( oldAttrs: rec {
+    pname = "urllib3";
+    version = "1.24.2";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1hwscrsw77vbkzdbw0db74zzf1135521wwccngnlz73hvxrp494s";
+    };
+
+    doCheck = false;
+  });
+
+  requests = super.requests.overrideAttrs ( oldAttrs: rec {
+    pname = "requests";
+    version = "2.20.0";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "033p8ax4qs81g0c95ngincm52q84g1xnlazk4vjzdjhpxfmgvp4r";
+    };
+
+    doCheck = false;
+  });
+
+  confluent-kafka = super.confluent-kafka.overrideAttrs ( oldAttrs: rec {
+    pname = "confluent-kafka";
+    version = "0.11.5";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "17rvlrid7l4abmjry2ayn9r9wjjnx3iy8rgy5i7xgzsyzdxq1ddz";
+    };
+
+    doCheck = false;
+  });
+
+  strict-rfc3339 = super.strict-rfc3339;
+
+  idna = super.idna.overrideAttrs ( oldAttrs: rec {
+    pname = "idna";
+    version = "2.5";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1ara12a7k2zc69msa0arrvw00gn61a6i6by01xb3lkkc0h4cxd9w";
+    };
+
+    doCheck = false;
+  });
 
   ua-parser = super.ua-parser.overrideAttrs ( oldAttrs: rec {
     pname = "ua-parser";
@@ -423,7 +540,34 @@ self: super:
       inherit pname version;
       sha256 = "1ygkvwphzf22yf7izwn5w930a4qimkziphmaw97vjxn8jghf8fbs";
     };
+
+    doCheck = false;
   });
 
   semaphore = self.callPackage ./semaphore { };
+
+  billiard = super.billiard.overrideAttrs (oldAttrs: rec {
+    pname = "billiard";
+    version = "3.3.0.14";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0pn0n3mvnnh0jgic4wh0drd0mwswbj40h0pq1c57iignbmis8ygn";
+    };
+
+    propagatedBuildInputs = [ self.nose-cover3 ];
+
+    doCheck = false;
+  });
+
+  # uwsgi = self.buildPythonPackage rec {
+  #   pname = "uwsgi";
+  #   version = "2.0.18";
+
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "10zmk4npknigmbqcq1wmhd461dk93159px172112vyq0i19sqwj9";
+  #   };
+  # };
+
+  uwsgi = pkgs.uwsgi;
 }
