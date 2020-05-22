@@ -82,6 +82,16 @@ self: super:
     propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [ self.protobuf ];
   });
 
+  google_api_core = super.google_api_core.overrideAttrs ( oldAttrs: rec {
+    pname = "google-api-core";
+    version = "1.14.3";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1ajppa7vyawxjpairjq18rylmkvpg3kvwig7l0l47azmjx5xr2nz";
+    };
+  });
+
   google_cloud_bigtable = super.google_cloud_bigtable.overrideAttrs ( oldAttrs: rec {
     pname = "google-cloud-bigtable";
     version = "0.32.2";
@@ -118,6 +128,20 @@ self: super:
     };
 
     doCheck = false;
+  };
+
+  oauth2 = super.oauth2;
+
+  mistune = super.mistune;
+
+  six = self.buildPythonPackage rec {
+    pname = "six";
+    version = "1.10.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0snmb8xffb3vsma0z67i0h0w2g2dy0p3gsgh9gi4i0kgc5l8spqh";
+    };
   };
 
   mmh3 = self.buildPythonPackage rec {
@@ -220,16 +244,90 @@ self: super:
     doCheck = false;
   };
 
+  psycopg2-binary = self.buildPythonPackage rec {
+    pname = "psycopg2-binary";
+    version = "2.7.4";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1myrbdbjzm2gd3dfscri6irqv9mqjqfh9hgkbvm72yh34gw8hkyy";
+    };
+
+    nativeBuildInputs = [ pkgs.postgresql ];
+
+    doCheck = false;
+  };
+
+  redis = self.buildPythonPackage rec {
+    pname = "redis";
+    version = "2.10.3";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1701qjwn4n05q90fdg4bsg96s27xf5s4hsb4gxhv3xk052q3gyx4";
+    };
+
+    doCheck = false;
+  };
+
+  toronado = self.buildPythonPackage rec {
+    pname = "toronado";
+    version = "0.0.11";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1a5hvn9fhhkbkdsqr9fw4jhvd7vhhrd4a06nf89zlsf92fddr1br";
+    };
+
+    propagatedBuildInputs = [ self.lxml self.cssselect self.cssutils ];
+
+    doCheck = false;
+  };
+
+  django-picklefield = self.buildPythonPackage rec {
+    pname = "django-picklefield";
+    version = "0.3.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1w52p9lzgqj7z1s0v0hl8y56aj2l9szyndqw1dznlhpckcdj7nyi";
+    };
+
+    propagatedBuildInputs = [ self.six ];
+  };
+
+  msgpack = super.msgpack;
+
+  unidiff = super.unidiff;
+
+  botocore = self.buildPythonPackage rec {
+    pname = "botocore";
+    version = "1.5.70";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1wngbi4n9gchdrz65g5n9ny3b3j2m2gxbl5ms601d9sgc5aixvma";
+    };
+
+    propagatedBuildInputs = [ self.python-dateutil self.jmespath self.docutils ];
+
+    doCheck = false;
+  };
+
+  beautifulsoup4 = super.beautifulsoup4;
+
   setproctitle = super.setproctitle;
 
-  # sentry-sdk = self.buildPythonPackage rec {
-  #   pname = "sentry-sdk";
-  #   version = "0.13.5";
-  #   src = self.fetchPypi {
-  #     inherit pname version;
-  #     sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
-  #   };
-  # };
+  sentry-sdk = self.buildPythonPackage rec {
+    pname = "sentry-sdk";
+    version = "0.13.5";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
+    };
+
+    propagatedBuildInputs = [ self.urllib3 ];
+  };
 
   sqlparse = super.sqlparse;
 
