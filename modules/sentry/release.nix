@@ -28,7 +28,7 @@ let
       );
 in
 rec {
-  sentry = iohkMkPythonApplication rec {
+  sentry = (iohkMkPythonApplication rec {
     pname   = "sentry";
     version = "10.0.0";
     format = "wheel";
@@ -41,7 +41,23 @@ rec {
 
     python = pkgs.python;
     overrides = overlay;
-  };
+
+    nativeBuildInputs = [ pkgs.breakpointHook ];
+  }).overrideAttrs(drv: {
+    buildPhase = ''
+      # Unset SOURCE_DATE_EPOCH: ZIP requires timestamps >= 1980
+      # https://nixos.org/nixpkgs/manual/#python-setup.py-bdist_wheel-cannot-create-.whl
+      unset SOURCE_DATE_EPOCH
+      pushd dist
+      wheel_file=sentry-10.0.0-py27-none-any.whl
+      wheel unpack $wheel_file
+      rm $wheel_file
+      sed -i '/.*uwsgi.*/d' sentry-10.0.0/sentry-10.0.0.dist-info/METADATA
+      wheel pack ./sentry-10.0.0
+      rm -r sentry-10.0.0
+      popd
+    '';
+  });
 
   inherit py pkgs;
 

@@ -399,6 +399,26 @@ self: super:
     doCheck = false;
   });
 
+  boto3 = super.boto3.overrideAttrs (oldAttrs: rec {
+    version = "1.4.5";
+
+    src = self.fetchPypi {
+      inherit (oldAttrs) pname;
+      inherit version;
+      sha256 = "07c3364s071p3w6vgz4c7s0b56dqhi2vpbxbx4sjps4jyvq0smvd";
+    };
+  });
+
+  s3transfer = super.s3transfer.overrideAttrs (oldAttrs: rec {
+    version = "0.1.10";
+
+    src = self.fetchPypi {
+      inherit (oldAttrs) pname;
+      inherit version;
+      sha256 = "1h8g9bknvxflxkpbnxyfxmk8pvgykbbk9ljdvhqh6z4vjc2926ms";
+    };
+  });
+
   botocore = self.buildPythonPackage rec {
     pname = "botocore";
     version = "1.5.70";
@@ -486,6 +506,30 @@ self: super:
     doCheck = false;
   };
 
+  PyYAML = self.buildPythonPackage rec {
+    pname = "PyYAML";
+    version = "3.11";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1s26125vfnskng58ym37xhwv8v0mm95b2cwbjfag8prfhy596v63";
+    };
+
+    doCheck = false;
+  };
+
+  statsd = super.statsd.overrideAttrs ( oldAttrs: rec {
+    pname = "statsd";
+    version = "3.1";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1vi8xx8hrgyhgcw3d3yc7bh4vfc48swlm0xwfp1994xf6gmmzbpv";
+    };
+  });
+
+  selenium = super.selenium;
+
   urllib3 = super.urllib3.overrideAttrs ( oldAttrs: rec {
     pname = "urllib3";
     version = "1.24.2";
@@ -569,5 +613,27 @@ self: super:
   #   };
   # };
 
-  uwsgi = pkgs.uwsgi;
+  # uwsgi = (pkgs.uwsgi.override {
+  #   plugins = ["python2"];
+  # }).overrideAttrs(drv: {
+  #   nativeBuildInputs = drv.nativeBuildInputs ++ [ pkgs.breakpointHook ];
+  #   installPhase = drv.installPhase + ''
+  #     exit 1
+  #     mkdir $out/${pkgs.python2.sitePackages}/uwsgi
+  #     ln -s $out/lib/uwsgi/python2_plugin.so $out/${pkgs.python2.sitePackages}/uwsgi/uwsgi.so
+  #     cat <<EOF > $out/${pkgs.python2.sitePackages}/uwsgi/__init__.py
+  #     VERSION = (2, 0, 18)
+  #     EOF
+  #   '';
+  # });
+  # uwsgi = pkgs.uwsgi.overrideAttrs(drv: {
+  #   plugins = ["python2"];
+  #   nativeBuildInputs = drv.nativeBuildInputs ++ [ pkgs.breakpointHook ];
+  #   configurePhase = ''
+  #     echo "BUILD PHASE"
+  #     echo "${drv.buildPhase}"
+  #     echo "END BUILD PHASE"
+  #   '' + drv.configurePhase;
+  #   buildPhase = ''exit 1'' + drv.buildPhase;
+  # });
 }
