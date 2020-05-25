@@ -391,12 +391,83 @@ self: super:
     doCheck = false;
   };
 
+  python3-saml = self.buildPythonPackage rec {
+    pname = "python3-saml";
+    version = "1.4.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0klxyl8bpbdpx5mxim6hp5qfi3wf9gb0kwmxmi2zlyhnbx567hn7";
+    };
+
+    propagatedBuildInputs = [ self.defusedxml self.xmlsec ];
+  };
+
+  xmlsec = self.buildPythonPackage rec {
+    pname = "xmlsec";
+    version = "0.6.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "017lfpjjvb4py1hb9g6y55brxnzakfk238bn9ih1dfbfdksbv5nw";
+    };
+
+    nativeBuildInputs = [ pkgs.libxml2.dev pkgs.libxslt.dev self.cython pkgs.breakpointHook ];
+    buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.zlib ];
+    propagatedBuildInputs = [ self.lxml self.pkgconfig self.setuptools_cython ];
+  };
+
+  setuptools_cython = self.buildPythonPackage rec {
+    pname = "setuptools_cython";
+    version = "0.2.1";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0kva3dj4s5jbqm2n6md978nbgz8yp31vpdzq7p9jxyk68nalzn18";
+    };
+
+    propagatedBuildInputs = [ self.cython ];
+  };
+
+  hiredis = self.buildPythonPackage rec {
+    pname = "hiredis";
+    version = "0.1.6";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0dba7fm5s8wf1mnsx6r0ffr786g50jgmh7llw4pign1i08m2dpxn";
+    };
+  };
+
   msgpack = super.msgpack;
 
   unidiff = super.unidiff;
 
   boto = super.boto.overrideAttrs (oldAttrs: {
     doCheck = false;
+  });
+
+  django = super.django.overrideAttrs (oldAttrs: rec {
+    version = "1.9";
+
+    src = self.fetchPypi {
+      inherit (oldAttrs) pname;
+      inherit version;
+      sha256 = "0rkwdxh63y7pwx9larl2g7m1z206675dzx7ipd44p3bpm0clpzh5";
+    };
+  });
+
+  functools32 = super.functools32;
+
+
+  simplejson = super.simplejson.overrideAttrs (oldAttrs: rec {
+    version = "3.2.0";
+
+    src = self.fetchPypi {
+      inherit (oldAttrs) pname;
+      inherit version;
+      sha256 = "15gns6l47dh4gi2pqyrpk43vxsj84n8sp4mwjfgm31pg2297klm6";
+    };
   });
 
   boto3 = super.boto3.overrideAttrs (oldAttrs: rec {
