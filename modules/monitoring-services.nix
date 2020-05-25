@@ -198,6 +198,25 @@ in {
         '';
       };
 
+      graylogMaxSizePerIndex = mkOption {
+        type = types.nullOr types.int;
+        default = null;
+        example = 1;
+        description = ''
+          Maximum size in gigabytes per Elasticsearch index on disk before a new
+          index is being created.
+        '';
+      };
+
+      graylogMaxNumberOfIndices = mkOption {
+        type = types.nullOr types.int;
+        default = null;
+        example = 10;
+        description = ''
+          How many Elasticsearch indices do you want to keep?
+        '';
+      };
+
       monitoredNodes = mkOption {
         type = types.loaOf (types.submodule monitoredNodeOptions);
         default = { };
@@ -300,6 +319,24 @@ in {
         default = [ ];
         description =
           "extra receivers added to services.prometheus.alertmanager.configuration.receivers";
+      };
+
+
+      prometheus.storageRetentionTime = mkOption {
+        type = types.str;
+        default = "8760h";
+        description = ''
+          Expire kept data after this time.
+        '';
+      };
+
+      prometheus.storageRetentionSize = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = ''
+          Allocated space for kept data.
+        '';
+        example = "10GB";
       };
     };
   };
@@ -545,7 +582,12 @@ in {
         prometheus = {
           enable = true;
           webExternalUrl = "https://${cfg.webhost}/prometheus/";
-          extraFlags = [ "--storage.tsdb.retention=8760h" ];
+          extraFlags = [
+            "--storage.tsdb.retention.time=${cfg.prometheus.storageRetentionTime}"
+          ] ++ (if (cfg.prometheus.storageRetentionSize == null)
+                then trace "services.monitoring-services.prometheus.storageRetentionSize is null" []
+                else [ "--storage.tsdb.retention.size=${cfg.prometheus.storageRetentionSize}" ]
+          );
 
           alertmanagers = [{
             scheme = "http";
@@ -881,6 +923,7 @@ in {
             '';
           };
         };
+
         graylog = {
           enable = true;
           nodeIdFile = "/var/lib/graylog/node-id";
@@ -976,12 +1019,25 @@ in {
             '' (abort "Graylog password hash required"));
           elasticsearchHosts = [ "http://localhost:9200" ];
           # Elasticsearch config below is for a single node deployment
-          extraConfig = ''
+          extraConfig = let
+            maxSize =
+              if cfg.graylogMaxSizePerIndex == null
+              then trace "services.monitoring-services.graylogMaxSizePerIndex is null. To set this value after deploy, use the Graylog web UI." ""
+              else "elasticsearch_max_size_per_index = ${toString (cfg.graylogMaxSizePerIndex * 1024 * 1024 * 1024)}";
+
+            maxIndices =
+              if cfg.graylogMaxNumberOfIndices == null
+              then trace "services.monitoring-services.graylogMaxNumberOfIndices is null. To set this value after deploy, use the Graylog web UI." ""
+              else "elasticsearch_max_number_of_indices = ${toString cfg.graylogMaxNumberOfIndices}";
+          in ''
             http_bind_address = 0.0.0.0:9000
             elasticsearch_shards = 1
             elasticsearch_replicas = 0
+            ${maxSize}
+            ${maxIndices}
           '';
         };
+
         elasticsearch = {
           enable = true;
           package = pkgs.elasticsearch6-oss;
