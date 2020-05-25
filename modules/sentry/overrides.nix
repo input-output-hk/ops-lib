@@ -405,17 +405,47 @@ self: super:
 
   xmlsec = self.buildPythonPackage rec {
     pname = "xmlsec";
-    version = "0.6.0";
+    version = "1.3.3";
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "017lfpjjvb4py1hb9g6y55brxnzakfk238bn9ih1dfbfdksbv5nw";
+      sha256 = "1mlysa6ld9l9a8w78m01c6kzmq6lxicd3zvlv0ik55vl44bw0wz5";
     };
 
-    nativeBuildInputs = [ pkgs.libxml2.dev pkgs.libxslt.dev self.cython pkgs.breakpointHook ];
-    buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.zlib ];
-    propagatedBuildInputs = [ self.lxml self.pkgconfig self.setuptools_cython ];
+    nativeBuildInputs = [ pkgs.xmlsec.dev pkgs.libxml2.dev pkgs.libxslt.dev self.cython pkgs.breakpointHook ];
+    buildInputs = [ pkgs.xmlsec.dev pkgs.libxml2.dev pkgs.libxslt.dev pkgs.zlib ];
+    propagatedBuildInputs = [ self.pathlib2 self.lxml self.pkgconfig ];
+
+    preBuild = ''
+      patch --strip=1 < ${./xmlsec/xmlsec.patch2}
+      substituteInPlace xmlsec_setupinfo.py \
+        --replace '@nix_xmlsec@' '${pkgs.xmlsec.dev}/include/xmlsec1' \
+        --replace '@nix_libxml2@' '${pkgs.libxml2.dev}/include/libxml2'
+        # --replace '@nix_openssl@' '${pkgs.openssl.dev}/include'
+    '';
   };
+
+  # xmlsec = (self.buildPythonPackage rec {
+  #   pname = "xmlsec";
+  #   version = "0.6.0";
+
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "017lfpjjvb4py1hb9g6y55brxnzakfk238bn9ih1dfbfdksbv5nw";
+  #   };
+
+  #   nativeBuildInputs = [ pkgs.libxml2.dev pkgs.libxslt.dev self.cython pkgs.breakpointHook ];
+  #   buildInputs = [ pkgs.libxml2 pkgs.libxslt pkgs.zlib ];
+  #   propagatedBuildInputs = [ self.lxml self.pkgconfig self.setuptools_cython ];
+
+  #   preBuild = ''
+  #     patch --strip=1 < ${./xmlsec/xmlsec.patch}
+  #     substituteInPlace setup.py \
+  #       --replace '@nix_libxml2@' '${pkgs.libxml2.dev}/include/libxml2' \
+  #       --replace '@nix_xmlsec@' '${pkgs.xmlsec.dev}/include/xmlsec1' \
+  #       --replace '@nix_openssl@' '${pkgs.openssl.dev}/include'
+  #   '';
+  # });
 
   setuptools_cython = self.buildPythonPackage rec {
     pname = "setuptools_cython";

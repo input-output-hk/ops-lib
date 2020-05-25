@@ -1,0 +1,14 @@
+diff --git a/setup.py b/setup.py
+index 93b2a87..b49a57a 100644
+--- a/setup.py
++++ b/setup.py
+@@ -66,6 +66,9 @@ def make_extension(name, cython=True):
+     import lxml
+     config['include_dirs'].insert(0, path.dirname(lxml.__file__))
+     config['include_dirs'].insert(0, path.join(path.dirname(lxml.__file__), 'includes'))
++    config['include_dirs'].insert(0, '@nix_libxml2@')
++    config['include_dirs'].insert(0, '@nix_xmlsec@')
++    config['include_dirs'].insert(0, '@nix_openssl@')
+     config['include_dirs'].insert(0, 'src')
+ 
+     # Resolve extension location from name.

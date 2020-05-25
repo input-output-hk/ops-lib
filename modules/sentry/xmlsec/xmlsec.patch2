@@ -1,0 +1,15 @@
+diff --git a/xmlsec_setupinfo.py b/xmlsec_setupinfo.py
+index 8815808..b009c1e 100644
+--- a/xmlsec_setupinfo.py
++++ b/xmlsec_setupinfo.py
+@@ -161,7 +161,9 @@ def load_xmlsec1_config():
+         import pkgconfig
+ 
+         try:
+-            config = pkgconfig.parse('xmlsec1')
++            config = {}
++            config['libraries'] = ['@nix_xmlsec@']
++            config['include_dirs'] = ['@nix_xmlsec@', '@nix_libxml2@']
+         except EnvironmentError:
+             pass
+ 
