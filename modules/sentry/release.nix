@@ -43,6 +43,8 @@ rec {
     overrides = overlay;
 
     nativeBuildInputs = [ pkgs.breakpointHook ];
+    propagatedBuildInputs = [ python.pkgs.setuptools ];
+
   }).overrideAttrs(drv: {
     buildPhase = ''
       # Remove uwsgi dependency
