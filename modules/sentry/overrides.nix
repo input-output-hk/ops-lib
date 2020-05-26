@@ -420,6 +420,8 @@ self: super:
     PKG_CONFIG_PATH = "${pkgs.xmlsec.dev}/lib/pkgconfig:${pkgs.libxml2.dev}/lib/pkgconfig:${pkgs.libxslt.dev}/lib/pkgconfig:$PKG_CONFIG_PATH";
   };
 
+  symbolic = self.callPackage ./symbolic/rust.nix { };
+
   setuptools_cython = self.buildPythonPackage rec {
     pname = "setuptools_cython";
     version = "0.2.1";
