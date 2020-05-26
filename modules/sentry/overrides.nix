@@ -1,9 +1,5 @@
 { pkgs, system ? builtins.currentSystem }:
 
-let
-  rust-semaphore = pkgs.callPackage ./semaphore {};
-in
-
 self: super:
 
 {
@@ -54,6 +50,16 @@ self: super:
 
     doCheck = false;
   };
+
+  djangorestframework = super.djangorestframework.overrideAttrs ( oldAttrs: rec {
+    version = "3.4.7";
+
+    src = self.fetchPypi {
+      inherit version;
+      inherit (oldAttrs) pname;
+      sha256 = "0ivyc4p0g8sir5j5z59v7jcj1xnml8qnr0z3rfh15q3dk88qix9l";
+    };
+  });
 
   email_reply_parser = self.buildPythonPackage rec {
     pname = "email_reply_parser";
@@ -230,7 +236,7 @@ self: super:
     doCheck = false;
   };
 
-  PyJWT = self.buildPythonPackage rec {
+  pyjwt = self.buildPythonPackage rec {
     pname = "PyJWT";
     version = "1.5.0";
     src = self.fetchPypi {
@@ -263,6 +269,8 @@ self: super:
     propagatedBuildInputs = [ self.requests self.requests-mock ];
     doCheck = false;
   };
+
+  mock = super.mock;
 
   petname = self.buildPythonPackage rec {
     pname = "petname";
@@ -678,6 +686,36 @@ self: super:
 
     doCheck = false;
   });
+
+  structlog = self.buildPythonPackage rec {
+    pname = "structlog";
+    version = "16.1.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "00dywyg3bqlkrmbrfrql21hpjjjkc4zjd6xxjyxyd15brfnzlkdl";
+    };
+
+    propagatedBuildInputs = [ self.six ];
+    doCheck = false;
+  };
+
+  datadog = super.datadog;
+  jsonschema = super.jsonschema;
+
+  python-u2flib-server = self.buildPythonPackage rec {
+    pname = "python-u2flib-server";
+    version = "5.0.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "09n2phl1qr6rs35kxx02awkwlhdmgd5xnavwl33sn97y2gdl944v";
+    };
+
+    propagatedBuildInputs = [ self.six self.enum34 self.cryptography ];
+  };
+
+  milksnake = super.milksnake;
 
   # uwsgi = self.buildPythonPackage rec {
   #   pname = "uwsgi";

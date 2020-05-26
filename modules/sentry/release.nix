@@ -45,6 +45,8 @@ rec {
     nativeBuildInputs = [ pkgs.breakpointHook ];
   }).overrideAttrs(drv: {
     buildPhase = ''
+      # Remove uwsgi dependency
+
       # Unset SOURCE_DATE_EPOCH: ZIP requires timestamps >= 1980
       # https://nixos.org/nixpkgs/manual/#python-setup.py-bdist_wheel-cannot-create-.whl
       unset SOURCE_DATE_EPOCH
