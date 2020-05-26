@@ -400,7 +400,9 @@ self: super:
       sha256 = "0klxyl8bpbdpx5mxim6hp5qfi3wf9gb0kwmxmi2zlyhnbx567hn7";
     };
 
-    propagatedBuildInputs = [ self.defusedxml self.xmlsec ];
+    propagatedBuildInputs = [ self.defusedxml self.xmlsec self.isodate ];
+
+    doCheck = false;
   };
 
   xmlsec = self.buildPythonPackage rec {
