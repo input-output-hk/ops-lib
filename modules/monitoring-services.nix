@@ -218,7 +218,7 @@ in {
       };
 
       monitoredNodes = mkOption {
-        type = types.loaOf (types.submodule monitoredNodeOptions);
+        type = types.attrsOf (types.submodule monitoredNodeOptions);
         default = { };
         description = ''
           Attribute set of Nodes to be monitored.
