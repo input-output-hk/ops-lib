@@ -44,6 +44,8 @@ in
 
   propagatedBuildInputs = [ python.pkgs.setuptools ];
 
+  makeWrapperArgs = ["--set PYTHONPATH $PYTHONPATH"];
+
 }).overrideAttrs(drv: {
   buildPhase = ''
     # Remove uwsgi dependency
