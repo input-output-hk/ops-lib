@@ -415,18 +415,29 @@ self: super:
 
   xmlsec = self.buildPythonPackage rec {
     pname = "xmlsec";
-    version = "1.3.3";
+    version = "1.3.8";
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "1mlysa6ld9l9a8w78m01c6kzmq6lxicd3zvlv0ik55vl44bw0wz5";
+      sha256 = "1ki5jiws8r9sbdbbn5cw058m57rhx42g91rrsa2bblqwngi3z546";
     };
 
-    buildInputs = [ pkgs.libtool.lib pkgs.zlib ];
-    propagatedBuildInputs = [ self.lxml self.pkgconfig ];
+    buildInputs = [ pkgs.libtool.lib pkgs.zlib pkgs.xmlsec.dev pkgs.xmlsec ];
+    propagatedBuildInputs = [ self.lxml self.pkgconfig self.pathlib2 self.setuptools_scm self.toml pkgs.xmlsec.dev pkgs.xmlsec ];
 
+    checkInputs = [ self.pytest pkgs.xmlsec.dev pkgs.xmlsec self.hypothesis ];
+    postPatch = ''
+      patch --strip=1 < ${./xmlsec/lxml-workaround.patch}
+      patch --strip=1 < ${./xmlsec/no-black-format.patch}
+    '';
+
+    LD_LIBRARY_PATH = "${pkgs.xmlsec}/lib";
     PKG_CONFIG_PATH = "${pkgs.xmlsec.dev}/lib/pkgconfig:${pkgs.libxml2.dev}/lib/pkgconfig:${pkgs.libxslt.dev}/lib/pkgconfig:$PKG_CONFIG_PATH";
   };
+
+  pytest = super.pytest.overrideAttrs (oldAttrs: rec {
+    doCheck = false;
+  });
 
   symbolic = self.callPackage ./symbolic { };
 
@@ -441,6 +452,16 @@ self: super:
 
     propagatedBuildInputs = [ self.cython ];
   };
+
+  setuptools_scm = super.setuptools_scm.overrideAttrs (oldAttrs: rec {
+    version = "3.4.0";
+
+    src = self.fetchPypi {
+      inherit (oldAttrs) pname;
+      inherit version;
+      sha256 = "1dwzhn3qgs9nn0cy68pfglgx202zf6ka7kkg34np2lmiwi0a6vcb";
+    };
+  });
 
   hiredis = self.buildPythonPackage rec {
     pname = "hiredis";
