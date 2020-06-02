@@ -3,6 +3,63 @@
 self: super:
 
 {
+  python3-saml =
+    let
+      fix2020Patch = pkgs.fetchpatch {
+        url = "https://patch-diff.githubusercontent.com/raw/onelogin/python3-saml/pull/140.patch";
+        sha256 = "0pm40kszv5qcnkw3ksz6c68zkqibakaxdggkxfadiasw9ys91nl6";
+      };
+      fixCertValue = pkgs.fetchpatch {
+        url = "https://github.com/onelogin/python3-saml/commit/771072e2ae1380acde4ec6af2d7b46b96dccfd2d.patch";
+        sha256 = "0yplwcpb5ksxgbfnmmxssj4c9ak1g1p6hfj8nfh2ybrmbk38n2f8";
+      };
+    in
+      self.buildPythonPackage rec {
+      pname = "python3-saml";
+      version = "1.4.0";
+  
+      # Fetch from GitHub because PyPi doesn't have tests available in src
+      src = pkgs.fetchFromGitHub {
+        owner = "onelogin";
+        repo = "${pname}";
+        rev = "refs/tags/v${version}";
+        sha256 = "05l63qwfqvw67v70bsam76amxpz7hnkqn8329yrds3fzgzkhkqrl";
+      };
+
+      postPatch = ''
+        patch --strip=1 < ${fix2020Patch}
+        patch --strip=1 < ${fixCertValue}
+      '';
+  
+      propagatedBuildInputs = [ self.defusedxml self.xmlsec self.isodate ];
+  
+      checkInputs = [ self.pytest self.coverage self.freezegun self.pylint self.flake8 self.coveralls ];
+  
+      LD_LIBRARY_PATH = "${pkgs.xmlsec}/lib";
+    };
+
+  xmlsec = self.buildPythonPackage rec {
+    pname = "xmlsec";
+    version = "1.3.8";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1ki5jiws8r9sbdbbn5cw058m57rhx42g91rrsa2bblqwngi3z546";
+    };
+
+    buildInputs = [ pkgs.libtool.lib pkgs.zlib pkgs.xmlsec.dev pkgs.xmlsec ];
+    propagatedBuildInputs = [ self.lxml self.pkgconfig self.pathlib2 self.setuptools_scm self.toml pkgs.xmlsec.dev pkgs.xmlsec ];
+
+    checkInputs = [ self.pytest pkgs.xmlsec.dev pkgs.xmlsec self.hypothesis ];
+    postPatch = ''
+      patch --strip=1 < ${./xmlsec/lxml-workaround.patch}
+      patch --strip=1 < ${./xmlsec/no-black-format.patch}
+    '';
+
+    LD_LIBRARY_PATH = "${pkgs.xmlsec}/lib";
+    PKG_CONFIG_PATH = "${pkgs.xmlsec.dev}/lib/pkgconfig:${pkgs.libxml2.dev}/lib/pkgconfig:${pkgs.libxslt.dev}/lib/pkgconfig:$PKG_CONFIG_PATH";
+  };
+
   amqp = self.buildPythonPackage rec {
     pname = "amqp";
     version = "1.4.9";
@@ -397,42 +454,6 @@ self: super:
     propagatedBuildInputs = [ self.six ];
 
     doCheck = false;
-  };
-
-  python3-saml = self.buildPythonPackage rec {
-    pname = "python3-saml";
-    version = "1.4.0";
-
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "0klxyl8bpbdpx5mxim6hp5qfi3wf9gb0kwmxmi2zlyhnbx567hn7";
-    };
-
-    propagatedBuildInputs = [ self.defusedxml self.xmlsec self.isodate ];
-
-    doCheck = false;
-  };
-
-  xmlsec = self.buildPythonPackage rec {
-    pname = "xmlsec";
-    version = "1.3.8";
-
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "1ki5jiws8r9sbdbbn5cw058m57rhx42g91rrsa2bblqwngi3z546";
-    };
-
-    buildInputs = [ pkgs.libtool.lib pkgs.zlib pkgs.xmlsec.dev pkgs.xmlsec ];
-    propagatedBuildInputs = [ self.lxml self.pkgconfig self.pathlib2 self.setuptools_scm self.toml pkgs.xmlsec.dev pkgs.xmlsec ];
-
-    checkInputs = [ self.pytest pkgs.xmlsec.dev pkgs.xmlsec self.hypothesis ];
-    postPatch = ''
-      patch --strip=1 < ${./xmlsec/lxml-workaround.patch}
-      patch --strip=1 < ${./xmlsec/no-black-format.patch}
-    '';
-
-    LD_LIBRARY_PATH = "${pkgs.xmlsec}/lib";
-    PKG_CONFIG_PATH = "${pkgs.xmlsec.dev}/lib/pkgconfig:${pkgs.libxml2.dev}/lib/pkgconfig:${pkgs.libxslt.dev}/lib/pkgconfig:$PKG_CONFIG_PATH";
   };
 
   pytest = super.pytest.overrideAttrs (oldAttrs: rec {
