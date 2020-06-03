@@ -1022,12 +1022,12 @@ in {
           extraConfig = let
             maxSize =
               if cfg.graylogMaxSizePerIndex == null
-              then trace "services.monitoring-services.graylogMaxSizePerIndex is null. To set this value after deploy, use the Graylog web UI." ""
+              then builtins.trace "services.monitoring-services.graylogMaxSizePerIndex is null. To set this value after deploy, use the Graylog web UI." ""
               else "elasticsearch_max_size_per_index = ${toString (cfg.graylogMaxSizePerIndex * 1024 * 1024 * 1024)}";
 
             maxIndices =
               if cfg.graylogMaxNumberOfIndices == null
-              then trace "services.monitoring-services.graylogMaxNumberOfIndices is null. To set this value after deploy, use the Graylog web UI." ""
+              then builtins.trace "services.monitoring-services.graylogMaxNumberOfIndices is null. To set this value after deploy, use the Graylog web UI." ""
               else "elasticsearch_max_number_of_indices = ${toString cfg.graylogMaxNumberOfIndices}";
           in ''
             http_bind_address = 0.0.0.0:9000
