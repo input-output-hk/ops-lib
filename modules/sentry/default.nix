@@ -44,7 +44,7 @@ in
 
   propagatedBuildInputs = [ python.pkgs.setuptools ];
 
-  makeWrapperArgs = ["--set PYTHONPATH $PYTHONPATH"];
+  makeWrapperArgs = ["--set PYTHONPATH $PYTHONPATH" "--set LD_LIBRARY_PATH ${pkgs.xmlsec}/lib"];
 
 }).overrideAttrs(drv: {
   buildPhase = ''
