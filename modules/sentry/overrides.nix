@@ -620,14 +620,16 @@ self: super:
 
   celery = self.buildPythonPackage rec {
     pname = "celery";
-    version = "3.1.8";
+    version = "3.1.9";
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "1fdvfahb48187gw973wj7vfrx94632ja45l8dylvlmhn5smck1h7";
+      sha256 = "0b7wvpksnwa9w4nsqfz8dw85a1vyd80a3i47h4v7g1cjqkkyg7ja";
     };
 
     propagatedBuildInputs = [ self.kombu self.billiard self.pytz self.anyjson self.amqp self.eventlet ];
+
+    checkInputs = [ self.case self.pytest self.mock self.unittest2 self.coverage self.nose-cover3 self.nose-exclude ];
 
     doCheck = false;
   };
