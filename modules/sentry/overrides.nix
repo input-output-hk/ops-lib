@@ -620,11 +620,11 @@ self: super:
 
   celery = self.buildPythonPackage rec {
     pname = "celery";
-    version = "3.1.9";
+    version = "3.1.18";
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "0b7wvpksnwa9w4nsqfz8dw85a1vyd80a3i47h4v7g1cjqkkyg7ja";
+      sha256 = "1bry1qzb4gw0ni40w1pyzxl2d0rqbf688sdi13a5gz66f10gj909";
     };
 
     propagatedBuildInputs = [ self.kombu self.billiard self.pytz self.anyjson self.amqp self.eventlet ];
@@ -720,10 +720,11 @@ self: super:
 
   billiard = super.billiard.overrideAttrs (oldAttrs: rec {
     pname = "billiard";
-    version = "3.3.0.14";
+    version = "3.3.0.20";
+
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "0pn0n3mvnnh0jgic4wh0drd0mwswbj40h0pq1c57iignbmis8ygn";
+      sha256 = "1k18d4gr6ikciss2wm0c4v2paphi539xprl1cc819bn3n5k993v8";
     };
 
     propagatedBuildInputs = [ self.nose-cover3 ];
