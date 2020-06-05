@@ -118,7 +118,29 @@ self: super:
       inherit version;
       sha256 = "0yzqz8wv3w1srav5683a55v49i0szkm47dyrnkd56fqs8j8ypl70";
     };
+
+    propagatedBuildInputs = [ self.hypothesis self.zope ];
   });
+  zope = self.buildPythonPackage rec {
+    pname = "Zope";
+    version = "4.4.2";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "0fl1j46w9hi9ab26h1d5ncx54qsm6zfjczr1k6wcfh5qirvs3hn5";
+    };
+
+    propagatedBuildInputs = [ self.zope_browserresource ];
+  };
+  zope_browserresource = self.buildPythonPackage rec {
+    pname = "zope.browserresource";
+    version = "3.12.0";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1111111111111111111111111111111111111111111111111111";
+    };
+  };
   black = super.black.overrideAttrs(oldDrv: rec {
     version = "19.10b0";
 
@@ -351,12 +373,12 @@ self: super:
     };
   });
   isort = super.isort.overrideAttrs(oldDrv: rec {
-    version = "4.3.4";
+    version = "4.3.21";
 
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1y0yfv56cqyh9wyg7kxxv9y5wmfgcq18n7a49mp7xmzka2bhxi5r";
+      sha256 = "1cfavhcvfy2sqdkpznc0xvhv15y91syqc36dxbyc8mc98s97xnjl";
     };
   });
   itsdangerous = super.itsdangerous.overrideAttrs(oldDrv: rec {
@@ -369,12 +391,12 @@ self: super:
     };
   });
   jedi = super.jedi.overrideAttrs(oldDrv: rec {
-    version = "0.12.0";
+    version = "0.17.0";
 
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1bcr7csx4xil1iwmk03d79jis0bkmgi9k0kir3xa4rmwqsagcwhr";
+      sha256 = "0c1h9x3a9klvk2g288wl328x8xgzw7136k6vs9hkd56b85vcjh6z";
     };
   });
   jinja2 = super.jinja2.overrideAttrs(oldDrv: rec {
@@ -394,6 +416,8 @@ self: super:
       inherit version;
       sha256 = "03g20i1xfg4qdlk4475pl4pp7y0h37g1fbgs5qhy678q9xb822hc";
     };
+
+    propagatedBuildInputs = [ self.setuptools_scm self.attrs self.pyrsistent ];
   });
   lazy-object-proxy = super.lazy-object-proxy.overrideAttrs(oldDrv: rec {
     version = "1.3.1";
@@ -417,9 +441,9 @@ self: super:
     version = "2.0.0";
 
     src = self.fetchPypi {
-      inherit (oldDrv) pname;
+      pname = "lz4";
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0gmbyh37ssx5qzvz3hd455f13jbfcf15vr25h29gf7d5a29fh78m";
     };
   });
   markdown = super.markdown.overrideAttrs(oldDrv: rec {
@@ -575,15 +599,15 @@ self: super:
       sha256 = "016b9gh606aa44sq92jslm89bg874ia0yyiyb643fa6dgbsbqch8";
     };
   });
-  pytest = super.pytest.overrideAttrs(oldDrv: rec {
-    version = "5.2.4";
+  # pytest = super.pytest.overrideAttrs(oldDrv: rec {
+  #   version = "5.2.4";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "1mm0j3w09dsnmjs4xpf6zmp7mmnrlv8smx6hhh1am6k6ky0r007z";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "1mm0j3w09dsnmjs4xpf6zmp7mmnrlv8smx6hhh1am6k6ky0r007z";
+  #   };
+  # });
   pytest-cov = self.buildPythonPackage rec {
     pname = "pytest-cov";
     version = "2.5.1";
@@ -593,7 +617,7 @@ self: super:
       sha256 = "0bbfpwdh9k3636bxc88vz9fa7vf4akchgn513ql1vd0xy4n7bah3";
     };
 
-    propagatedBuildInputs = [ self.coverage ];
+    propagatedBuildInputs = [ self.coverage self.pytest ];
   };
   pytest-forked = super.pytest-forked.overrideAttrs(oldDrv: rec {
     version = "1.1.3";
@@ -601,7 +625,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "000i4q7my2fq4l49n8idx2c812dql97qv6qpm2vhrrn9v6g6j18q";
     };
   });
   pytest-watch = super.pytest-watch.overrideAttrs(oldDrv: rec {
@@ -610,7 +634,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "1fflnd3varpqy8yzcs451n8h7wmjyx1408qdin5p2qdksl1ny4q6";
     };
   });
   pytest-xdist = self.buildPythonPackage rec {
@@ -619,8 +643,10 @@ self: super:
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0j6gmhlp6mcs8l42fgpj6xsny3b7cgxn5avdslin12jic521s6sx";
     };
+
+    propagatedBuildInputs = [ self.setuptools_scm self.execnet ];
   };
   python-dateutil = super.python-dateutil.overrideAttrs(oldDrv: rec {
     version = "2.7.3";
@@ -628,7 +654,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "1f7h54lg0w2ckch7592xpjkh8dg87k2br256h0iw49zn6bg02w72";
     };
   });
   python-rapidjson = super.python-rapidjson.overrideAttrs(oldDrv: rec {
@@ -637,7 +663,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "13fgy5bqslx913p9gachj9djk3g6wx1igwaccfnxjl2msrbwclwp";
     };
   });
   redis = super.redis.overrideAttrs(oldDrv: rec {
@@ -646,7 +672,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "03vcgklykny0g0wpvqmy8p6azi2s078317wgb2xjv5m2rs9sjb52";
     };
   });
   redis-py-cluster = self.buildPythonPackage rec {
@@ -655,26 +681,30 @@ self: super:
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0dhb8pbnzn9fpayrdhkmx7g1mn9f98p1d0cd11iwgll74hgrnd77";
     };
+
+    propagatedBuildInputs = [ self.redis ];
   };
   semaphore = self.callPackage ../sentry/semaphore { };
   sentry-sdk = super.sentry-sdk.overrideAttrs(oldDrv: rec {
-             version = "0.13.5";
+    version = "0.13.5";
 
-             src = self.fetchPypi {
-               inherit (oldDrv) pname;
-               inherit version;
-               sha256 = "1111111111111111111111111111111111111111111111111111";
-             };
-           });
+    src = self.fetchPypi {
+      inherit (oldDrv) pname;
+      inherit version;
+      sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
+    };
+
+  });
   simplegeneric = super.simplegeneric.overrideAttrs(oldDrv: rec {
     version = "0.8.1";
   
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      extension = "zip";
+      sha256 = "0wwi1c6md4vkbcsfsf8dklf3vr4mcdj4mpxkanwgb6jb1432x5yw";
     };
   });
   simplejson = super.simplejson.overrideAttrs(oldDrv: rec {
@@ -683,7 +713,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "1yvk6knpqmqd34012s1qfnyf84px9wznh2id2gyfy72mv5jjycxd";
     };
   });
   singledispatch = super.singledispatch.overrideAttrs(oldDrv: rec {
@@ -692,7 +722,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "171b7ip0hsq5qm83np40h3phlr36ym18w0lay0a8v08kvy3sy1jv";
     };
   });
   traceback2 = super.traceback2.overrideAttrs(oldDrv: rec {
@@ -701,7 +731,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0c1h3jas1jp1fdbn9z2mrgn3jj0hw1x3yhnkxp7jw34q15xcdb05";
     };
   });
   traitlets = super.traitlets.overrideAttrs(oldDrv: rec {
@@ -710,7 +740,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0dbq7sx26xqz5ixs711k5nc88p8a0nqyz6162pwks5dpcz9d4jww";
     };
   });
   typing-extensions = super.typing-extensions.overrideAttrs(oldDrv: rec {
@@ -719,7 +749,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "1wj1vcgbnm20aiinmphyxfrbv3qi9xdhvw89ab3qm42y9n4wq7h9";
     };
   });
   unittest2 = super.unittest2.overrideAttrs(oldDrv: rec {
@@ -728,7 +758,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0y855kmx7a8rnf81d3lh5lyxai1908xjp0laf4glwa4c8472m212";
     };
   });
   urllib3 = super.urllib3.overrideAttrs(oldDrv: rec {
@@ -737,7 +767,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0cij8qcvvpj62g1q8n785qjkdymfh4b7vf45si4sw64l41rr3rfv";
     };
   });
   uwsgi = self.buildPythonPackage rec {
@@ -746,8 +776,12 @@ self: super:
   
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "1wlbaairsmhp6bx5wv282q9pgh6w7w6yrb8vxjznfaxrinsfkhix";
     };
+
+    buildInputs = [ pkgs.ncurses ];
+
+    doCheck = false;
   };
   wcwidth = super.wcwidth.overrideAttrs(oldDrv: rec {
     version = "0.1.7";
@@ -755,7 +789,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "0pn6dflzm609m4r3i8ik5ni9ijjbb5fa3vg1n7hn6vkd49r77wrx";
     };
   });
   werkzeug = super.werkzeug.overrideAttrs(oldDrv: rec {
@@ -773,7 +807,7 @@ self: super:
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
+      sha256 = "1ip3dwib39xhp79kblskgvz3fjzcwxgx3fs3ahdixhpjg7a61mfl";
     };
   });
 
