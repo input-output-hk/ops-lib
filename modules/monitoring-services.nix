@@ -585,7 +585,7 @@ in {
           extraFlags = [
             "--storage.tsdb.retention.time=${cfg.prometheus.storageRetentionTime}"
           ] ++ (if (cfg.prometheus.storageRetentionSize == null)
-                then trace "services.monitoring-services.prometheus.storageRetentionSize is null" []
+                then builtins.trace "services.monitoring-services.prometheus.storageRetentionSize is null" []
                 else [ "--storage.tsdb.retention.size=${cfg.prometheus.storageRetentionSize}" ]
           );
 
