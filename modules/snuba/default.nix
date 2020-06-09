@@ -42,6 +42,8 @@ iohkMkPythonApplication rec {
   python = pkgs.python37;
   overrides = overlay;
 
+  propagatedBuildInputs = [ pkgs.rdkafka ];
+
   makeWrapperArgs = [ "--set PYTHONPATH $PYTHONPATH" ];
 
   postPatch = ''

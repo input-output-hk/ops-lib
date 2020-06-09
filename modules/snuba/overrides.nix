@@ -406,7 +406,7 @@ self: super:
       sha256 = "04shqrs56aj04ipyqykj512rw2l0zfammvj9krawzxz7xc14yp06";
     };
   });
-  jsonschema = super.jsonschema;
+  # jsonschema = super.jsonschema;
 
   billiard = super.billiard.overrideAttrs (oldAttrs: rec {
     pname = "billiard";
@@ -461,20 +461,20 @@ self: super:
 
     doCheck = false;
   };
-  # jsonschema = self.buildPythonPackage rec {
-  #   pname = "jsonschema";
-  #   version = "3.0.1";
+  jsonschema = self.buildPythonPackage rec {
+    pname = "jsonschema";
+    version = "3.0.1";
 
-  #   src = self.fetchPypi {
-  #     inherit pname version;
-  #     sha256 = "03g20i1xfg4qdlk4475pl4pp7y0h37g1fbgs5qhy678q9xb822hc";
-  #   };
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "03g20i1xfg4qdlk4475pl4pp7y0h37g1fbgs5qhy678q9xb822hc";
+    };
 
-  #   nativeBuildInputs = with self; [ setuptools_scm ];
-  #   propagatedBuildInputs = with self; [ attrs importlib-metadata functools32 pyrsistent ];
+    nativeBuildInputs = with self; [ setuptools_scm ];
+    propagatedBuildInputs = with self; [ attrs importlib-metadata functools32 pyrsistent ];
 
-  #   doCheck = false;
-  # };
+    doCheck = false;
+  };
   # lazy-object-proxy = super.lazy-object-proxy.overrideAttrs(oldDrv: rec {
   #   version = "1.3.1";
 
