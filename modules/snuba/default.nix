@@ -53,4 +53,6 @@ iohkMkPythonApplication rec {
     export LD_PRELOAD=${pkgs.libredirect}/lib/libredirect.so
   '';
   postCheck = "unset NIX_REDIRECTS LD_PRELOAD";
+
+  doCheck = false;
 }
