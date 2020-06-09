@@ -189,26 +189,27 @@ self: super:
       sha256 = "02qkfpykbq35id8glfgwc38yc430427yd05z1wc5cnld8zgicmgi";
     };
   });
-  # clickhouse_driver = self.buildPythonPackage rec {
-  #   pname = "clickhouse-driver";
-  #   version = "0.1.1";
+  clickhouse_driver = self.buildPythonPackage rec {
+    pname = "clickhouse-driver";
+    version = "0.1.1";
 
-  #   src = self.fetchPypi {
-  #     inherit pname version;
-  #     sha256 = "3eeb6d2683b38755dcccef117b1361356b5e29619766f9463c68fe10f5e72cf1";
-  #   };
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "3eeb6d2683b38755dcccef117b1361356b5e29619766f9463c68fe10f5e72cf1";
+    };
 
-  #   propagatedBuildInputs = [ self.pytz self.clickhouse_cityhash self.zstd ];
-  # };
-  # clickhouse_cityhash = self.buildPythonPackage rec {
-  #   pname = "clickhouse-cityhash";
-  #   version = "1.0.2.3";
+    propagatedBuildInputs = [ self.pytz self.clickhouse_cityhash self.zstd self.lz4 ];
+    checkInputs = [ self.freezegun self.mock self.nose ];
+  };
+  clickhouse_cityhash = self.buildPythonPackage rec {
+    pname = "clickhouse-cityhash";
+    version = "1.0.2.3";
 
-  #   src = self.fetchPypi {
-  #     inherit pname version;
-  #     sha256 = "2f377d20796c6fe4bc1c5b4e07082782788401f14677febc35305ce129a0167d";
-  #   };
-  # };
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "2f377d20796c6fe4bc1c5b4e07082782788401f14677febc35305ce129a0167d";
+    };
+  };
   colorama = super.colorama.overrideAttrs(oldDrv: rec {
     version = "0.3.9";
 
@@ -282,15 +283,15 @@ self: super:
       sha256 = "14f4hn6d1j4b99svwbaji8n2zj58qicyz19mm0x6pmhb50jsics9";
     };
   });
-  # flake8 = super.flake8.overrideAttrs(oldDrv: rec {
-  #   version = "3.7.8";
+  flake8 = super.flake8.overrideAttrs(oldDrv: rec {
+    version = "3.7.8";
 
-  #   src = self.fetchPypi {
-  #     inherit (oldDrv) pname;
-  #     inherit version;
-  #     sha256 = "0j2526s738dbdsa1mp82s1yrlx0rrai3hi1y8xi9j6wpphf1q90r";
-  #   };
-  # });
+    src = self.fetchPypi {
+      inherit (oldDrv) pname;
+      inherit version;
+      sha256 = "0j2526s738dbdsa1mp82s1yrlx0rrai3hi1y8xi9j6wpphf1q90r";
+    };
+  });
   flask = super.flask.overrideAttrs(oldDrv: rec {
     version = "1.0.2";
 
@@ -405,20 +406,75 @@ self: super:
       sha256 = "04shqrs56aj04ipyqykj512rw2l0zfammvj9krawzxz7xc14yp06";
     };
   });
-  jsonschema = self.buildPythonPackage rec {
-    pname = "jsonschema";
-    version = "3.0.1";
+  jsonschema = super.jsonschema;
+
+  billiard = super.billiard.overrideAttrs (oldAttrs: rec {
+    pname = "billiard";
+    version = "3.3.0.20";
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "03g20i1xfg4qdlk4475pl4pp7y0h37g1fbgs5qhy678q9xb822hc";
+      sha256 = "1k18d4gr6ikciss2wm0c4v2paphi539xprl1cc819bn3n5k993v8";
     };
 
-    nativeBuildInputs = with self; [ setuptools_scm ];
-    propagatedBuildInputs = with self; [ attrs importlib-metadata functools32 pyrsistent ];
+    propagatedBuildInputs = [ self.nose-cover3 ];
+
+    doCheck = false;
+  });
+  amqp = self.buildPythonPackage rec {
+    pname = "amqp";
+    version = "1.4.9";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "06n6q0kxhjnbfz3vn8x9yz09lwmn1xi9d6wxp31h5jbks0b4vsid";
+    };
+
+    checkInputs = [ self.mock self.coverage self.nose-cover3 self.unittest2 ];
 
     doCheck = false;
   };
+  kombu = self.buildPythonPackage rec {
+    pname = "kombu";
+    version = "3.0.35";
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "09xpxpjz9nk8d14dj361dqdwyjwda3jlf1a7v6jif9wn2xm37ar2";
+    };
+
+    propagatedBuildInputs = [ self.amqp self.anyjson ];
+    checkInputs = [ self.mock self.unittest2 self.nose self.redis ];
+
+    doCheck = false;
+  };
+  celery = self.buildPythonPackage rec {
+    pname = "celery";
+    version = "3.1.18";
+
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "1bry1qzb4gw0ni40w1pyzxl2d0rqbf688sdi13a5gz66f10gj909";
+    };
+
+    propagatedBuildInputs = [ self.kombu self.billiard self.pytz self.anyjson self.amqp self.eventlet ];
+
+    checkInputs = [ self.case self.pytest self.mock self.unittest2 self.coverage self.nose-cover3 self.nose-exclude ];
+
+    doCheck = false;
+  };
+  # jsonschema = self.buildPythonPackage rec {
+  #   pname = "jsonschema";
+  #   version = "3.0.1";
+
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "03g20i1xfg4qdlk4475pl4pp7y0h37g1fbgs5qhy678q9xb822hc";
+  #   };
+
+  #   nativeBuildInputs = with self; [ setuptools_scm ];
+  #   propagatedBuildInputs = with self; [ attrs importlib-metadata functools32 pyrsistent ];
+
+  #   doCheck = false;
+  # };
   # lazy-object-proxy = super.lazy-object-proxy.overrideAttrs(oldDrv: rec {
   #   version = "1.3.1";
 
@@ -480,15 +536,15 @@ self: super:
   #     sha256 = "07w3p1qm44hgxf3vvwz84kswpsx6s7kvaibzrsx5dzm0hli1i3fx";
   #   };
   # });
-  # more-itertools = super.more-itertools.overrideAttrs(oldDrv: rec {
-  #   version = "4.2.0";
+  more-itertools = super.more-itertools.overrideAttrs(oldDrv: rec {
+    version = "4.2.0";
 
-  #   src = self.fetchPypi {
-  #     inherit (oldDrv) pname;
-  #     inherit version;
-  #     sha256 = "1s6qhl7a7jy8gqw8p545rxfp7rwz1hmjr9p6prk93zbv6f9rhsrb";
-  #   };
-  # });
+    src = self.fetchPypi {
+      inherit (oldDrv) pname;
+      inherit version;
+      sha256 = "1s6qhl7a7jy8gqw8p545rxfp7rwz1hmjr9p6prk93zbv6f9rhsrb";
+    };
+  });
   packaging = super.packaging.overrideAttrs(oldDrv: rec {
     version = "17.1";
 
@@ -660,15 +716,15 @@ self: super:
 
     propagatedBuildInputs = [ self.setuptools_scm self.execnet self.pytest-forked self.six self.pytest ];
   };
-  # python-dateutil = super.python-dateutil.overrideAttrs(oldDrv: rec {
-  #   version = "2.7.3";
+  python-dateutil = super.python-dateutil.overrideAttrs(oldDrv: rec {
+    version = "2.7.3";
 
-  #   src = self.fetchPypi {
-  #     inherit (oldDrv) pname;
-  #     inherit version;
-  #     sha256 = "1f7h54lg0w2ckch7592xpjkh8dg87k2br256h0iw49zn6bg02w72";
-  #   };
-  # });
+    src = self.fetchPypi {
+      inherit (oldDrv) pname;
+      inherit version;
+      sha256 = "1f7h54lg0w2ckch7592xpjkh8dg87k2br256h0iw49zn6bg02w72";
+    };
+  });
   python-rapidjson = super.python-rapidjson.overrideAttrs(oldDrv: rec {
     version = "0.8.0";
 
@@ -678,37 +734,82 @@ self: super:
       sha256 = "13fgy5bqslx913p9gachj9djk3g6wx1igwaccfnxjl2msrbwclwp";
     };
   });
-  # redis = super.redis;
   redis = super.redis.overrideAttrs(oldDrv: rec {
-    version = "3.0.1";
+    version = "2.10.6";
 
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "1kw3a1618pl908abiaxd41jg5z0rwyl2w2i0d8xi9zxy5437a011";
+      sha256 = "03vcgklykny0g0wpvqmy8p6azi2s078317wgb2xjv5m2rs9sjb52";
     };
   });
   redis-py-cluster = self.buildPythonPackage rec {
     pname = "redis-py-cluster";
-    version = "2.0.0";
+    version = "1.3.6";
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "18yrs2snr9khfzavj6acjdjidkqnw0a3xlri1nj85w1gxm5iai0s";
+      sha256 = "0b749rbmscy30an610kdanpazjbzy09b2xk6h2ilvlqbwqflpdbx";
     };
 
     propagatedBuildInputs = [ self.redis ];
   };
   semaphore = self.callPackage ../sentry/semaphore { };
-  sentry-sdk = super.sentry-sdk.overrideAttrs(oldDrv: rec {
-    version = "0.13.5";
 
+  rq = self.buildPythonPackage rec {
+    pname = "rq";
+    version = "0.12.0";
+  
     src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
+      inherit pname version;
+      sha256 = "16d8kni57xlnah2hawy4xgw21xrv3f64j5q5shyp3zxx4yd9iibs";
     };
-  });
+  
+    # test require a running redis rerver, which is something we can't do yet
+    doCheck = false;
+  
+    propagatedBuildInputs = with self; [ click redis ];
+  
+    meta = with pkgs.lib; {
+      description = "A simple, lightweight library for creating background jobs, and processing them";
+      homepage = "https://github.com/nvie/rq/";
+      maintainers = with maintainers; [ mrmebelman ];
+      license = licenses.bsd2;
+    };
+  };
+
+  sentry-sdk = self.buildPythonPackage rec {
+    pname = "sentry-sdk";
+    version = "0.13.5";
+  
+    src = self.fetchPypi {
+      inherit pname version;
+      sha256 = "c6b919623e488134a728f16326c6f0bcdab7e3f59e7f4c472a90eea4d6d8fe82";
+    };
+  
+    checkInputs = with self; [ django flask tornado bottle rq falcon sqlalchemy ]
+    ++ pkgs.lib.optionals isPy3k [ celery pyramid sanic aiohttp ];
+  
+    propagatedBuildInputs = with self; [ urllib3 certifi ];
+  
+    meta = with pkgs.lib; {
+      homepage = "https://github.com/getsentry/sentry-python";
+      description = "New Python SDK for Sentry.io";
+      license = licenses.bsd2;
+      maintainers = with maintainers; [ gebner ];
+    };
+  
+    # The Sentry tests need access to `/etc/protocols` (the tests call
+    # `socket.getprotobyname('tcp')`, which reads from this file). Normally
+    # this path isn't available in the sandbox. Therefore, use libredirect
+    # to make on eavailable from `iana-etc`. This is a test-only operation.
+    preCheck = ''
+      export NIX_REDIRECTS=/etc/protocols=${pkgs.iana-etc}/etc/protocols
+      export LD_PRELOAD=${pkgs.libredirect}/lib/libredirect.so
+    '';
+    postCheck = "unset NIX_REDIRECTS LD_PRELOAD";
+  };
+
   # simplegeneric = super.simplegeneric.overrideAttrs(oldDrv: rec {
   #   version = "0.8.1";
   
@@ -823,4 +924,5 @@ self: super:
       sha256 = "1ip3dwib39xhp79kblskgvz3fjzcwxgx3fs3ahdixhpjg7a61mfl";
     };
   });
+  milksnake = super.milksnake;
 }

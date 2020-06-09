@@ -42,11 +42,15 @@ iohkMkPythonApplication rec {
   python = pkgs.python37;
   overrides = overlay;
 
-  propagatedBuildInputs = [];
-
   makeWrapperArgs = [ "--set PYTHONPATH $PYTHONPATH" ];
 
   postPatch = ''
     patch --strip=1 < ${./snuba.patch}
   '';
+
+  preCheck = ''
+    export NIX_REDIRECTS=/etc/protocols=${pkgs.iana-etc}/etc/protocols
+    export LD_PRELOAD=${pkgs.libredirect}/lib/libredirect.so
+  '';
+  postCheck = "unset NIX_REDIRECTS LD_PRELOAD";
 }
