@@ -735,7 +735,7 @@ in {
                     {
                       alert = "node_filesystem_full_in_4h";
                       expr = ''
-                        predict_linear(node_filesystem_free_bytes{device!="ramfs",device!="tmpfs",fstype!="autofs",fstype!="cd9660"}[4h], 4*3600) <= 0'';
+                        predict_linear(node_filesystem_free_bytes{device!~"ramfs|tmpfs|none",fstype!~"autofs|ramfs|cd9660"}[4h], 4*3600) <= 0'';
                       for = "5m";
                       labels = { severity = "page"; };
                       annotations = {
