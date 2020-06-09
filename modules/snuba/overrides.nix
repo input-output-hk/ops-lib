@@ -74,15 +74,18 @@ self: super:
       sha256 = "0rdv0n2aa181mkrybwvl3czkrrikgzd4y2cri6j735fwhj65nlz9";
     };
   });
-  astroid = super.astroid.overrideAttrs(oldDrv: rec {
-    version = "1.6.5";
+  astroid = super.astroid;
+  # astroid = super.astroid.overrideAttrs(oldDrv: rec {
+  #   version = "1.6.6";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "0fir4b67sm7shcacah9n61pvq313m523jb4q80sycrh3p8nmi6zw";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "1ir4n736x36iyg8rq263bwszamlncfh7xz94gpxxkwa4gzy6jn6j";
+  #   };
+
+  #   propagatedBuildInputs = [ self.lazy-object-proxy self.wrapt ];
+  # });
   atomicwrites = super.atomicwrites.overrideAttrs(oldDrv: rec {
     version = "1.1.5";
 
@@ -110,46 +113,46 @@ self: super:
       sha256 = "2284d4ae2052fedb9f466c09728e30d2e231cfded5ffd7b1a20c34123fdc4ba4";
     };
   });
-  backcall = super.backcall.overrideAttrs(oldDrv: rec {
-    version = "0.1.0";
+  # backcall = super.backcall.overrideAttrs(oldDrv: rec {
+  #   version = "0.1.0";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "0yzqz8wv3w1srav5683a55v49i0szkm47dyrnkd56fqs8j8ypl70";
-    };
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "0yzqz8wv3w1srav5683a55v49i0szkm47dyrnkd56fqs8j8ypl70";
+  #   };
 
-    propagatedBuildInputs = [ self.hypothesis self.zope ];
-  });
-  zope = self.buildPythonPackage rec {
-    pname = "Zope";
-    version = "4.4.2";
+  #   propagatedBuildInputs = [ self.hypothesis self.zope ];
+  # });
+  # zope = self.buildPythonPackage rec {
+  #   pname = "Zope";
+  #   version = "4.4.2";
 
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "0fl1j46w9hi9ab26h1d5ncx54qsm6zfjczr1k6wcfh5qirvs3hn5";
-    };
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "0fl1j46w9hi9ab26h1d5ncx54qsm6zfjczr1k6wcfh5qirvs3hn5";
+  #   };
 
-    propagatedBuildInputs = [ self.zope_browserresource ];
-  };
-  zope_browserresource = self.buildPythonPackage rec {
-    pname = "zope.browserresource";
-    version = "3.12.0";
+  #   propagatedBuildInputs = [ self.zope_browserresource ];
+  # };
+  # zope_browserresource = self.buildPythonPackage rec {
+  #   pname = "zope.browserresource";
+  #   version = "3.12.0";
 
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "1111111111111111111111111111111111111111111111111111";
-    };
-  };
-  black = super.black.overrideAttrs(oldDrv: rec {
-    version = "19.10b0";
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "1111111111111111111111111111111111111111111111111111";
+  #   };
+  # };
+  # black = super.black.overrideAttrs(oldDrv: rec {
+  #   version = "19.10b0";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "c2edb73a08e9e0e6f65a0e6af18b059b8b1cdd5bef997d7a0b181df93dc81539";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "c2edb73a08e9e0e6f65a0e6af18b059b8b1cdd5bef997d7a0b181df93dc81539";
+  #   };
+  # });
   blinker = super.blinker.overrideAttrs(oldDrv: rec {
     version = "1.4";
 
@@ -168,15 +171,15 @@ self: super:
       sha256 = "1dqvqrzsf2wq58nigq2g9a9x0akq7a28219b2a4rznwk8bsrirhk";
     };
   });
-  chardet = super.chardet.overrideAttrs(oldDrv: rec {
-    version = "3.0.4";
+  # chardet = super.chardet.overrideAttrs(oldDrv: rec {
+  #   version = "3.0.4";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "1bpalpia6r5x1kknbk11p1fzph56fmmnp405ds8icksd3knr5aw4";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "1bpalpia6r5x1kknbk11p1fzph56fmmnp405ds8icksd3knr5aw4";
+  #   };
+  # });
   click = super.click.overrideAttrs(oldDrv: rec {
     version = "6.7";
 
@@ -186,26 +189,26 @@ self: super:
       sha256 = "02qkfpykbq35id8glfgwc38yc430427yd05z1wc5cnld8zgicmgi";
     };
   });
-  clickhouse_driver = self.buildPythonPackage rec {
-    pname = "clickhouse-driver";
-    version = "0.1.1";
+  # clickhouse_driver = self.buildPythonPackage rec {
+  #   pname = "clickhouse-driver";
+  #   version = "0.1.1";
 
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "3eeb6d2683b38755dcccef117b1361356b5e29619766f9463c68fe10f5e72cf1";
-    };
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "3eeb6d2683b38755dcccef117b1361356b5e29619766f9463c68fe10f5e72cf1";
+  #   };
 
-    propagatedBuildInputs = [ self.pytz self.clickhouse_cityhash self.zstd ];
-  };
-  clickhouse_cityhash = self.buildPythonPackage rec {
-    pname = "clickhouse-cityhash";
-    version = "1.0.2.3";
+  #   propagatedBuildInputs = [ self.pytz self.clickhouse_cityhash self.zstd ];
+  # };
+  # clickhouse_cityhash = self.buildPythonPackage rec {
+  #   pname = "clickhouse-cityhash";
+  #   version = "1.0.2.3";
 
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "2f377d20796c6fe4bc1c5b4e07082782788401f14677febc35305ce129a0167d";
-    };
-  };
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "2f377d20796c6fe4bc1c5b4e07082782788401f14677febc35305ce129a0167d";
+  #   };
+  # };
   colorama = super.colorama.overrideAttrs(oldDrv: rec {
     version = "0.3.9";
 
@@ -251,15 +254,7 @@ self: super:
       sha256 = "1wbrzpxka3xd4nmmkc6q0ir343d91kymwsm8pbmwa0d2a7q4ir2n";
     };
   });
-  datadog = super.datadog.overrideAttrs(oldDrv: rec {
-    version = "0.21.0";
-
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "12hk8y9hcw7ryd8qm0031rivi03xgnibzljbm17hyli7460bg937";
-    };
-  });
+  datadog = super.datadog;
   decorator = super.decorator.overrideAttrs(oldDrv: rec {
     version = "4.3.0";
 
@@ -287,15 +282,15 @@ self: super:
       sha256 = "14f4hn6d1j4b99svwbaji8n2zj58qicyz19mm0x6pmhb50jsics9";
     };
   });
-  flake8 = super.flake8.overrideAttrs(oldDrv: rec {
-    version = "3.7.8";
+  # flake8 = super.flake8.overrideAttrs(oldDrv: rec {
+  #   version = "3.7.8";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "0j2526s738dbdsa1mp82s1yrlx0rrai3hi1y8xi9j6wpphf1q90r";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "0j2526s738dbdsa1mp82s1yrlx0rrai3hi1y8xi9j6wpphf1q90r";
+  #   };
+  # });
   flask = super.flask.overrideAttrs(oldDrv: rec {
     version = "1.0.2";
 
@@ -352,17 +347,17 @@ self: super:
       sha256 = "02m0l8wrhhd3z7dg3czn5ys1g5pxib516hpshdzp7rxzsxgcd0bh";
     };
   });
-  ipython_genutils = self.buildPythonPackage rec {
-    pname = "ipython_genutils";
-    version = "0.2.0";
+  # ipython_genutils = self.buildPythonPackage rec {
+  #   pname = "ipython_genutils";
+  #   version = "0.2.0";
 
-    src = self.fetchPypi {
-      inherit pname version;
-      sha256 = "1a4bc9y8hnvq6cp08qs4mckgm6i6ajpndp4g496rvvzcfmp12bpb";
-    };
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "1a4bc9y8hnvq6cp08qs4mckgm6i6ajpndp4g496rvvzcfmp12bpb";
+  #   };
 
-    checkInputs = [ self.nose ];
-  };
+  #   checkInputs = [ self.nose ];
+  # };
   isodate = super.isodate.overrideAttrs(oldDrv: rec {
     version = "0.6.0";
 
@@ -398,6 +393,8 @@ self: super:
       inherit version;
       sha256 = "0c1h9x3a9klvk2g288wl328x8xgzw7136k6vs9hkd56b85vcjh6z";
     };
+
+    propagatedBuildInputs = [ self.parso ];
   });
   jinja2 = super.jinja2.overrideAttrs(oldDrv: rec {
     version = "2.10.1";
@@ -408,44 +405,54 @@ self: super:
       sha256 = "04shqrs56aj04ipyqykj512rw2l0zfammvj9krawzxz7xc14yp06";
     };
   });
-  jsonschema = super.jsonschema.overrideAttrs(oldDrv: rec {
+  jsonschema = self.buildPythonPackage rec {
+    pname = "jsonschema";
     version = "3.0.1";
 
     src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
+      inherit pname version;
       sha256 = "03g20i1xfg4qdlk4475pl4pp7y0h37g1fbgs5qhy678q9xb822hc";
     };
 
-    propagatedBuildInputs = [ self.setuptools_scm self.attrs self.pyrsistent ];
-  });
-  lazy-object-proxy = super.lazy-object-proxy.overrideAttrs(oldDrv: rec {
-    version = "1.3.1";
+    nativeBuildInputs = with self; [ setuptools_scm ];
+    propagatedBuildInputs = with self; [ attrs importlib-metadata functools32 pyrsistent ];
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "0yha7q9bhw857fwaby785d63mffhngl9npwzlk9i0pwlkwvbx4gb";
-    };
-  });
-  linecache2 = super.linecache2.overrideAttrs(oldDrv: rec {
-    version = "1.0.0";
+    doCheck = false;
+  };
+  # lazy-object-proxy = super.lazy-object-proxy.overrideAttrs(oldDrv: rec {
+  #   version = "1.3.1";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "0z79g3ds5wk2lvnqw0y2jpakjf32h95bd9zmnvp7dnqhf57gy9jb";
-    };
-  });
-  lz4 = super.lz4.overrideAttrs(oldDrv: rec {
-    version = "2.0.0";
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "0yha7q9bhw857fwaby785d63mffhngl9npwzlk9i0pwlkwvbx4gb";
+  #   };
+  # });
+  # linecache2 = super.linecache2.overrideAttrs(oldDrv: rec {
+  #   version = "1.0.0";
 
-    src = self.fetchPypi {
-      pname = "lz4";
-      inherit version;
-      sha256 = "0gmbyh37ssx5qzvz3hd455f13jbfcf15vr25h29gf7d5a29fh78m";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "0z79g3ds5wk2lvnqw0y2jpakjf32h95bd9zmnvp7dnqhf57gy9jb";
+  #   };
+  # });
+  # lz4 = self.buildPythonPackage rec {
+  #   pname = "lz4";
+  #   version = "2.0.0";
+
+  #   src = self.fetchPypi {
+  #     inherit pname version;
+  #     sha256 = "0gmbyh37ssx5qzvz3hd455f13jbfcf15vr25h29gf7d5a29fh78m";
+  #   };
+
+  #   nativeBuildInputs = [ self.pytestrunner ];
+  #   propagatedBuildInputes = [ self.pytestrunner ];
+  #   checkInputs = [ self.pytestrunner self.pkgconfig self.setuptools_scm self.psutil self.pytest ];
+
+  #   doCheck = false;
+  # };
+  lz4 = super.lz4;
   markdown = super.markdown.overrideAttrs(oldDrv: rec {
     version = "2.6.11";
 
@@ -464,24 +471,24 @@ self: super:
       sha256 = "0rdn1s8x9ni7ss8rfiacj7x1085lx8mh2zdwqslnw8xc3l4nkgm6";
     };
   });
-  mccabe = super.mccabe.overrideAttrs(oldDrv: rec {
-    version = "0.6.1";
+  # mccabe = super.mccabe.overrideAttrs(oldDrv: rec {
+  #   version = "0.6.1";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "07w3p1qm44hgxf3vvwz84kswpsx6s7kvaibzrsx5dzm0hli1i3fx";
-    };
-  });
-  more-itertools = super.more-itertools.overrideAttrs(oldDrv: rec {
-    version = "4.2.0";
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "07w3p1qm44hgxf3vvwz84kswpsx6s7kvaibzrsx5dzm0hli1i3fx";
+  #   };
+  # });
+  # more-itertools = super.more-itertools.overrideAttrs(oldDrv: rec {
+  #   version = "4.2.0";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "1s6qhl7a7jy8gqw8p545rxfp7rwz1hmjr9p6prk93zbv6f9rhsrb";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "1s6qhl7a7jy8gqw8p545rxfp7rwz1hmjr9p6prk93zbv6f9rhsrb";
+  #   };
+  # });
   packaging = super.packaging.overrideAttrs(oldDrv: rec {
     version = "17.1";
 
@@ -501,12 +508,12 @@ self: super:
     };
   });
   parso = super.parso.overrideAttrs(oldDrv: rec {
-    version = "0.2.1";
+    version = "0.7.0";
 
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "0zvh4rdhv2wkglkgh0h9kn9ndpsw5p639wcwv47jn1kfp504lq7h";
+      sha256 = "0b7irps2dqmzq41sxbpvxbivhh1x2hwmbqp45bbpd82446p9z3lh";
     };
   });
   pathtools = super.pathtools.overrideAttrs(oldDrv: rec {
@@ -536,15 +543,15 @@ self: super:
       sha256 = "1klsh7vqvh394vsq3diwfdbb4cx34yspjjws1s23j7m0d85aa7dy";
     };
   };
-  pexpect = super.pexpect.overrideAttrs(oldDrv: rec {
-    version = "4.6.0";
+  # pexpect = super.pexpect.overrideAttrs(oldDrv: rec {
+  #   version = "4.6.0";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "1fla85g47iaxxpjhp9vkxdnv4pgc7rplfy6ja491smrrk0jqi3ia";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "1fla85g47iaxxpjhp9vkxdnv4pgc7rplfy6ja491smrrk0jqi3ia";
+  #   };
+  # });
   pluggy = super.pluggy.overrideAttrs(oldDrv: rec {
     version = "0.13.0";
 
@@ -581,15 +588,16 @@ self: super:
       sha256 = "1k78qdvir1yb1c634nkv6rbga8wv4289xarghmsbbvzhvr311bnv";
     };
   });
-  pylint = super.pylint.overrideAttrs(oldDrv: rec {
-    version = "1.9.2";
+  pylint = super.pylint;
+  # pylint = super.pylint.overrideAttrs(oldDrv: rec {
+  #   version = "2.4.1";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "1cxr1j037hsm4spmvl64v2j2rdq72pc2z0gnn3iggd4np6y21wpz";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "0d04x5bbm69zym5illg0q9rmnp7lc5p8j706k2n25blgxr5s541c";
+  #   };
+  # });
   pyparsing = super.pyparsing.overrideAttrs(oldDrv: rec {
     version = "2.2.0";
 
@@ -599,6 +607,7 @@ self: super:
       sha256 = "016b9gh606aa44sq92jslm89bg874ia0yyiyb643fa6dgbsbqch8";
     };
   });
+  pytest = super.pytest;
   # pytest = super.pytest.overrideAttrs(oldDrv: rec {
   #   version = "5.2.4";
 
@@ -607,6 +616,9 @@ self: super:
   #     inherit version;
   #     sha256 = "1mm0j3w09dsnmjs4xpf6zmp7mmnrlv8smx6hhh1am6k6ky0r007z";
   #   };
+
+  #   propagatedBuildInputs = with self; [ attrs py setuptools six pluggy more-itertools atomicwrites wcwidth packaging ];
+  #   checkInputs = [ self.attrs ];
   # });
   pytest-cov = self.buildPythonPackage rec {
     pname = "pytest-cov";
@@ -646,17 +658,17 @@ self: super:
       sha256 = "0j6gmhlp6mcs8l42fgpj6xsny3b7cgxn5avdslin12jic521s6sx";
     };
 
-    propagatedBuildInputs = [ self.setuptools_scm self.execnet ];
+    propagatedBuildInputs = [ self.setuptools_scm self.execnet self.pytest-forked self.six self.pytest ];
   };
-  python-dateutil = super.python-dateutil.overrideAttrs(oldDrv: rec {
-    version = "2.7.3";
+  # python-dateutil = super.python-dateutil.overrideAttrs(oldDrv: rec {
+  #   version = "2.7.3";
 
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "1f7h54lg0w2ckch7592xpjkh8dg87k2br256h0iw49zn6bg02w72";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "1f7h54lg0w2ckch7592xpjkh8dg87k2br256h0iw49zn6bg02w72";
+  #   };
+  # });
   python-rapidjson = super.python-rapidjson.overrideAttrs(oldDrv: rec {
     version = "0.8.0";
 
@@ -666,22 +678,23 @@ self: super:
       sha256 = "13fgy5bqslx913p9gachj9djk3g6wx1igwaccfnxjl2msrbwclwp";
     };
   });
+  # redis = super.redis;
   redis = super.redis.overrideAttrs(oldDrv: rec {
-    version = "2.10.6";
+    version = "3.0.1";
 
     src = self.fetchPypi {
       inherit (oldDrv) pname;
       inherit version;
-      sha256 = "03vcgklykny0g0wpvqmy8p6azi2s078317wgb2xjv5m2rs9sjb52";
+      sha256 = "1kw3a1618pl908abiaxd41jg5z0rwyl2w2i0d8xi9zxy5437a011";
     };
   });
   redis-py-cluster = self.buildPythonPackage rec {
     pname = "redis-py-cluster";
-    version = "1.3.5";
+    version = "2.0.0";
 
     src = self.fetchPypi {
       inherit pname version;
-      sha256 = "0dhb8pbnzn9fpayrdhkmx7g1mn9f98p1d0cd11iwgll74hgrnd77";
+      sha256 = "18yrs2snr9khfzavj6acjdjidkqnw0a3xlri1nj85w1gxm5iai0s";
     };
 
     propagatedBuildInputs = [ self.redis ];
@@ -695,18 +708,17 @@ self: super:
       inherit version;
       sha256 = "10pyv3ba9vlh593lqzwyypivgnmwy332cqzi52kk90a87ri1kff6";
     };
-
   });
-  simplegeneric = super.simplegeneric.overrideAttrs(oldDrv: rec {
-    version = "0.8.1";
+  # simplegeneric = super.simplegeneric.overrideAttrs(oldDrv: rec {
+  #   version = "0.8.1";
   
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      extension = "zip";
-      sha256 = "0wwi1c6md4vkbcsfsf8dklf3vr4mcdj4mpxkanwgb6jb1432x5yw";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     extension = "zip";
+  #     sha256 = "0wwi1c6md4vkbcsfsf8dklf3vr4mcdj4mpxkanwgb6jb1432x5yw";
+  #   };
+  # });
   simplejson = super.simplejson.overrideAttrs(oldDrv: rec {
     version = "3.15.0";
   
@@ -734,15 +746,15 @@ self: super:
       sha256 = "0c1h3jas1jp1fdbn9z2mrgn3jj0hw1x3yhnkxp7jw34q15xcdb05";
     };
   });
-  traitlets = super.traitlets.overrideAttrs(oldDrv: rec {
-    version = "4.3.2";
+  # traitlets = super.traitlets.overrideAttrs(oldDrv: rec {
+  #   version = "4.3.2";
   
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "0dbq7sx26xqz5ixs711k5nc88p8a0nqyz6162pwks5dpcz9d4jww";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "0dbq7sx26xqz5ixs711k5nc88p8a0nqyz6162pwks5dpcz9d4jww";
+  #   };
+  # });
   typing-extensions = super.typing-extensions.overrideAttrs(oldDrv: rec {
     version = "3.7.4.1";
   
@@ -783,24 +795,25 @@ self: super:
 
     doCheck = false;
   };
-  wcwidth = super.wcwidth.overrideAttrs(oldDrv: rec {
-    version = "0.1.7";
+  # wcwidth = super.wcwidth.overrideAttrs(oldDrv: rec {
+  #   version = "0.1.7";
   
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "0pn6dflzm609m4r3i8ik5ni9ijjbb5fa3vg1n7hn6vkd49r77wrx";
-    };
-  });
-  werkzeug = super.werkzeug.overrideAttrs(oldDrv: rec {
-    version = "0.15.3";
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "0pn6dflzm609m4r3i8ik5ni9ijjbb5fa3vg1n7hn6vkd49r77wrx";
+  #   };
+  # });
+  # werkzeug = super.werkzeug.overrideAttrs(oldDrv: rec {
+  #   version = "0.15.3";
   
-    src = self.fetchPypi {
-      inherit (oldDrv) pname;
-      inherit version;
-      sha256 = "cfd1281b1748288e59762c0e174d64d8bcb2b70e7c57bc4a1203c8825af24ac3";
-    };
-  });
+  #   src = self.fetchPypi {
+  #     inherit (oldDrv) pname;
+  #     inherit version;
+  #     sha256 = "cfd1281b1748288e59762c0e174d64d8bcb2b70e7c57bc4a1203c8825af24ac3";
+  #   };
+  # });
+  werkseug = super.werkzeug;
   wrapt = super.wrapt.overrideAttrs(oldDrv: rec {
     version = "1.10.11";
   
@@ -810,5 +823,4 @@ self: super:
       sha256 = "1ip3dwib39xhp79kblskgvz3fjzcwxgx3fs3ahdixhpjg7a61mfl";
     };
   });
-
 }

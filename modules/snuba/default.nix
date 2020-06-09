@@ -46,4 +46,7 @@ iohkMkPythonApplication rec {
 
   makeWrapperArgs = [ "--set PYTHONPATH $PYTHONPATH" ];
 
+  postPatch = ''
+    patch --strip=1 < ${./snuba.patch}
+  '';
 }
