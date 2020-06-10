@@ -124,6 +124,14 @@ in
       '';
     };
 
+    extraConfig = mkOption {
+      type = types.string;
+      optional = true;
+      description = ''
+        Extra snuba configuration.
+      '';
+    };
+
   };
 
   config =
@@ -221,6 +229,9 @@ in
 
         # Number of queries each subscription consumer can run concurrently.
         SUBSCRIPTIONS_MAX_CONCURRENT_QUERIES = 10
+        
+        # Extra config
+        ${cfg.extraConfig}
       '';
     in
     {
@@ -231,9 +242,31 @@ in
       }
     ];
 
-    systemd.services.clickhouse.postStart = ''
-      set -eu
+    environment.etc = {
+      "snuba/settings.py".source = snubaSettingsPy;
+    };
 
-    '';
+    systemd.services.snuba = {
+      description = "Snuba API";
+
+      wantedBy = [ "multi-user.target" ];
+
+      after = [ "network.target" "clickhouse.service" "postgresql.service" "apache-kafka.service" "redis.service" ];
+
+      preStart = ''
+        set -eu
+
+        ${pkgs.snuba}/bin/snuba bootstrap --force
+      '';
+
+      serviceConfig = {
+        # User = "snuba";
+        # Group = "snuba";
+        # ConfigurationDirectory = "clickhouse-server";
+        # StateDirectory = "clickhouse";
+        # LogsDirectory = "clickhouse";
+        ExecStart = "SNUBA_SETTINGS=/etc/snuba/settings.py ${pkgs.snuba}/bin/snuba api";
+      };
+    };
   };
 }
