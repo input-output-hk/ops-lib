@@ -60,7 +60,7 @@ in
     };
 
     redisPasswordFile = mkOption {
-      type = with types; nullOr str;
+      type = with types; nullOr path;
       default = null;
       description = ''
         Password file for the redis database.
@@ -176,7 +176,7 @@ in
         REDIS_CLUSTER_STARTUP_NODES = None
         REDIS_HOST = "${cfg.redisHost}"
         REDIS_PORT = "${toString cfg.redisPort}"
-        REDIS_PASSWORD = ${if cfg.redisPassword != null then "${cfg.redisPassword}" else (if cfg.redisPasswordFile != null then "readPasswordFile(${cfg.redisPasswordFile})" else "None")}
+        REDIS_PASSWORD = ${if cfg.redisPasswordFile != null then "readPasswordFile(${cfg.redisPasswordFile})" else (if cfg.redisPassword != null then "${cfg.redisPassword}" else "None")}
         REDIS_DB = 1
 
         # Query Recording Options
@@ -238,7 +238,7 @@ in
     {
 
     environment.etc = {
-      "snuba/settings.py".source = snubaSettingsPy;
+      "snuba/settings.py".target = snubaSettingsPy;
     };
 
     systemd.services.snuba = {
