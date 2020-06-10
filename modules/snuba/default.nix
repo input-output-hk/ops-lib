@@ -47,8 +47,14 @@ iohkMkPythonApplication rec {
   makeWrapperArgs = [ "--set PYTHONPATH $PYTHONPATH" ];
 
   postPatch = ''
+    # Patch requirements.txt of snuba
     patch --strip=1 < ${./snuba.patch}
+    # Pin dashboard web resource versions
     patch --strip=1 < ${./dashboard.patch}
+
+    # Give proper path to Snuba README
+    substituteInPlace snuba/web/views.py \
+      --replace 'open("README.md")' 'open("'$out'/share/README.md")'
   '';
 
   preCheck = ''
@@ -56,6 +62,11 @@ iohkMkPythonApplication rec {
     export LD_PRELOAD=${pkgs.libredirect}/lib/libredirect.so
   '';
   postCheck = "unset NIX_REDIRECTS LD_PRELOAD";
+
+  postInstall = ''
+    mkdir $out/share
+    cp README.md $out/share/
+  '';
 
   doCheck = false;
 }
