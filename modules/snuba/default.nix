@@ -48,6 +48,7 @@ iohkMkPythonApplication rec {
 
   postPatch = ''
     patch --strip=1 < ${./snuba.patch}
+    patch --strip=1 < ${./dashboard.patch}
   '';
 
   preCheck = ''

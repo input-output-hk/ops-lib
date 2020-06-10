@@ -23,6 +23,15 @@ in
       '';
     };
 
+    package = mkOption {
+      type = types.package;
+      default = import /home/sam/code/iohk/ops-lib/modules/snuba {};
+      example = literalExample "pkgs.snuba";
+      description = ''
+        The snuba package to use.
+      '';
+    };
+
     redisPort = mkOption {
       type = types.int;
       default = config.services.redis.port;
@@ -32,7 +41,7 @@ in
     };
 
     redisHost = mkOption {
-      type = types.string;
+      type = types.str;
       default = "localhost";
       description = ''
         Host Redis is running on.
@@ -40,8 +49,8 @@ in
     };
 
     redisPassword = mkOption {
-      type = types.string;
-      optional = true;
+      type = with types; nullOr str;
+      default = null;
       description = ''
         Password for the redis database.
         This setting will be ignored if redisPasswordFile is set.
@@ -51,15 +60,15 @@ in
     };
 
     redisPasswordFile = mkOption {
-      type = types.string;
-      optional = true;
+      type = with types; nullOr str;
+      default = null;
       description = ''
         Password file for the redis database.
       '';
     };
 
     clickhouseHost = mkOption {
-      type = types.string;
+      type = types.str;
       default = "localhost";
       description = ''
         Host clickhouse is running on.
@@ -87,7 +96,7 @@ in
     };
 
     kafkaHost = mkOption {
-      type = types.string;
+      type = types.str;
       default = config.services.apache-kafka.hostname;
       description = ''
         Host kafka is running on.
@@ -102,16 +111,9 @@ in
       '';
     };
 
-    useDatadog = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        Use dogstatsd.
-      '';
-    };
-
     datadogHost = mkOption {
-      type = types.string;
+      type = types.str;
+      default = "localhost";
       description = ''
         Datadog dogstatsd host.
       '';
@@ -119,14 +121,15 @@ in
 
     datadogPort = mkOption {
       type = types.int;
+      default = 8125;
       description = ''
         Datadog dogstatsd port.
       '';
     };
 
     extraConfig = mkOption {
-      type = types.string;
-      optional = true;
+      type = with types; nullOr str;
+      default = null;
       description = ''
         Extra snuba configuration.
       '';
@@ -148,7 +151,7 @@ in
         TESTING = False
         DEBUG = True
 
-        PORT = ${cfg.port} 
+        PORT = ${toString cfg.port} 
 
         DEFAULT_DATASET_NAME = "events"
         DISABLED_DATASETS = {}
@@ -157,25 +160,23 @@ in
         # Clickhouse Options
         # TODO: Warn about using `CLICKHOUSE_SERVER`, users should use the new settings instead.
         [default_clickhouse_host, default_clickhouse_port] = os.environ.get(
-            "CLICKHOUSE_SERVER", "${cfg.clickhouseHost}:${cfg.clickhouseClientPort}"
+            "CLICKHOUSE_SERVER", "${cfg.clickhouseHost}:${toString cfg.clickhouseClientPort}"
         ).split(":", 1)
         CLICKHOUSE_HOST = os.environ.get("CLICKHOUSE_HOST", default_clickhouse_host)
         CLICKHOUSE_PORT = int(os.environ.get("CLICKHOUSE_PORT", default_clickhouse_port))
-        CLICKHOUSE_HTTP_PORT = int(os.environ.get("CLICKHOUSE_HTTP_PORT", ${cfg.clickhouseHttpPort}))
+        CLICKHOUSE_HTTP_PORT = int(os.environ.get("CLICKHOUSE_HTTP_PORT", ${toString cfg.clickhouseHttpPort}))
         CLICKHOUSE_MAX_POOL_SIZE = 25
 
         # Dogstatsd Options
-        ${optionalString (cfg.useDatadog) ''
         DOGSTATSD_HOST = "${cfg.datadogHost}"
-        DOGSTATSD_PORT = ${cfg.datadogPort}
-        ''}
+        DOGSTATSD_PORT = ${toString cfg.datadogPort}
 
         # Redis Options
         USE_REDIS_CLUSTER = False
         REDIS_CLUSTER_STARTUP_NODES = None
-        REDIS_HOST = ${cfg.redisHost}
-        REDIS_PORT = ${cfg.redisPort}
-        REDIS_PASSWORD = ${if cfg.redisPassword != null then "${cfg.redisPassword}" else "readPasswordFile(${cfg.redisPasswordFile})"}
+        REDIS_HOST = "${cfg.redisHost}"
+        REDIS_PORT = "${toString cfg.redisPort}"
+        REDIS_PASSWORD = ${if cfg.redisPassword != null then "${cfg.redisPassword}" else (if cfg.redisPasswordFile != null then "readPasswordFile(${cfg.redisPasswordFile})" else "None")}
         REDIS_DB = 1
 
         # Query Recording Options
@@ -196,7 +197,7 @@ in
         BULK_CLICKHOUSE_BUFFER = 10000
 
         # Processor/Writer Options
-        DEFAULT_BROKERS = ["${cfg.kafkaHost}:${cfg.kafkaPort}"]
+        DEFAULT_BROKERS = ["${cfg.kafkaHost}:${toString cfg.kafkaPort}"]
         DEFAULT_DATASET_BROKERS = {}
 
         DEFAULT_MAX_BATCH_SIZE = 50000
@@ -231,16 +232,10 @@ in
         SUBSCRIPTIONS_MAX_CONCURRENT_QUERIES = 10
         
         # Extra config
-        ${cfg.extraConfig}
+        ${optionalString (cfg.extraConfig != null) cfg.extraConfg}
       '';
     in
     {
-    assertions = [
-      {
-        assertion = cfg.redisPasswordFile != null || cfg.redisPassword != null;
-        message = "services.snuba: One of 'redisPassword' or 'redisPasswordFile' must be set.";
-      }
-    ];
 
     environment.etc = {
       "snuba/settings.py".source = snubaSettingsPy;
@@ -256,16 +251,17 @@ in
       preStart = ''
         set -eu
 
-        ${pkgs.snuba}/bin/snuba bootstrap --force
+        ${cfg.package}/bin/snuba bootstrap --force
       '';
 
       serviceConfig = {
+        Environment="SNUBA_SETTINGS=/etc/snuba/settings.py";
         # User = "snuba";
         # Group = "snuba";
         # ConfigurationDirectory = "clickhouse-server";
         # StateDirectory = "clickhouse";
         # LogsDirectory = "clickhouse";
-        ExecStart = "SNUBA_SETTINGS=/etc/snuba/settings.py ${pkgs.snuba}/bin/snuba api";
+        ExecStart = "${cfg.package}/bin/snuba api";
       };
     };
   };
