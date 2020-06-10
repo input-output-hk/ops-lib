@@ -469,7 +469,7 @@ in {
         forceSSL = true;
       };
       security.acme = {
-        email = "devops@iohk.io";
+        email = lib.mkDefault "devops@iohk.io";
         acceptTerms = true; # https://letsencrypt.org/repository/
       };
     })
