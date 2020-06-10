@@ -21,14 +21,9 @@ let
     '';
   });
 
-  passwordFileOrPasswordOr = other: passwordFile: password:
-    if passwordFile != null
-    then "readPasswordFile(${passwordFile})"
-    else (if password != null
-          then "${password}"
-          else other
-         )
-      
+  surround = prefix: suffix: x: if x != null then prefix + x + suffix else null;
+
+  or_ = a: b: if a != null then a else (if b != null then b else null);
 in
 
 {
@@ -38,6 +33,66 @@ in
     enable = mkOption {
       type = types.bool;
       default = false;
+    };
+
+    package = mkOption {
+      type = types.package;
+      default = import /home/sam/code/iohk/ops-lib/modules/sentry {};
+      example = literalExample "pkgs.sentry";
+      description = ''
+        The sentry package to use.
+      '';
+    };
+
+    hostname = mkOption {
+      type = types.str;
+      default = "0.0.0.0";
+      description = ''
+        Hostname the Sentry web server should bind to.
+      '';
+    };
+
+    dbName = mkOption {
+      type = types.str;
+      default = "sentrydb";
+      description = ''
+        Name of the Sentry database.
+      '';
+    };
+
+    dbUser = mkOption {
+      type = types.str;
+      default = "sentry";
+      description = ''
+        Sentry database user name.
+      '';
+    };
+
+    dbPassword = mkOption {
+      type = with types; nullOr str;
+      default = null;
+      description = ''
+        Password for Sentrys postgresql database.
+        This setting will be ignored if dbPasswordFile is set.
+        Using this option will store the password in plain text in the
+        world-readable nix store. To avoid this the <literal>dbPasswordFile</literal> can be used.
+      '';
+    };
+
+    dbPasswordFile = mkOption {
+      type = with types; nullOr path;
+      default = null;
+      description = ''
+        Password file for the Sentrys postgresql database.
+      '';
+    };
+
+    port = mkOption {
+      type = types.int;
+      default = 9099;
+      description = ''
+        Port the Sentry web server should bind to.
+      '';
     };
 
     secretKey = mkOption {
@@ -77,6 +132,25 @@ in
       '';
     };
 
+    redisPassword = mkOption {
+      type = with types; nullOr str;
+      default = null;
+      description = ''
+        Password for the redis database.
+        This setting will be ignored if redisPasswordFile is set.
+        Using this option will store the password in plain text in the
+        world-readable nix store. To avoid this the <literal>redisPasswordFile</literal> can be used.
+      '';
+    };
+
+    redisPasswordFile = mkOption {
+      type = with types; nullOr path;
+      default = null;
+      description = ''
+        Password file for the redis database.
+      '';
+    };
+
     postgresqlHost = mkOption {
       type = types.str;
       default = "localhost";
@@ -109,6 +183,14 @@ in
       '';
     };
 
+    snubaHost = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = ''
+        Host snuba is runnion on.
+      '';
+    };
+
     snubaPort = mkOption {
       type = types.int;
       default = config.services.snuba.port;
@@ -116,12 +198,28 @@ in
         Port Snuba is running on.
       '';
     };
+
+    memcachedPort = mkOption {
+      type = types.int;
+      default = config.services.memcached.port;
+      description = ''
+        Port memcached is running on.
+      '';
+    };
+
+    memcachedHost = mkOption {
+      type = types.str;
+      default = "localhost";
+      description = ''
+        Host memcached is running on.
+      '';
+    };
   };
 
   config =
     let
       sentryConfigYml = pkgs.writeText "config.yml" ''
-      mail.backend: 'dummy';
+      mail.backend: 'dummy'
 
       redis.clusters:
         default:
@@ -129,6 +227,7 @@ in
             0:
               host: ${cfg.redisHost}
               port: ${toString cfg.redisPort}
+
       filestore.backend: 'filesystem'
       filestore.options:
         location: '/tmp/sentry-files'
@@ -151,9 +250,9 @@ in
       DATABASES = {
           'default': {
               'ENGINE': 'sentry.db.postgres',
-              'NAME': '${cfg.sentrydbName}',
-              'USER': '${cfg.sentrydbUser}',
-              'PASSWORD': '${(passwordFileOrPasswordOr "") cfg.postgresqlPasswordFile cfg.postgresqlPassword}',
+              'NAME': '${cfg.dbName}',
+              'USER': '${cfg.dbUser}',
+              'PASSWORD': '${or_ (or_ (surround "readPasswordFile(" ")" cfg.dbPasswordFile) cfg.dbPassword) ""}',
               'HOST': '${cfg.postgresqlHost}',
               'PORT': '${toString cfg.postgresqlPort}',
               'AUTOCOMMIT': True,
@@ -182,7 +281,12 @@ in
       
       SENTRY_OPTIONS["redis.clusters"] = {
           "default": {
-              "hosts": {0: {"host": "${cfg.redisHost}", "password": "${(passwordFileOrPasswordOr "") cfg.redisPasswordFile cfg.redisPassword}", "port": "${toString cfg.redisPort}", "db": "0"}}
+              "hosts": {0: { "host": "${cfg.redisHost}"
+                           , "password": "${or_ (or_ (surround "readPasswordFile(" ")" cfg.redisPasswordFile) cfg.redisPassword) ""}"
+                           , "port": "${toString cfg.redisPort}"
+                           , "db": "0"
+                           }
+                       }
           }
       }
 
@@ -303,8 +407,8 @@ in
       # SESSION_COOKIE_SECURE = True
       # CSRF_COOKIE_SECURE = True
       
-      SENTRY_WEB_HOST = '${cfg.sentryHost}'
-      SENTRY_WEB_PORT = ${toString cfg.sentryPort}
+      SENTRY_WEB_HOST = '${cfg.hostname}'
+      SENTRY_WEB_PORT = ${toString cfg.port}
       SENTRY_WEB_OPTIONS = {
           # These ase for proper HTTP/1.1 support from uWSGI
           # Without these it doesn't do keep-alives causing
@@ -365,55 +469,76 @@ in
       ######################
       
       GITHUB_EXTENDED_PERMISSIONS = ['repo']
+
+      secret_key = ${or_ (or_ (surround "readPasswordFile(" ")" cfg.secretKeyFile) "\"${cfg.secretKey}\"") "None"}
+      if not secret_key:
+          raise Exception(
+              "Error: SENTRY_SECRET_KEY is undefined, run `generate-secret-key` and set to -e SENTRY_SECRET_KEY"
+          )
+      
+      if "SENTRY_RUNNING_UWSGI" not in os.environ and len(secret_key) < 32:
+          print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+          print("!!                    CAUTION                       !!")
+          print("!! Your SENTRY_SECRET_KEY is potentially insecure.  !!")
+          print("!!    We recommend at least 32 characters long.     !!")
+          print("!!     Regenerate with `generate-secret-key`.       !!")
+          print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+      
+      SENTRY_OPTIONS["system.secret-key"] = secret_key
       '';
     in
     {
       environment.etc = {
-        "sentry/config.yml".target = sentryConfigYml;
-        "sentry/sentry.conf.py".target = sentryConfPy;
+        "sentry/config.yml".source = sentryConfigYml;
+        "sentry/sentry.conf.py".source = sentryConfPy;
       };
 
-      systemd.services.sentry-web = {
-        description = "Sentry web server";
-        wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" "memcached.service" "postgresql.service" "apache-kafka.service" "redis.service" "snuba.service" ];
-
-        serviceConfig = {
-          Environment="SENTRY_CONF=/etc/sentry";
-          ExecStart="${cfg.package}/bin/sentry run web";
-        };
+      users.groups.sentry = {
       };
-
-      systemd.services.sentry-worker = {
-        description = "Sentry worker";
-        wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" "memcached.service" "postgresql.service" "apache-kafka.service" "redis.service" "snuba.service" ];
-
-        serviceConfig = {
-          Environment="SENTRY_CONF=/etc/sentry";
-          ExecStart="${cfg.package}/bin/sentry run worker";
-        };
-      };
-
-      systemd.services.sentry-cron = {
-        description = "Sentry cron to remove old events";
-        wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" "memcached.service" "postgresql.service" "apache-kafka.service" "redis.service" "snuba.service" ];
-
-        serviceConfig = {
-          Environment="SENTRY_CONF=/etc/sentry";
-          ExecStart="${cfg.package}/bin/sentry run cron";
-        };
-      };
-
-      systemd.services.sentry.preStart = ''
-        set -eu
   
-        SENTRY_CONF=/etc/sentry sentry upgrade
-      '';
+      users.users.sentry =
+        { description = "Sentry";
+          group = "sentry";
+        };
+
+      systemd.services = {
+        sentry-web = {
+          description = "Sentry web server";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" "memcached.service" "postgresql.service" "apache-kafka.service" "redis.service" "snuba.service" ];
+
+          path = [ uwsgiWithPython ];
   
-      environment.systemPackages = with pkgs; [
-        uwsgiWithPython
-      ];
+          serviceConfig = {
+            User="sentry";
+            Environment="SENTRY_CONF=/etc/sentry";
+            ExecStart="${cfg.package}/bin/sentry run web";
+          };
+        };
+
+        sentry-worker = {
+          description = "Sentry worker";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" "memcached.service" "postgresql.service" "apache-kafka.service" "redis.service" "snuba.service" ];
+  
+          serviceConfig = {
+            User="sentry";
+            Environment="SENTRY_CONF=/etc/sentry";
+            ExecStart="${cfg.package}/bin/sentry run worker";
+          };
+        };
+
+        sentry-cron = {
+          description = "Sentry cron to remove old events";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" "memcached.service" "postgresql.service" "apache-kafka.service" "redis.service" "snuba.service" ];
+  
+          serviceConfig = {
+            User="sentry";
+            Environment="SENTRY_CONF=/etc/sentry";
+            ExecStart="${cfg.package}/bin/sentry run cron";
+          };
+        };
+      };
     };
 }

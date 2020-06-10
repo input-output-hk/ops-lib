@@ -238,7 +238,7 @@ in
     {
 
     environment.etc = {
-      "snuba/settings.py".target = snubaSettingsPy;
+      "snuba/settings.py".source = snubaSettingsPy;
     };
 
     systemd.services.snuba = {
