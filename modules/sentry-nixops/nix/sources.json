@@ -1,0 +1,27 @@
+{
+    "iohk-nix": {
+        "branch": "master",
+        "description": "nix scripts shared across projects",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "iohk-nix",
+        "rev": "02569d546f72216d63e406f80dd469bfc8381946",
+        "sha256": "07zf2j44dq4wf1zblab102v1j63xxjvxxmh4ylnpn4cp2n49fv8v",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/02569d546f72216d63e406f80dd469bfc8381946.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ops-lib": {
+        "branch": "master",
+        "description": "NixOps deployment configuration library for IOHK devops ",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "ops-lib",
+        "rev": "a13920e3ddc442f7bfed7d000d22b11e8e2cde18",
+        "sha256": "1kcdzincrycshr78546nlx2h70pcynb0vq1v4ckcib33scbjv76j",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/ops-lib/archive/a13920e3ddc442f7bfed7d000d22b11e8e2cde18.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
+
