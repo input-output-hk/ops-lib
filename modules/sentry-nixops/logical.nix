@@ -16,5 +16,19 @@
     networking.firewall.allowedTCPPorts = [ config.services.memcached.port ];
   };
 
+  clickhouse = { nodes, config, pkgs, ... }: {
+    imports = [
+      ./clickhouse-custom.nix
+    ];
 
+    services.clickhouse-custom = {
+      enable = true;
+      listenHost = "${nodes.clickhouse.config.networking.privateIPv4}";
+    };
+
+    networking.firewall.allowedTCPPorts = [
+      config.services.clickhouse-custom.httpPort
+      config.services.clickhouse-custom.tcpPort
+    ];
+  };
 }
