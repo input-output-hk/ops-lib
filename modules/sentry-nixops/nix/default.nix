@@ -16,8 +16,20 @@ let
   # overlays from ops-lib (include ops-lib sourcePaths):
   ops-lib-overlays = (import sourcePaths.ops-lib {}).overlays;
 
-  overlays = ops-lib-overlays ++ [
-    (self: super: { iohkNix = import sourcePaths.iohk-nix {};})
+  nixops-overlay = self: super: {
+    nixops = (import (self.sourcePaths.nixops-core + "/release.nix") {
+      nixpkgs = self.path;
+      p = p:
+        let
+          pluginSources = with self.sourcePaths; [ nixops-libvirtd ];
+          plugins = map (source: p.callPackage (source + "/release.nix") { })
+            pluginSources;
+        in [ p.aws p.vbox ] ++ plugins;
+    }).build.${self.stdenv.system};
+  };
+
+  overlays = [
+    (self: super: { iohkNix = import sourcePaths.iohk-nix {}; })
   ];
 
   pkgs = import nixpkgs {

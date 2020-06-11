@@ -11,6 +11,18 @@
         "url": "https://github.com/input-output-hk/iohk-nix/archive/02569d546f72216d63e406f80dd469bfc8381946.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nixops-libvirtd": {
+        "branch": "master",
+        "description": "NixOps libvirtd backend plugin [maintainer=@AmineChikhaoui]",
+        "homepage": "",
+        "owner": "nix-community",
+        "repo": "nixops-libvirtd",
+        "rev": "5672dec91395881f9e6de72806cd200b9b25f8f9",
+        "sha256": "0a02rc1r3qgzh7pqvy4sffc7ypw4k848l8hjn9qkvknnmypxcbw5",
+        "type": "tarball",
+        "url": "https://github.com/nix-community/nixops-libvirtd/archive/5672dec91395881f9e6de72806cd200b9b25f8f9.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "ops-lib": {
         "branch": "master",
         "description": "NixOps deployment configuration library for IOHK devops ",
@@ -22,6 +34,17 @@
         "type": "tarball",
         "url": "https://github.com/input-output-hk/ops-lib/archive/a13920e3ddc442f7bfed7d000d22b11e8e2cde18.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixops-core": {
+        "branch": "nixops-core-pr-int",
+        "description": "NixOps, the NixOS-based cloud deployment tool",
+        "homepage": "http://nixos.org/",
+        "owner": "input-output-hk",
+        "repo": "nixops",
+        "rev": "28dd42a2dc9f6bada1ea587de80cde8dae0ddbf0",
+        "sha256": "0a74c8f0hpb60s91f3igx63zx8amblp3iqr6ic3fdr28nvmvbhgr",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixops/archive/28dd42a2dc9f6bada1ea587de80cde8dae0ddbf0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
-

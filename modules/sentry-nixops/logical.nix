@@ -31,4 +31,13 @@
       config.services.clickhouse-custom.tcpPort
     ];
   };
+
+  postgres = { nodes, config, pkgs, ... }: {
+    services.postgresql.enable = true;
+    services.postgresql.enableTCPIP = true;
+
+    networking.firewall.allowedTCPPorts = [
+      config.services.postgresql.port
+    ];
+  };
 }
