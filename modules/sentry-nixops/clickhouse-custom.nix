@@ -497,6 +497,7 @@ with lib;
         wantedBy = [ "multi-user.target" ];
   
         after = [ "network.target" ];
+        wants = [ "network.target" ];
   
         serviceConfig = {
           User = "clickhouse";
@@ -505,6 +506,8 @@ with lib;
           StateDirectory = "clickhouse";
           LogsDirectory = "clickhouse";
           ExecStart = "${pkgs.clickhouse}/bin/clickhouse-server --config-file=${clickhouseServerCfg}";
+          Restart="on-failure";
+          RestartSec="5s";
         };
       };
   
@@ -522,7 +525,6 @@ with lib;
   
       # startup requires a `/etc/localtime` which only if exists if `time.timeZone != null`
       time.timeZone = mkDefault "UTC";
-  
     };
 
 }
