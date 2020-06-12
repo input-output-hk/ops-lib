@@ -51,6 +51,8 @@ iohkMkPythonApplication rec {
     patch --strip=1 < ${./snuba.patch}
     # Pin dashboard web resource versions
     patch --strip=1 < ${./dashboard.patch}
+    # Allow configuration of host and binding to addresses other than localhost
+    patch --strip=1 < ${./configurable-host.patch}
 
     # Give proper path to Snuba README
     substituteInPlace snuba/web/views.py \

@@ -70,8 +70,11 @@ in
     ];
   };
 
-  snuba = { nodes, config, pkgs, ... }:
+  snuba = { nodes, config, pkgs, lib, ... }:
   let
+    snubaPort = 1218;
+    snubaHost = config.networking.privateIPv4;
+
     snubaSettingsPy = pkgs.writeText "settings.py" ''
       import os
       from snuba.settings_base import *  # NOQA
@@ -82,7 +85,8 @@ in
         with open(file, 'r') as fd:
           fd.read()
 
-      PORT = 1219
+      HOST = "${snubaHost}"
+      PORT = ${toString snubaPort}
       
       DEBUG = env("DEBUG", "0").lower() in ("1", "true")
       
@@ -128,6 +132,10 @@ in
        ];
     };
 
+    networking.firewall.allowedTCPPorts = [
+      snubaPort
+    ];
+
     systemd.services =
     let
       common = {
@@ -144,17 +152,17 @@ in
         };
       };
     in {
-      snuba-api = common // {
+      snuba-api = lib.recursiveUpdate common {
         description = "Snuba API";
         serviceConfig.ExecStart = "${snuba}/bin/snuba api";
       };
 
-      snuba-consumer = common // {
+      snuba-consumer = lib.recursiveUpdate common {
         description = "Snuba events consumer";
         serviceConfig.ExecStart = "${snuba}/bin/snuba consumer --dataset events --auto-offset-reset=latest --max-batch-time-ms 750";
       };
 
-      snuba-outcomes-consumer = common // {
+      snuba-outcomes-consumer = lib.recursiveUpdate common {
         description = "Snuba outcomes consumer";
         serviceConfig.ExecStart = "${snuba}/bin/snuba consumer --storage outcomes_raw --auto-offset-reset=earliest --max-batch-time-ms 750";
       };
@@ -165,7 +173,7 @@ in
       #   serviceConfig.ExecStart = "${snuba}/bin/snuba consumer --dataset sessions_raw --auto-offset-reset=latest --max-batch-time-ms 750";
       # };
 
-      snuba-replacer = common // {
+      snuba-replacer = lib.recursiveUpdate common {
         description = "Snuba replacer";
         serviceConfig.ExecStart = "${snuba}/bin/snuba replacer --dataset events --auto-offset-reset=latest --max-batch-size 3";
       };
@@ -179,18 +187,8 @@ in
           wait_for_open_port() {
             local hostname="$1"
             local port="$2"
-            local num_tried=0
-            local status=1
-            
-            while [ $status -ne 0 -a $num_tried -lt 900 ];
-            do
-              ${pkgs.netcat}/bin/nc -z $hostname $port
-              status=$?
-              num_tried=$(($num_tried + 1))
-              sleep 1
-            done
-          
-            return $status
+
+            ${pkgs.coreutils}/bin/timeout 10s ${pkgs.bash}/bin/bash -c "until ${pkgs.netcat}/bin/nc -z $hostname $port; do sleep 1; done"
           }
           
           wait_for_open_port kafka 9092
