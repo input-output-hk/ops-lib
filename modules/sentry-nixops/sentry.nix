@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: 
+{config, pkgs, lib, ... }: 
 
 with lib;
 
@@ -585,7 +585,7 @@ in
               echo "Did not prompt for user creation due to non-interactive shell."
               echo "Run the following command to create one yourself (recommended):"
               echo ""
-              echo " sentry web createuser"
+              echo " SENTRY_CONF=/etc/sentry sentry createuser"
               echo ""
             else
               exit 1

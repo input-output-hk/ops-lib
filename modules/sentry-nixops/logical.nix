@@ -37,14 +37,29 @@ in
     ];
   };
 
-  postgres = { nodes, config, pkgs, ... }: {
-    services.postgresql.enable = true;
-    services.postgresql.enableTCPIP = true;
-
-    networking.firewall.allowedTCPPorts = [
-      config.services.postgresql.port
-    ];
-  };
+  postgres = { nodes, config, pkgs, ... }:
+    let
+      sentryDb = nodes.sentry.config.services.sentry.dbName;
+      sentryDbUser = nodes.sentry.config.services.sentry.dbUser;
+      initialScript = pkgs.writeText "initialScript.psql" ''
+        CREATE DATABASE ${sentryDb};
+        CREATE USER ${sentryDbUser};
+        GRANT ALL PRIVILEGES ON DATABASE ${sentryDb} to ${sentryDbUser};
+        ALTER USER ${sentryDbUser} WITH SUPERUSER;
+      '';
+    in {
+      services.postgresql.enable = true;
+      services.postgresql.enableTCPIP = true;
+      services.postgresql.initialScript = initialScript;
+      services.postgresql.authentication = ''
+        # TYPE  DATABASE    USER              CIDR-ADDRESS                                           METHOD
+        host    ${sentryDb} ${sentryDbUser}   ${nodes.sentry.config.networking.privateIPv4}/32       trust 
+      '';
+  
+      networking.firewall.allowedTCPPorts = [
+        config.services.postgresql.port
+      ];
+    };
 
   zookeeper = { nodes, config, pkgs, ... }: {
     services.zookeeper.enable = true;
@@ -119,5 +134,9 @@ in
       memcachedHost = "memcached";
       memcachedPort = nodes.memcached.config.services.memcached.port;
     };
+
+    networking.firewall.allowedTCPPorts = [
+      config.services.sentry.port
+    ];
   };
 }
