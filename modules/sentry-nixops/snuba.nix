@@ -216,7 +216,7 @@ with lib;
               local hostname="$1"
               local port="$2"
   
-              ${pkgs.coreutils}/bin/timeout 10s ${pkgs.bash}/bin/bash -c "until ${pkgs.netcat}/bin/nc -z $hostname $port; do sleep 1; done"
+              ${pkgs.coreutils}/bin/timeout 5m ${pkgs.bash}/bin/bash -c "until ${pkgs.netcat}/bin/nc -z $hostname $port -w 1; do echo \"polling $hostname:$port...\"; done"
             }
             
             wait_for_open_port ${cfg.kafkaHost} ${toString cfg.kafkaPort}

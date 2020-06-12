@@ -9,6 +9,7 @@ in
 
   redis = { config, pkgs, ... }: {
     services.redis.enable = true;
+    services.redis.bind = "0.0.0.0";
 
     networking.firewall.allowedTCPPorts = [ config.services.redis.port ];
   };
@@ -80,7 +81,9 @@ in
       enable = true;
       host = "${config.networking.privateIPv4}";
       redisHost = "redis";
+      redisPort = nodes.redis.config.services.redis.port;
       kafkaHost = "kafka";
+      kafkaPort = nodes.kafka.config.services.apache-kafka.port;
       clickhouseHost = "clickhouse";
       clickhouseClientPort = nodes.clickhouse.config.services.clickhouse-custom.clientPort;
       clickhouseHttpPort = nodes.clickhouse.config.services.clickhouse-custom.httpPort;
@@ -91,13 +94,30 @@ in
     ];
   };
 
-  # sentry = { nodes, config, pkgs, ... }: {
-      # $dcr web upgrade --noinput
-      # echo ""
-      # echo "Did not prompt for user creation due to non-interactive shell."
-      # echo "Run the following command to create one yourself (recommended):"
-      # echo ""
-      # echo "  docker-compose run --rm web createuser"
-      # echo ""
-  # };
+  sentry = { nodes, config, pkgs, ... }: {
+    imports = [
+      ./sentry.nix
+    ];
+
+    services.sentry = {
+      enable = true;
+      hostname = "${config.networking.privateIPv4}";
+      secretKey = "^a^r_qh++*d9bioobt==r0ukdw!2ipb-#os-uxn!_w3bh0)!k8";
+
+      redisHost = "redis";
+      redisPort = nodes.redis.config.services.redis.port;
+
+      postgresqlHost = "postgres";
+      postgresqlPort = nodes.postgres.config.services.postgresql.port;
+
+      kafkaHost = "kafka";
+      kafkaPort = nodes.kafka.config.services.apache-kafka.port;
+
+      snubaHost = "snuba";
+      snubaPort = nodes.snuba.config.services.snuba.port;
+
+      memcachedHost = "memcached";
+      memcachedPort = nodes.memcached.config.services.memcached.port;
+    };
+  };
 }
