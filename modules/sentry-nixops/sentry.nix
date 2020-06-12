@@ -513,44 +513,62 @@ in
         cfg.package
       ];
 
-      systemd.services = {
-        sentry-web = {
+      systemd.services =
+        let
+          common = {
+            wantedBy = [ "multi-user.target" ];
+            wants = [ "sentry-init.service" ];
+            after = [ "network.target" "sentry-init.service" ];
+
+            serviceConfig = {
+              User="sentry";
+              Environment="SENTRY_CONF=/etc/sentry";
+            };
+          };
+        in {
+        sentry-web = lib.recursiveUpdate common {
           description = "Sentry web server";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" ];
 
           path = [ uwsgiWithPython ];
   
-          serviceConfig = {
-            User="sentry";
-            Environment="SENTRY_CONF=/etc/sentry";
-            ExecStart="${cfg.package}/bin/sentry run web";
-          };
+          serviceConfig.ExecStart = "${cfg.package}/bin/sentry run web";
         };
 
-        sentry-worker = {
+        sentry-worker = lib.recursiveUpdate common {
           description = "Sentry worker";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" ];
   
-          serviceConfig = {
-            User="sentry";
-            Environment="SENTRY_CONF=/etc/sentry";
-            ExecStart="${cfg.package}/bin/sentry run worker";
-          };
+          serviceConfig.ExecStart="${cfg.package}/bin/sentry run worker";
         };
 
-        sentry-cron = {
+        sentry-cron = lib.recursiveUpdate common {
           description = "Sentry cron to remove old events";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" ];
   
-          serviceConfig = {
-            User="sentry";
-            Environment="SENTRY_CONF=/etc/sentry";
-            ExecStart="${cfg.package}/bin/sentry run cron";
-          };
+          serviceConfig.ExecStart="${cfg.package}/bin/sentry run cron";
         };
+
+        sentry-ingest-consumer-events = lib.recursiveUpdate common {
+          description = "Sentry ingest consumer task - events";
+  
+          serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type events";
+        };
+
+        sentry-ingest-consumer-transactions = lib.recursiveUpdate common {
+          description = "Sentry ingest consumer task - transactions";
+  
+          serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type transactions";
+        };
+
+        sentry-ingest-consumer-attachments = lib.recursiveUpdate common {
+          description = "Sentry ingest consumer task - attachments";
+  
+          serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type attachments";
+        };
+
+        # sentry-post-process-forwarder = lib.recursiveUpdate common {
+        #   description = "Sentry post process forwarder task";
+  
+        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run post-process-forwarder --commit-batch-size 1";
+        # };
 
         sentry-init = {
           description = "Setup sentry.";
