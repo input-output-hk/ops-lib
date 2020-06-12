@@ -1,98 +1,108 @@
 { config, lib, pkgs, ... }:
 let
-  cfg = config.services.scuba;
+  cfg = config.services.snuba;
 in
 with lib;
 {
 
   options = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
+    services.snuba = {
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+      };
 
-    host = mkOption {
-      type = types.str;
-      default = "localhost";
-      description = ''
-        Host Snuba should run on.
-      '';
-    };
-
-    port = mkOption {
-      type = types.int;
-      default = 1218;
-      description = ''
-        Port snuba should run on.
-      '';
-    };
-
-    redisHost = mkOption {
-      type = types.str;
-      default = "localhost";
-      description = ''
-        Host Redis is running on.
-      '';
-    };
-
-    redisPort = mkOption {
-      type = types.int;
-      default = config.services.redis.port;
-      description = ''
-        Port Redis is running on.
-      '';
-    };
-
-    redisDb = mkOption {
-      type = types.int;
-      default = 1;
-      description = ''
-        Redis database to use.
-      '';
-    };
-
-    kafkaHost = mkOption {
-      type = types.str;
-      default = "localhost";
-      description = ''
-        Host Kafka is running on.
-      '';
-    };
-
-    kafkaPort = mkOption {
-      type = types.int;
-      default = config.services.apache-kafka.port;
-      description = ''
-        Port Kafka is running on.
-      '';
-    };
-
-    clickhouseHost = mkOption {
-      type = types.str;
-      default = "localhost";
-      description = ''
-        Host clickhouse is running on.
-      '';
-    };
-
-    clickhouseClientPort = mkOption {
-      type = types.int;
-      default = 9000;
-      description = ''
-        Port clickhouse server is running on. Note that clickhouse
-        server listens on multiple ports, this port is the port
-        clickhouse client should use.
-      '';
-    };
-
-    clickhouseHttpPort = mkOption {
-      type = types.int;
-      default = 8123;
-      description = ''
-        Port clickhouse HTTP server is running on. Note that
-        clickhouse server listens on multiple ports, this port is the
-        port for the HTTP server.
-      '';
+      package = mkOption {
+        type = types.package;
+        default = import ../snuba {};
+        description = ''
+          Snuba package to use.
+        '';
+      };
+  
+      host = mkOption {
+        type = types.str;
+        default = "localhost";
+        description = ''
+          Host Snuba should run on.
+        '';
+      };
+  
+      port = mkOption {
+        type = types.int;
+        default = 1218;
+        description = ''
+          Port snuba should run on.
+        '';
+      };
+  
+      redisHost = mkOption {
+        type = types.str;
+        default = "localhost";
+        description = ''
+          Host Redis is running on.
+        '';
+      };
+  
+      redisPort = mkOption {
+        type = types.int;
+        default = config.services.redis.port;
+        description = ''
+          Port Redis is running on.
+        '';
+      };
+  
+      redisDb = mkOption {
+        type = types.int;
+        default = 1;
+        description = ''
+          Redis database to use.
+        '';
+      };
+  
+      kafkaHost = mkOption {
+        type = types.str;
+        default = "localhost";
+        description = ''
+          Host Kafka is running on.
+        '';
+      };
+  
+      kafkaPort = mkOption {
+        type = types.int;
+        default = config.services.apache-kafka.port;
+        description = ''
+          Port Kafka is running on.
+        '';
+      };
+  
+      clickhouseHost = mkOption {
+        type = types.str;
+        default = "localhost";
+        description = ''
+          Host clickhouse is running on.
+        '';
+      };
+  
+      clickhouseClientPort = mkOption {
+        type = types.int;
+        default = 9000;
+        description = ''
+          Port clickhouse server is running on. Note that clickhouse
+          server listens on multiple ports, this port is the port
+          clickhouse client should use.
+        '';
+      };
+  
+      clickhouseHttpPort = mkOption {
+        type = types.int;
+        default = 8123;
+        description = ''
+          Port clickhouse HTTP server is running on. Note that
+          clickhouse server listens on multiple ports, this port is the
+          port for the HTTP server.
+        '';
+      };
     };
   };
 
@@ -144,7 +154,7 @@ with lib;
       users.groups.snuba.gid = 103;
   
       environment.systemPackages = [
-        snuba
+        cfg.package
       ];
   
       services.cron = {
@@ -153,10 +163,6 @@ with lib;
            "*/5 * * * *      snuba    SNUBA_SETTINGS=${snubaSettingsPy} snuba cleanup --dry-run False"
          ];
       };
-  
-      networking.firewall.allowedTCPPorts = [
-        snubaPort
-      ];
   
       systemd.services =
       let
@@ -213,9 +219,9 @@ with lib;
               ${pkgs.coreutils}/bin/timeout 10s ${pkgs.bash}/bin/bash -c "until ${pkgs.netcat}/bin/nc -z $hostname $port; do sleep 1; done"
             }
             
-            wait_for_open_port ${cfg.kafkaHost} ${cfg.kafkaPort}
+            wait_for_open_port ${cfg.kafkaHost} ${toString cfg.kafkaPort}
             kafka=$?
-            wait_for_open_port ${cfg.clickhouseHost} ${cfg.clickhouseHttpPort}
+            wait_for_open_port ${cfg.clickhouseHost} ${toString cfg.clickhouseHttpPort}
             clickhouse=$?
             
             if [ $kafka -eq 0 -a $clickhouse -eq 0 ]

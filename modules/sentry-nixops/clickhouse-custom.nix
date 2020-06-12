@@ -30,7 +30,7 @@ with lib;
         '';
       };
 
-      tcpPort = mkOption {
+      clientPort = mkOption {
         type = types.int;
         default = 9000;
         description = ''
@@ -67,7 +67,7 @@ with lib;
             </logger>
             <!--display_name>production</display_name--> <!-- It is the name that will be shown in the client -->
             <http_port>${toString cfg.httpPort}</http_port>
-            <tcp_port>${toString cfg.tcpPort}</tcp_port>
+            <tcp_port>${toString cfg.clientPort}</tcp_port>
         
             <!-- For HTTPS and SSL over native protocol. -->
             <!--
