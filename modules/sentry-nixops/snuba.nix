@@ -189,21 +189,16 @@ with lib;
           description = "Snuba events consumer";
           serviceConfig.ExecStart = "${cfg.package}/bin/snuba consumer --dataset events --auto-offset-reset=latest --max-batch-time-ms 750";
         };
+
   
         snuba-outcomes-consumer = lib.recursiveUpdate common {
           description = "Snuba outcomes consumer";
-          serviceConfig.ExecStart = "${cfg.package}/bin/snuba consumer --storage outcomes_raw --auto-offset-reset=earliest --max-batch-time-ms 750";
+          serviceConfig.ExecStart = "${cfg.package}/bin/snuba consumer --dataset outcomes --auto-offset-reset=earliest --max-batch-time-ms 750";
         };
-  
-        # Seems to be no sessions dataset in this version of snuba
-        # snuba-sessions-consumer = common // {
-        #   description = "Snuba sessions consumer";
-        #   serviceConfig.ExecStart = "${cfg.package}/bin/snuba consumer --dataset sessions_raw --auto-offset-reset=latest --max-batch-time-ms 750";
-        # };
   
         snuba-replacer = lib.recursiveUpdate common {
           description = "Snuba replacer";
-          serviceConfig.ExecStart = "${cfg.package}/bin/snuba replacer --dataset events --auto-offset-reset=latest --max-batch-size 3";
+          serviceConfig.ExecStart = "${cfg.package}/bin/snuba replacer --auto-offset-reset=latest --max-batch-size 3";
         };
   
         snuba-init = {

@@ -17,6 +17,9 @@ in
   memcached = { nodes, config, pkgs, ... }: {
     services.memcached.enable = true;
     services.memcached.listen = "${config.networking.privateIPv4}";
+    # The memcached service fails to bind to an address sometimes
+    systemd.services.memcached.serviceConfig.Restart="on-failure";
+    systemd.services.memcached.serviceConfig.RestartSec="5s";
 
     networking.firewall.allowedTCPPorts = [ config.services.memcached.port ];
   };
