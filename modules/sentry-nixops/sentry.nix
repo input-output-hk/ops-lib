@@ -247,6 +247,10 @@ in
       filestore.backend: 'filesystem'
       filestore.options:
         location: '/tmp/sentry-files'
+
+      symbolicator.enabled: true
+      symbolicator.options:
+        url: "http://${cfg.symbolicatorHost}:${cfg.symbolicatorPort}"
       '';
 
       sentryConfPy = pkgs.writeText "sentry.conf.py" ''
@@ -501,6 +505,9 @@ in
           print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
       
       SENTRY_OPTIONS["system.secret-key"] = secret_key
+
+      # Whitelist Symbolicator's request IP to fetch debug symbols from Sentry.
+      INTERNAL_SYSTEM_IPS = ["${cfg.symbolicatorHost}"]
       '';
 
     in mkIf cfg.enable {
