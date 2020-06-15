@@ -136,10 +136,28 @@ in
 
       memcachedHost = "memcached";
       memcachedPort = nodes.memcached.config.services.memcached.port;
+
+      symbolicatorHost = "symbolicator";
+      symbolicatorPort = nodes.symbolicator.config.services.symbolicator.port;
     };
 
     networking.firewall.allowedTCPPorts = [
       config.services.sentry.port
+    ];
+  };
+
+  symbolicator = { nodes, config, pkgs, ... }: {
+    imports = [
+      ./symbolicator.nix
+    ];
+
+    services.symbolicator = {
+      enable = true;
+      host = "${config.networking.privateIPv4}";
+    };
+
+    networking.firewall.allowedTCPPorts = [
+      config.services.symbolicator.port
     ];
   };
 }

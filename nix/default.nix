@@ -1,7 +1,9 @@
 { system ? builtins.currentSystem
 , crossSystem ? null
 , config ? {}
-, sourcesOverride ? {} }:
+, sourcesOverride ? {}
+, overlays ? []
+}:
 let
   sourcePaths = import ./sources.nix { inherit pkgs; }
     // sourcesOverride;
@@ -14,11 +16,12 @@ let
     then sourcePaths.nixpkgs
     else iohkNix.nixpkgs;
 
-  overlays = (import ../overlays sourcePaths) ++
-    [ (import ../globals-deployers.nix) ];
+  overlaysInternal = (import ../overlays sourcePaths) ++
+    [ (import ../globals-deployers.nix) ] ++ overlays;
 
   pkgs = import nixpkgs {
-    inherit config system crossSystem overlays;
+    inherit config system crossSystem;
+    overlays = overlaysInternal;
   };
 
 in pkgs

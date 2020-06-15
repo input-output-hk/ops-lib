@@ -230,6 +230,23 @@ in
         Host memcached is running on.
       '';
     };
+
+    symbolicatorHost = mkOption {
+      type = types.str;
+      default = config.services.symbolicator.host;
+      description = ''
+        Host symbolicator is running on.
+      '';
+    };
+
+    symbolicatorPort = mkOption {
+      type = types.int;
+      default = config.services.symbolicator.port;
+      description = ''
+        Port symbolicator is running on.
+      '';
+    };
+
   };
 
   config =
@@ -250,7 +267,7 @@ in
 
       symbolicator.enabled: true
       symbolicator.options:
-        url: "http://${cfg.symbolicatorHost}:${cfg.symbolicatorPort}"
+        url: "http://${cfg.symbolicatorHost}:${toString cfg.symbolicatorPort}"
       '';
 
       sentryConfPy = pkgs.writeText "sentry.conf.py" ''
@@ -507,7 +524,7 @@ in
       SENTRY_OPTIONS["system.secret-key"] = secret_key
 
       # Whitelist Symbolicator's request IP to fetch debug symbols from Sentry.
-      INTERNAL_SYSTEM_IPS = ["${cfg.symbolicatorHost}"]
+      # INTERNAL_SYSTEM_IPS = ["${cfg.symbolicatorHost}"]
       '';
 
     in mkIf cfg.enable {
@@ -617,9 +634,11 @@ in
             memcached=$?
             wait_for_open_port ${cfg.redisHost} ${toString cfg.redisPort}
             redis=$?
+            wait_for_open_port ${cfg.symbolicatorHost} ${toString cfg.symbolicatorPort}
+            symbolicator=$?
             
             
-            if [ $kafka -eq 0 -a $snuba -eq 0 -a $postgres -eq 0 -a $memcached -eq 0 -a $redis -eq 0 ]
+            if [ $kafka -eq 0 -a $snuba -eq 0 -a $postgres -eq 0 -a $memcached -eq 0 -a $redis -eq 0 -a $symbolicator -eq 0 ]
             then
               SENTRY_CONF=/etc/sentry ${cfg.package}/bin/sentry upgrade --noinput
 

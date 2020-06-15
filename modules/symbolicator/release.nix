@@ -20,6 +20,4 @@ in
 { pkgs ? import ../../nix { overlays = overlays; }
 }:
 
-rec {
-  symbolicator = pkgs.callPackage ./default.nix { };
-}
+pkgs.callPackage ./default.nix { }

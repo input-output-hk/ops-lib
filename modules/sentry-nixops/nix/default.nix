@@ -12,24 +12,24 @@ let
     else (import sourcePaths.iohk-nix {}).nixpkgs;
 
   iohkNix = import sourcePaths.iohk-nix {};
+  nixpkgs-mozilla = import sourcePaths.nixpkgs-mozilla;
 
   # overlays from ops-lib (include ops-lib sourcePaths):
   ops-lib-overlays = (import sourcePaths.ops-lib {}).overlays;
 
-  nixops-overlay = self: super: {
-    nixops = (import (self.sourcePaths.nixops-core + "/release.nix") {
-      nixpkgs = self.path;
-      p = p:
-        let
-          pluginSources = with self.sourcePaths; [ nixops-libvirtd ];
-          plugins = map (source: p.callPackage (source + "/release.nix") { })
-            pluginSources;
-        in [ p.aws p.vbox ] ++ plugins;
-    }).build.${self.stdenv.system};
-  };
-
   overlays = [
-    (self: super: { iohkNix = import sourcePaths.iohk-nix {}; })
+    nixpkgs-mozilla
+    (self: super:
+    let
+      rustChannel = self.rustChannelOf { date = "2020-05-12"; channel = "nightly"; };
+    in
+      {
+        inherit iohkNix;
+        naersk = import sourcePaths.naersk {};
+        rustc = rustChannel.rust;
+        cargo = rustChannel.rust;
+      }
+    )
   ];
 
   pkgs = import nixpkgs {
