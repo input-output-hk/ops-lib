@@ -52,6 +52,14 @@ in
       '';
     };
 
+    eventRetentionDays = mkOption {
+      type = types.int;
+      default = 90;
+      description = ''
+        Sentry has a cleanup cron job the prunes events older than this many days.
+      '';
+    };
+
     dbName = mkOption {
       type = types.str;
       default = "sentrydb";
@@ -512,6 +520,13 @@ in
       environment.systemPackages = [
         cfg.package
       ];
+
+      services.cron = {
+         enable = true;
+         systemCronJobs = [
+           "0 0 * * *      sentry    SENTRY_CONF=/etc/sentry sentry cleanup --days ${toString cfg.eventRetentionDays}"
+         ];
+      };
 
       systemd.services =
         let
