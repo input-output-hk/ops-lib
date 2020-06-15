@@ -546,29 +546,31 @@ in
           serviceConfig.ExecStart="${cfg.package}/bin/sentry run cron";
         };
 
-        sentry-ingest-consumer-events = lib.recursiveUpdate common {
-          description = "Sentry ingest consumer task - events";
-  
-          serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type events";
-        };
+        # These commented out services will be helpful if we update from 10.0.0
 
-        sentry-ingest-consumer-transactions = lib.recursiveUpdate common {
-          description = "Sentry ingest consumer task - transactions";
+        # sentry-ingest-consumer-events = lib.recursiveUpdate common {
+        #   description = "Sentry ingest consumer task - events";
   
-          serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type transactions";
-        };
-
-        sentry-ingest-consumer-attachments = lib.recursiveUpdate common {
-          description = "Sentry ingest consumer task - attachments";
-  
-          serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type attachments";
-        };
-
-        # sentry-post-process-forwarder = lib.recursiveUpdate common {
-        #   description = "Sentry post process forwarder task";
-  
-        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run post-process-forwarder --commit-batch-size 1";
+        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type events";
         # };
+
+        # sentry-ingest-consumer-transactions = lib.recursiveUpdate common {
+        #   description = "Sentry ingest consumer task - transactions";
+  
+        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type transactions";
+        # };
+
+        # sentry-ingest-consumer-attachments = lib.recursiveUpdate common {
+        #   description = "Sentry ingest consumer task - attachments";
+  
+        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type attachments";
+        # };
+
+        sentry-post-process-forwarder = lib.recursiveUpdate common {
+          description = "Sentry post process forwarder task";
+  
+          serviceConfig.ExecStart="${cfg.package}/bin/sentry run post-process-forwarder --commit-batch-size 1";
+        };
 
         sentry-init = {
           description = "Setup sentry.";
