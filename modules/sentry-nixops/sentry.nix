@@ -27,17 +27,18 @@ let
 in
 
 {
-  imports = [];
-
   options.services.sentry = {
     enable = mkOption {
       type = types.bool;
       default = false;
+      description = ''
+        Whether to run the sentry suite of services.
+      '';
     };
 
     package = mkOption {
       type = types.package;
-      default = import /home/sam/code/iohk/ops-lib/modules/sentry {};
+      default = import ../sentry {};
       example = literalExample "pkgs.sentry";
       description = ''
         The sentry package to use.
@@ -528,6 +529,15 @@ in
       '';
 
     in mkIf cfg.enable {
+      assertions =
+        [ { assertion = cfg.secretKeyFile != null || cfg.secretKey != null;
+            message = "sentry: A secret key is required, please specify secretKeyFile or secretKey.";
+          }
+          { assertion = !(cfg.secretKeyFile != null && cfg.secretKey != null);
+            message = "sentry: Please specify only one of secretKeyFile or secretKey.";
+          }
+        ];
+
       environment.etc = {
         "sentry/config.yml".source = sentryConfigYml;
         "sentry/sentry.conf.py".source = sentryConfPy;
@@ -584,26 +594,6 @@ in
   
           serviceConfig.ExecStart="${cfg.package}/bin/sentry run cron";
         };
-
-        # These commented out services will be helpful if we update from 10.0.0
-
-        # sentry-ingest-consumer-events = lib.recursiveUpdate common {
-        #   description = "Sentry ingest consumer task - events";
-  
-        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type events";
-        # };
-
-        # sentry-ingest-consumer-transactions = lib.recursiveUpdate common {
-        #   description = "Sentry ingest consumer task - transactions";
-  
-        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type transactions";
-        # };
-
-        # sentry-ingest-consumer-attachments = lib.recursiveUpdate common {
-        #   description = "Sentry ingest consumer task - attachments";
-  
-        #   serviceConfig.ExecStart="${cfg.package}/bin/sentry run ingest-consumer --consumer-type attachments";
-        # };
 
         sentry-post-process-forwarder = lib.recursiveUpdate common {
           description = "Sentry post process forwarder task";
