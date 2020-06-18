@@ -66,9 +66,6 @@ in
 
   zookeeper = { nodes, config, pkgs, ... }: {
     services.zookeeper.enable = true;
-    # services.zookeeper.servers = ''
-    #     server.${config.services.zookeeper.id}=${nodes.zookeeper.config.networking.privateIPv4}:2888:3888
-    # '';
 
     networking.firewall.allowedTCPPorts = [
       config.services.zookeeper.port
