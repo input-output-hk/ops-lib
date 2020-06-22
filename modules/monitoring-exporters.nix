@@ -108,8 +108,12 @@ in {
           "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:${toString cfg.statsdPort} --web.listen-address=:9102";
       };
 
-      services = {
-        prometheus.exporters.node = {
+      services.prometheus.exporters = {
+        systemd = {
+          enable = true;
+        };
+
+        node = {
           enable = true;
           enabledCollectors = [
             "systemd"
@@ -135,7 +139,12 @@ in {
           ];
         };
       };
-      networking.firewall.allowedTCPPorts = [ 9100 9102 ] ++ cfg.extraPrometheusExportersPorts;
+
+      networking.firewall.allowedTCPPorts = [
+        9100
+        9102
+        config.services.prometheus.exporters.systemd.port
+      ] ++ cfg.extraPrometheusExportersPorts;
     })
 
     (mkIf cfg.logging {
