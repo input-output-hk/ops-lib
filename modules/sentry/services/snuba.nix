@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.services.snuba;
+
+  surround = prefix: suffix: x: if x != null then prefix + x + suffix else null;
+
+  or_ = a: b: if a != null then a else b;
 in
 with lib;
 {
@@ -55,6 +59,14 @@ with lib;
         default = 1;
         description = ''
           Redis database to use.
+        '';
+      };
+
+      redisPasswordFile = mkOption {
+        type = with types; nullOr path;
+        default = null;
+        description = ''
+          Password file for the redis database.
         '';
       };
   
@@ -125,7 +137,7 @@ with lib;
         
         REDIS_HOST = "${cfg.redisHost}"
         REDIS_PORT = ${toString cfg.redisPort}
-        REDIS_PASSWORD = ""
+        REDIS_PASSWORD = "${or_ (surround "readPasswordFile(" ")" cfg.redisPasswordFile) ""}"
         REDIS_DB = ${toString cfg.redisDb}
         USE_REDIS_CLUSTER = False
   

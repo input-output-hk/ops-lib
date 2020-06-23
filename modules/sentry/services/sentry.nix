@@ -22,7 +22,7 @@ let
 
   surround = prefix: suffix: x: if x != null then prefix + x + suffix else null;
 
-  or_ = a: b: if a != null then a else (if b != null then b else null);
+  or_ = a: b: if a != null then a else b;
 
 in {
   options.services.sentry = {
@@ -69,17 +69,6 @@ in {
       '';
     };
 
-    dbPassword = mkOption {
-      type = with types; nullOr str;
-      default = null;
-      description = ''
-        Password for Sentrys postgresql database.
-        This setting will be ignored if dbPasswordFile is set.
-        Using this option will store the password in plain text in the
-        world-readable nix store. To avoid this the <literal>dbPasswordFile</literal> can be used.
-      '';
-    };
-
     dbPasswordFile = mkOption {
       type = with types; nullOr path;
       default = null;
@@ -93,18 +82,6 @@ in {
       default = 9999;
       description = ''
         Port the Sentry web server should bind to.
-      '';
-    };
-
-    secretKey = mkOption {
-      type = with types; nullOr str;
-      default = null;
-      description = ''
-        Secret key for sentry.
-        Generate one with "sentry config generate-secret-key".
-        This setting will be ignored if secretKeyFile is set.
-        Using this option will store the password in plain text in the
-        world-readable nix store. To avoid this the <literal>secretKeyFile</literal> can be used.
       '';
     };
 
@@ -130,17 +107,6 @@ in {
       default = config.services.redis.port;
       description = ''
         Port Redis is running on.
-      '';
-    };
-
-    redisPassword = mkOption {
-      type = with types; nullOr str;
-      default = null;
-      description = ''
-        Password for the redis database.
-        This setting will be ignored if redisPasswordFile is set.
-        Using this option will store the password in plain text in the
-        world-readable nix store. To avoid this the <literal>redisPasswordFile</literal> can be used.
       '';
     };
 
@@ -389,7 +355,7 @@ in {
               'ENGINE': 'sentry.db.postgres',
               'NAME': '${cfg.dbName}',
               'USER': '${cfg.dbUser}',
-              'PASSWORD': '${or_ (or_ (surround "readPasswordFile(" ")" cfg.dbPasswordFile) cfg.dbPassword) ""}',
+              'PASSWORD': ${or_ (surround "readPasswordFile(" ")" cfg.dbPasswordFile) ""},
               'HOST': '${cfg.postgresqlHost}',
               'PORT': '${toString cfg.postgresqlPort}',
               'AUTOCOMMIT': True,
@@ -419,7 +385,7 @@ in {
       SENTRY_OPTIONS["redis.clusters"] = {
           "default": {
               "hosts": {0: { "host": "${cfg.redisHost}"
-                           , "password": "${or_ (or_ (surround "readPasswordFile(" ")" cfg.redisPasswordFile) cfg.redisPassword) ""}"
+                           , "password": "${or_ (surround "readPasswordFile(" ")" cfg.redisPasswordFile) ""}"
                            , "port": "${toString cfg.redisPort}"
                            , "db": "0"
                            }
@@ -609,7 +575,7 @@ in {
 
       GITHUB_EXTENDED_PERMISSIONS = ['repo']
 
-      secret_key = ${or_ (or_ (surround "readPasswordFile(" ")" cfg.secretKeyFile) ''"${cfg.secretKey}"'') "None"}
+      secret_key = ${or_ (surround "readPasswordFile(" ")" cfg.secretKeyFile) "None"}
       if not secret_key:
           raise Exception(
               "Error: SENTRY_SECRET_KEY is undefined, run `generate-secret-key` and set to -e SENTRY_SECRET_KEY"
@@ -648,14 +614,9 @@ in {
   in mkIf cfg.enable {
     assertions = [
       {
-        assertion = cfg.secretKeyFile != null || cfg.secretKey != null;
+        assertion = cfg.secretKeyFile != null;
         message =
-          "sentry: A secret key is required, please specify secretKeyFile or secretKey.";
-      }
-      {
-        assertion = !(cfg.secretKeyFile != null && cfg.secretKey != null);
-        message =
-          "sentry: Please specify only one of secretKeyFile or secretKey.";
+          "sentry: A secret key is required, please specify secretKeyFile.";
       }
     ];
 
@@ -757,7 +718,6 @@ in {
             echo ""
 
             echo "Adding Google SSO domains to database..."
-            ${optionalString (cfg.dbPassword != null) "PGPASSWORD=${cfg.dbPassword}"} \
             ${optionalString (cfg.dbPasswordFile != null) "PGPASSFILE=${cfg.dbPasswordFile}"} \
             ${pkgs.postgresql}/bin/psql --host ${cfg.postgresqlHost} --port ${toString cfg.postgresqlPort} \
                                         --username ${cfg.dbUser} --dbname ${cfg.dbName} \
