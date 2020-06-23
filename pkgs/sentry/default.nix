@@ -1,57 +1,25 @@
-{ fetchFromGitHub
-, fetchpatch
-, lib
-, libtool
-, libxml2
-, libxslt
-, postgresql
-, python
-, xmlsec
-, zlib
-}:
+{ pkgs }:
 
 let
-
-  iohkMkPythonApplication = { python, overrides, ... }@attrs:
-    let
-      specialAttrs = [
-        "overrides"
-      ];
-      passedAttrs = builtins.removeAttrs attrs specialAttrs;
-
-      deps = map (depName: py.pkgs."${depName}") (builtins.attrNames (overrides {} {}));
-
-      packageOverrides = lib.foldr lib.composeExtensions (self: super: {}) [overrides];
-
-      py = python.override { inherit packageOverrides; self = py; };
-    in
-      python.pkgs.buildPythonApplication (
-        passedAttrs // {
-          propagatedBuildInputs = (attrs.propagatedBuildInputs or []) ++ deps;
-        }
-      );
+  python = import ./requirements.nix { inherit pkgs; };
 in
 
-(iohkMkPythonApplication rec {
+(python.mkDerivation rec {
   pname   = "sentry";
   version = "10.0.0";
   format = "wheel";
 
-  src = python.pkgs.fetchPypi {
+  src = pkgs.python.pkgs.fetchPypi {
     inherit pname version format;
     sha256 = "2695ed1cf11e5afee92de04dc1868de9f4c49d5876c34579c935d9d6cf9fbb03";
     python = "py27";
   };
 
-  # python = pkgs.python;
-  inherit python;
-  overrides = import ./overrides.nix {
-    inherit fetchpatch fetchFromGitHub xmlsec libtool zlib libxml2 libxslt postgresql lib;
-  };
+  buildInputs = [];
 
-  propagatedBuildInputs = [ python.pkgs.setuptools ];
+  propagatedBuildInputs = builtins.attrValues python.packages;
 
-  makeWrapperArgs = ["--set PYTHONPATH $PYTHONPATH" "--set LD_LIBRARY_PATH ${xmlsec}/lib"];
+  makeWrapperArgs = ["--set PYTHONPATH $PYTHONPATH" "--set LD_LIBRARY_PATH ${pkgs.xmlsec}/lib" ];
 
 }).overrideAttrs(drv: {
   buildPhase = ''
