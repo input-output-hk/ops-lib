@@ -144,12 +144,9 @@ with lib;
         name = "snuba";
         group = "snuba";
         description = "Snuba user";
-        createHome = true;
-        uid = 103;
-        home = "/home/snuba";
       };
   
-      users.groups.snuba.gid = 103;
+      users.groups.snuba = {};
   
       environment.systemPackages = [
         cfg.package
