@@ -26,13 +26,7 @@ let
 
 in {
   options.services.sentry = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        Whether to run the sentry suite of services.
-      '';
-    };
+    enable = mkEnableOption "Run the sentry suite of services.";
 
     package = mkOption {
       type = types.package;

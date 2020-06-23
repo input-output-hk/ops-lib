@@ -7,13 +7,7 @@ with lib;
 
   options = {
     services.snuba = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          Whether to run the snuba suite of services.
-        '';
-      };
+      enable = mkEnableOption "Run the snuba suite of services.";
 
       package = mkOption {
         type = types.package;

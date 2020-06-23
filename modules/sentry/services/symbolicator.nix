@@ -7,13 +7,7 @@ with lib;
 
   options = {
     services.symbolicator = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          Whether to enable the symbolicator service.
-        '';
-      };
+      enable = mkEnableOption "Run the symbolicator service.";
 
       package = mkOption {
         type = types.package;
