@@ -38,9 +38,9 @@ self: super: {
       python.mkDerivation rec {
         pname = "python3-saml";
         version = "1.4.0";
-
+        
         buildInputs = [];
-
+        
         # Fetch from GitHub because PyPi doesn't have tests available in src
         src = pkgs.fetchFromGitHub {
           owner = "onelogin";
@@ -48,16 +48,16 @@ self: super: {
           rev = "refs/tags/v${version}";
           sha256 = "05l63qwfqvw67v70bsam76amxpz7hnkqn8329yrds3fzgzkhkqrl";
         };
-
+        
         postPatch = ''
           patch --strip=1 < ${fix2020Patch}
           patch --strip=1 < ${fixCertValue}
         '';
-
+            
         propagatedBuildInputs = with self; [ defusedxml xmlsec isodate ];
-
+        
         LD_LIBRARY_PATH = "${pkgs.xmlsec}/lib";
-
+        
         doCheck = false;
       };
 
@@ -73,7 +73,14 @@ self: super: {
     doCheck = false;
   });
 
-  semaphore = pkgs.python.pkgs.callPackage ./semaphore { };
+  semaphore = import ./semaphore {
+    buildPythonPackage = python.mkDerivation;
+    fetchFromGitHub = pkgs.fetchFromGitHub;
+    milksnake = self."milksnake";
+    pkg-config = pkgs.pkg-config;
+    openssl = pkgs.openssl;
+    naersk = pkgs.naersk;
+  };
 
   symbolic = pkgs.python.pkgs.callPackage ./symbolic { };
 
@@ -104,24 +111,24 @@ self: super: {
   pkgconfig = python.mkDerivation rec {
     pname = "pkgconfig";
     version = "1.5.1";
-
+  
     setupHook = pkgs.pkgconfig.setupHook;
-
+  
     src = pkgs.python.pkgs.fetchPypi {
       inherit pname version;
       sha256 = "97bfe3d981bab675d5ea3ef259045d7919c93897db7d3b59d4e8593cba8d354f";
     };
-
+  
     nativeBuildInputs = [ pkgs.pkgconfig ];
-
+  
     doCheck = false;
-
+  
     buildInputs = [];
     patches = [ ./executable.patch ];
     postPatch = ''
       substituteInPlace pkgconfig/pkgconfig.py --replace 'PKG_CONFIG_EXE = "pkg-config"' 'PKG_CONFIG_EXE = "${pkgs.pkgconfig}/bin/pkg-config"'
     '';
-
+  
     meta = with pkgs.lib; {
       description = "Interface Python with pkg-config";
       homepage = "https://github.com/matze/pkgconfig";

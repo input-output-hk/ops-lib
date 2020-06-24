@@ -17,7 +17,9 @@ buildPythonPackage rec {
       --replace '@nixBuildHeader@' '${rust-semaphore}/include/semaphore.h'
   '';
 
+  buildInputs = [];
   nativeBuildInputs = [ milksnake rust-semaphore ];
+  propagatedBuildInputs = [ milksnake ];
 
   preBuild = ''
     cd py
