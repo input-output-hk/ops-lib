@@ -23,7 +23,7 @@ cssutils==1.0.2
 datadog==0.30.0
 decorator==4.4.2
 defusedxml==0.6.0
-Django==1.9.13
+Django==1.11.29
 django-crispy-forms==1.6.1
 django-picklefield==1.0.0
 django-sudo==3.1.0
