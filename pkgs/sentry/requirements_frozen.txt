@@ -23,11 +23,11 @@ cssutils==1.0.2
 datadog==0.30.0
 decorator==4.4.2
 defusedxml==0.6.0
-Django==1.9.13
+Django==1.11.29
 django-crispy-forms==1.6.1
 django-picklefield==1.0.0
 django-sudo==3.1.0
-djangorestframework==3.4.7
+djangorestframework==3.9.4
 docutils==0.16
 email-reply-parser==0.2.0
 enum34==1.1.10
@@ -43,7 +43,7 @@ google-cloud-storage==1.13.3
 google-resumable-media==0.4.1
 googleapis-common-protos==1.6.0
 grpc-google-iam-v1==0.11.4
-grpcio==1.29.0
+grpcio==1.30.0
 hiredis==0.1.6
 httplib2==0.18.1
 idna==2.7
@@ -86,7 +86,7 @@ python-memcached==1.59
 python-u2flib-server==5.0.0
 python-utils==2.4.0
 pytz==2020.1
-PyYAML==3.11
+PyYAML==5.3.1
 qrcode==5.3
 querystring-parser==1.2.4
 rb==1.7
