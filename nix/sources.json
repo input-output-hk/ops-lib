@@ -11,6 +11,18 @@
         "url": "https://github.com/input-output-hk/iohk-nix/archive/847e94ad1f3146ded9e17b9920f1d91461fe403d.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "naersk": {
+        "branch": "master",
+        "description": "Build rust crates in Nix. No configuration, no code generation, no IFD. Sandbox friendly.",
+        "homepage": "",
+        "owner": "nmattia",
+        "repo": "naersk",
+        "rev": "254fa90956d3e0b6747fbd2b6bea71169c740e6f",
+        "sha256": "04z5wibrmsad2yhx09hxkyvgn2kmdjd40fmxa9g7yla0vdxldg0m",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/naersk/archive/254fa90956d3e0b6747fbd2b6bea71169c740e6f.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "niv": {
         "branch": "iohk",
         "description": "Easy dependency management for Nix projects",

@@ -1,0 +1,84 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index d98e50a..43cc1ab 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -29,6 +29,18 @@ include = [
+ all-features = true
+ 
+ [workspace]
++members = [
++  "cabi",
++  "common",
++  "debuginfo",
++  "demangle",
++  "minidump",
++  "proguard",
++  "sourcemap",
++  "symcache",
++  "unreal",
++  "apple-crash-report-parser"
++]
+ 
+ [features]
+ default = ["debuginfo"]
+@@ -56,7 +68,7 @@ symbolic-unreal = { version = "7.2.0", path = "unreal", optional = true }
+ 
+ [dev-dependencies]
+ clap = "2.33.0"
+-failure = "0.1.7"
++failure = "0.1.8"
+ walkdir = "2.3.1"
+ 
+ [[example]]
+diff --git a/cabi/Cargo.toml b/cabi/Cargo.toml
+index 9a6fe98..95e1d8c 100644
+--- a/cabi/Cargo.toml
++++ b/cabi/Cargo.toml
+@@ -27,6 +27,6 @@ lto = true
+ 
+ [dependencies]
+ serde_json = "1.0.40"
+-failure = "0.1.5"
+-apple-crash-report-parser = { version = "0.4.0", features = ["with_serde"] }
++failure = "0.1.8"
++apple-crash-report-parser = { path = "../apple-crash-report-parser", features = ["with_serde"] }
+ symbolic = { version = "7.2.0", path = "..", features = ["debuginfo", "demangle", "minidump", "proguard", "sourcemap", "symcache", "unreal-serde"] }
+diff --git a/common/Cargo.toml b/common/Cargo.toml
+index 4b8f323..b089a1a 100644
+--- a/common/Cargo.toml
++++ b/common/Cargo.toml
+@@ -18,7 +18,7 @@ edition = "2018"
+ 
+ [dependencies]
+ debugid = "0.7.1"
+-failure = "0.1.5"
++failure = "0.1.8"
+ memmap = "0.7.0"
+ stable_deref_trait = "1.1.1"
+ serde_ = { package = "serde", version = "1.0.88", optional = true, features = ["derive"] }
+diff --git a/debuginfo/Cargo.toml b/debuginfo/Cargo.toml
+index 7367d9b..e16e2b4 100644
+--- a/debuginfo/Cargo.toml
++++ b/debuginfo/Cargo.toml
+@@ -21,7 +21,7 @@ exclude = [
+ 
+ [dependencies]
+ dmsort = "1.0.0"
+-failure = "0.1.5"
++failure = "0.1.8"
+ fallible-iterator = "0.2.0"
+ flate2 = { version = "1.0.13", features = ["rust_backend"], default-features = false }
+ gimli = { version = "0.20.0", features = ["read", "std"], default-features = false }
+diff --git a/minidump/Cargo.toml b/minidump/Cargo.toml
+index 04c6b92..1aaf1e1 100644
+--- a/minidump/Cargo.toml
++++ b/minidump/Cargo.toml
+@@ -27,7 +27,7 @@ include = [
+ ]
+ 
+ [dependencies]
+-failure = "0.1.5"
++failure = "0.1.8"
+ lazy_static = "1.4.0"
+ regex = "1.3.5"
+ serde = { version = "1.0.94", optional = true }
