@@ -15,7 +15,9 @@ let
     else iohkNix.nixpkgs;
 
   overlays = (import ../overlays sourcePaths) ++
-    [ (import ../globals-deployers.nix) ];
+    [ (import ../globals-deployers.nix)
+      (import sourcePaths.nixpkgs-mozilla)
+    ];
 
   pkgs = import nixpkgs {
     inherit config system crossSystem overlays;
