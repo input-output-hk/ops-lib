@@ -16,7 +16,6 @@ let
 
   overlays = (import ../overlays sourcePaths) ++
     [ (import ../globals-deployers.nix)
-      (import sourcePaths.nixpkgs-mozilla)
     ];
 
   pkgs = import nixpkgs {

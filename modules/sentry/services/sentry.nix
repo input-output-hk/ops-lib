@@ -346,7 +346,7 @@ in {
 
       def readPasswordFile(file):
         with open(file, 'r') as fd:
-          fd.read()
+          return fd.read()
 
       CONF_ROOT = os.path.dirname(__file__)
 
@@ -355,7 +355,7 @@ in {
               'ENGINE': 'sentry.db.postgres',
               'NAME': '${cfg.dbName}',
               'USER': '${cfg.dbUser}',
-              'PASSWORD': ${or_ (surround "readPasswordFile(" ")" cfg.dbPasswordFile) ""},
+              'PASSWORD': ${or_ (surround "readPasswordFile(" ")" cfg.dbPasswordFile) "''"},
               'HOST': '${cfg.postgresqlHost}',
               'PORT': '${toString cfg.postgresqlPort}',
               'AUTOCOMMIT': True,
@@ -575,7 +575,7 @@ in {
 
       GITHUB_EXTENDED_PERMISSIONS = ['repo']
 
-      secret_key = ${or_ (surround "readPasswordFile(" ")" cfg.secretKeyFile) "None"}
+      secret_key = ${or_ (surround "readPasswordFile(" ")" "\"${cfg.secretKeyFile}\"") "None"}
       if not secret_key:
           raise Exception(
               "Error: SENTRY_SECRET_KEY is undefined, run `generate-secret-key` and set to -e SENTRY_SECRET_KEY"

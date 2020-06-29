@@ -126,7 +126,7 @@ with lib;
   
         def readPasswordFile(file):
           with open(file, 'r') as fd:
-            fd.read()
+            return fd.read()
   
         HOST = "${cfg.host}"
         PORT = ${toString cfg.port}
