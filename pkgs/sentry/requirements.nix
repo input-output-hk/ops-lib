@@ -489,17 +489,19 @@ let
     };
 
     "django" = python.mkDerivation {
-      name = "django-1.9.13";
+      name = "django-1.11.29";
       src = pkgs.fetchurl {
-        url = "https://files.pythonhosted.org/packages/6c/bf/4ac9eaa04581797a68649828b88a147f641d745e0c7b3696db5c6caedc41/Django-1.9.13.tar.gz";
-        sha256 = "c007dba5086061f7d0f4d88a3bc4016d881a7eede86d6c1c4fdbbaadddd53f1d";
+        url = "https://files.pythonhosted.org/packages/68/ab/2278a4a9404fac661be1be9627f11336613149e07fc4df0b6e929cc9f300/Django-1.11.29.tar.gz";
+        sha256 = "4200aefb6678019a0acf0005cd14cfce3a5e6b9b90d06145fcdd2e474ad4329c";
 };
       doCheck = commonDoCheck;
       format = "setuptools";
       buildInputs = commonBuildInputs ++ [ ];
-      propagatedBuildInputs = [ ];
+      propagatedBuildInputs = [
+        self."pytz"
+      ];
       meta = with pkgs.stdenv.lib; {
-        homepage = "http://www.djangoproject.com/";
+        homepage = "https://www.djangoproject.com/";
         license = licenses.bsdOriginal;
         description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design.";
       };
@@ -557,17 +559,17 @@ let
     };
 
     "djangorestframework" = python.mkDerivation {
-      name = "djangorestframework-3.4.7";
+      name = "djangorestframework-3.9.4";
       src = pkgs.fetchurl {
-        url = "https://files.pythonhosted.org/packages/bf/fb/40a6bb1259e295cfe9379715f648a3243171ce45c8b349c979f2e57c4fbe/djangorestframework-3.4.7.tar.gz";
-        sha256 = "34f588119a6de012a0cbe3836c31a2d5f620993c3b955f64c951a3072e617e47";
+        url = "https://files.pythonhosted.org/packages/ce/1d/877af49d161879bc26585696ca0cab6487c4cb7604263cf5f1c745f5141a/djangorestframework-3.9.4.tar.gz";
+        sha256 = "c12869cfd83c33d579b17b3cb28a2ae7322a53c3ce85580c2a2ebe4e3f56c4fb";
 };
       doCheck = commonDoCheck;
       format = "setuptools";
       buildInputs = commonBuildInputs ++ [ ];
       propagatedBuildInputs = [ ];
       meta = with pkgs.stdenv.lib; {
-        homepage = "http://www.django-rest-framework.org";
+        homepage = "https://www.django-rest-framework.org/";
         license = licenses.bsdOriginal;
         description = "Web APIs for Django, made easy.";
       };
@@ -644,8 +646,8 @@ let
     "functools32" = python.mkDerivation {
       name = "functools32-3.2.3.post2";
       src = pkgs.fetchurl {
-        url = "https://files.pythonhosted.org/packages/c5/60/6ac26ad05857c601308d8fb9e87fa36d0ebf889423f47c3502ef034365db/functools32-3.2.3-2.tar.gz";
-        sha256 = "f6253dfbe0538ad2e387bd8fdfd9293c925d63553f5813c4e587745416501e6d";
+        url = "https://files.pythonhosted.org/packages/5e/1a/0aa2c8195a204a9f51284018562dea77e25511f02fe924fac202fc012172/functools32-3.2.3-2.zip";
+        sha256 = "89d824aa6c358c421a234d7f9ee0bd75933a67c29588ce50aaa3acdf4d403fa0";
 };
       doCheck = commonDoCheck;
       format = "setuptools";
@@ -863,10 +865,10 @@ let
     };
 
     "grpcio" = python.mkDerivation {
-      name = "grpcio-1.29.0";
+      name = "grpcio-1.30.0";
       src = pkgs.fetchurl {
-        url = "https://files.pythonhosted.org/packages/f1/23/62d3e82fa4c505f3195315c8a774b2e656b556d174329aa98edb829e48bc/grpcio-1.29.0.tar.gz";
-        sha256 = "a97ea91e31863c9a3879684b5fb3c6ab4b17c5431787548fc9f52b9483ea9c25";
+        url = "https://files.pythonhosted.org/packages/5e/29/1bd649737e427a6bb850174293b4f2b72ab80dd49462142db9b81e1e5c7b/grpcio-1.30.0.tar.gz";
+        sha256 = "e8f2f5d16e0164c415f1b31a8d9a81f2e4645a43d1b261375d6bab7b0adf511f";
 };
       doCheck = commonDoCheck;
       format = "setuptools";
@@ -1619,17 +1621,17 @@ let
     };
 
     "pyyaml" = python.mkDerivation {
-      name = "pyyaml-3.11";
+      name = "pyyaml-5.3.1";
       src = pkgs.fetchurl {
-        url = "https://files.pythonhosted.org/packages/75/5e/b84feba55e20f8da46ead76f14a3943c8cb722d40360702b2365b91dec00/PyYAML-3.11.tar.gz";
-        sha256 = "c36c938a872e5ff494938b33b14aaa156cb439ec67548fcab3535bb78b0846e8";
+        url = "https://files.pythonhosted.org/packages/64/c2/b80047c7ac2478f9501676c988a5411ed5572f35d1beff9cae07d321512c/PyYAML-5.3.1.tar.gz";
+        sha256 = "b8eac752c5e14d3eca0e6dd9199cd627518cb5ec06add0de9d32baeee6fe645d";
 };
       doCheck = commonDoCheck;
       format = "setuptools";
       buildInputs = commonBuildInputs ++ [ ];
       propagatedBuildInputs = [ ];
       meta = with pkgs.stdenv.lib; {
-        homepage = "http://pyyaml.org/wiki/PyYAML";
+        homepage = "https://github.com/yaml/pyyaml";
         license = licenses.mit;
         description = "YAML parser and emitter for Python";
       };

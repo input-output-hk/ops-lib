@@ -14,8 +14,8 @@ in
     };
   };
 
-  sentry       = callPackage ../pkgs/sentry { };
+  sentry       = import ../pkgs/sentry { pkgs = self; };
   symbolicator = callPackage ../pkgs/symbolicator { };
-  snuba        = callPackage ../pkgs/snuba { python = self.python37; };
+  snuba        = import ../pkgs/snuba { pkgs = self; };
   naersk       = callPackage self.sourcePaths.naersk {};
 }
