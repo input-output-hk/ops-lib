@@ -5,13 +5,6 @@ let
 in {
 
   imports = [ ./aws.nix ./monitoring-exporters.nix ];
-  options = {
-    local.commonGivesVim = lib.mkOption {
-      default = true;
-      type = lib.types.bool;
-      description = "allows making common.nix not install a vim";
-    };
-  };
   config = {
     networking.hostName = name;
 
@@ -33,7 +26,8 @@ in {
       fd
       file
       ripgrep
-    ] ++ (lib.optional config.local.commonGivesVim vim);
+      vim
+    ];
 
     environment.variables.TERM = "xterm-256color";
 
