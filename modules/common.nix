@@ -83,9 +83,9 @@ in {
       nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
     };
 
-    system.extraSystemBuilderCmds = ''
-      ln -sv ${pkgs.path} $out/nixpkgs
-    '';
+    #system.extraSystemBuilderCmds = ''
+    #  ln -sv ${pkgs.path} $out/nixpkgs
+    #'';
 
     # Mosh
     networking.firewall.allowedUDPPortRanges = [{
