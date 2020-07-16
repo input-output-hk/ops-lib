@@ -149,6 +149,28 @@ in {
         '';
       };
 
+      applicationDataSources = mkOption {
+        type = types.listOf types.attrs;
+        default = [ ];
+        description = ''
+          Application specific grafana data sources.
+          See "services.grafana.provision.datasources" for type
+          description.
+        '';
+        example = [{
+          name     = "postgres-tsdb";
+          type     = "postgres";
+          database = "testdb";
+          user     = "testuser";
+          editable = false;
+          access   = "direct";
+          url      = "localhost:5432";
+          jsonData = {
+            sslmode = "disable";
+          };
+        }];
+      };
+
       grafanaCreds = mkOption {
         type = types.attrs;
         description = ''
@@ -533,7 +555,7 @@ in {
               type = "prometheus";
               name = "prometheus";
               url = "http://localhost:9090/prometheus";
-            }];
+            }] ++ cfg.applicationDataSources;
             dashboards = [{
               name = "generic";
               options.path = ./grafana/generic;
