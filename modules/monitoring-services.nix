@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, options, pkgs, lib, ... }:
 
 with lib;
 
@@ -150,7 +150,7 @@ in {
       };
 
       applicationDataSources = mkOption {
-        type = types.listOf types.attrs;
+        type = options.services.grafana.provision.datasources.type;
         default = [ ];
         description = ''
           Application specific grafana data sources.
