@@ -27,6 +27,7 @@ in {
           ec2SecurityGroups.allow-wireguard
         ];
       };
+      boot.loader.grub.device = lib.mkForce "/dev/nvme0n1";
       services.lorri.enable = true;
       programs.bash.interactiveShellInit = ''
         eval "$(direnv hook bash)"
