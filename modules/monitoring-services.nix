@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, options, pkgs, lib, ... }:
 
 with lib;
 
@@ -147,6 +147,28 @@ in {
         description = ''
           Application specific dashboards.
         '';
+      };
+
+      applicationDataSources = mkOption {
+        type = options.services.grafana.provision.datasources.type;
+        default = [ ];
+        description = ''
+          Application specific grafana data sources.
+          See "services.grafana.provision.datasources" for type
+          description.
+        '';
+        example = [{
+          name     = "postgres-tsdb";
+          type     = "postgres";
+          database = "testdb";
+          user     = "testuser";
+          editable = false;
+          access   = "direct";
+          url      = "localhost:5432";
+          jsonData = {
+            sslmode = "disable";
+          };
+        }];
       };
 
       grafanaCreds = mkOption {
@@ -533,7 +555,7 @@ in {
               type = "prometheus";
               name = "prometheus";
               url = "http://localhost:9090/prometheus";
-            }];
+            }] ++ cfg.applicationDataSources;
             dashboards = [{
               name = "generic";
               options.path = ./grafana/generic;
