@@ -5,10 +5,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "847e94ad1f3146ded9e17b9920f1d91461fe403d",
-        "sha256": "01iyi7dlirllajhgr61gmpjdbw8n16vyyxjysyns4yc26lm325vn",
+        "rev": "f345d26508966e434d8db57d6c3b4ce4202c9fb5",
+        "sha256": "1xcar2r6jm68dp5s8kc2rii0rcg47w41qc1akazbngkj1x6hf1r2",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/847e94ad1f3146ded9e17b9920f1d91461fe403d.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/f345d26508966e434d8db57d6c3b4ce4202c9fb5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "naersk": {
@@ -33,6 +33,30 @@
         "sha256": "1fgq1nkycm54f431h6wflh6rr7xsq3q2fq9drbgra2fnrsyn65ll",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/niv/archive/c25268460b72cea5b7294354ab019997530a6f3d.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixops": {
+        "branch": "plugination",
+        "description": "NixOps, the NixOS-based cloud deployment tool",
+        "homepage": "https://nixos.org/nixops",
+        "owner": "input-output-hk",
+        "repo": "nixops",
+        "rev": "61d925ab581f1a0938fb69342754d3154b0a4070",
+        "sha256": "02b2f7m80gs1j3j52zg148010bhvwd4nni7j4mrnzjnk0284cx19",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixops/archive/61d925ab581f1a0938fb69342754d3154b0a4070.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixops-aws": {
+        "branch": "poetry2nix-plugins",
+        "description": null,
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "nixops-aws",
+        "rev": "e3403e1665239dc58f57004f067278bfc591840b",
+        "sha256": "0xr01mg1sg5fbyasx2mskgi1z2im0jv3f2li18alzxh3i9igry1k",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixops-aws/archive/e3403e1665239dc58f57004f067278bfc591840b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-core": {
