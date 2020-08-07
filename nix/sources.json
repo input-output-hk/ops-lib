@@ -82,5 +82,17 @@
         "type": "tarball",
         "url": "https://github.com/mozilla/nixpkgs-mozilla/archive/e912ed483e980dfb4666ae0ed17845c4220e5e7c.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-nixops2": {
+        "branch": "master",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "714fac4cc9ba9b0ef29964c8b7fd9d50455aa380",
+        "sha256": "0frby6q42v1pg72vz5n7m31m095k03y28cqfhly0w62n7m7km6ck",
+        "type": "tarball",
+        "url": "https://github.com/nixos/nixpkgs/archive/714fac4cc9ba9b0ef29964c8b7fd9d50455aa380.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
