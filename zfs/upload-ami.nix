@@ -1,11 +1,8 @@
-{ pkgs }:
-
-{ image, regions ? [ "eu-west-1" ], bucket ? "iohk-amis" }:
+{ pkgs, image, regions ? [ "eu-west-1" ], bucket ? "iohk-amis" }:
 
 with pkgs;
-let
-  image = "${image}/nixos.vhd";
-in writeScript "upload-amis" ''
+
+writeScript "upload-amis" ''
   #!${stdenv.shell}
 
   set -e

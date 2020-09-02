@@ -96,6 +96,16 @@ in {
         description = "include a copy of nixpkgs in the ami";
       };
     };
+    zfs.regions = mkOption {
+      type = types.listOf types.str;
+      default = [ "eu-west-1" ];
+      description = "which regions config.system.build.uploadAmi will upload to";
+    };
+    zfs.bucket = mkOption {
+      type = types.str;
+      default = "iohk-amis";
+      description = "bucket used to upload the ami";
+    };
   };
   config = {
     boot = {
@@ -106,5 +116,11 @@ in {
     };
     environment.systemPackages = [ pkgs.cryptsetup ];
     system.build.zfsImage = image;
+    system.build.uploadAmi = import ./upload-ami.nix {
+      inherit pkgs;
+      image = "${config.system.build.zfsImage}/nixos.vhd";
+      regions = config.zfs.regions;
+      bucket = config.zfs.bucket;
+    };
   };
 }
