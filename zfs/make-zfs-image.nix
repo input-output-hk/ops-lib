@@ -1,4 +1,7 @@
 { config, lib, pkgs, ... }:
+
+with lib;
+
 let
   name = "zfs-image";
   poolName = config.zfs.poolName;

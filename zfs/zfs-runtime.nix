@@ -1,4 +1,6 @@
-{ ... }:
+{ config, lib, ... }:
+
+with lib;
 
 let
   poolName = config.zfs.poolName;
@@ -10,8 +12,6 @@ in {
     };
   };
   imports = [
-    <nixpkgs/nixos/modules/profiles/headless.nix>
-    <nixpkgs/nixos/modules/virtualisation/ec2-data.nix>
     #<nixpkgs/nixos/modules/virtualisation/amazon-init.nix>
   ];
   config = {
