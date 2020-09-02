@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ pkgs, config, lib, ... }:
 
 with lib;
 
@@ -22,7 +22,12 @@ in {
       zfs.devNodes = "/dev/";
       kernelParams = [ "console=ttyS0" ];
       initrd = {
-        availableKernelModules = [ "virtio_pci" "virtio_blk" "xen-blkfront" "xen-netfront" "nvme" ];
+        availableKernelModules = [
+          "virtio_pci" "virtio_blk"
+          "xen-blkfront" "xen-netfront"
+          "nvme"
+          "ena"
+        ];
         postDeviceCommands = lib.mkMerge [
           (lib.mkBefore ''
             echo all block devs:
@@ -39,6 +44,7 @@ in {
         ];
         network.enable = true;
         postMountCommands = ''
+          ipconfig -a
           metaDir=$targetRoot/etc/ec2-metadata
           mkdir -m 0755 -p "$metaDir"
 
@@ -73,6 +79,7 @@ in {
       # xen host on aws
       timeServers = [ "169.254.169.123" ];
     };
+    services.udev.packages = [ pkgs.ec2-utils ];
     services.openssh = {
       enable = true;
       permitRootLogin = "prohibit-password";
