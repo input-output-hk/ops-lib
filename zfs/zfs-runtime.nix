@@ -18,7 +18,7 @@ in {
     boot = {
       # growPartition does not support zfs directly, so the above postDeviceCommands use what this puts into PATH
       growPartition = true;
-      loader.grub.device = "/dev/xvda";
+      loader.grub.device = "/dev/sda";
       zfs.devNodes = "/dev/";
       kernelParams = [ "console=ttyS0" ];
       initrd = {
@@ -32,19 +32,28 @@ in {
           (lib.mkBefore ''
             echo all block devs:
             lsblk
-            echo resizing xvda3
-            TMPDIR=/run sh $(type -P growpart) "/dev/xvda" "3"
+            echo and all dev files
+            ls -l /dev/
+            if [ -e /dev/nvme0n1 ]; then
+              ln -sv /dev/nvme0n1 /dev/sda
+            fi
+            echo resizing sda3
+            TMPDIR=/run sh $(type -P growpart) "/dev/sda" "3"
             udevadm settle
           '')
           # zfs mounts within postDeviceCommands so mkBefore and mkAfter must be used
           (lib.mkAfter ''
             echo expanding pool...
-            zpool online -e ${poolName} /dev/xvda3
+            if [ -e /dev/nvme0n1p3 ]; then
+              ln -sv /dev/nvme0n1p3 /dev/sda3
+            fi
+            zpool online -e ${poolName} sda3
+            zpool online -e ${poolName} xvda3
+            zpool online -e ${poolName} nvme0n1p3
           '')
         ];
         network.enable = true;
         postMountCommands = ''
-          ipconfig -a
           metaDir=$targetRoot/etc/ec2-metadata
           mkdir -m 0755 -p "$metaDir"
 

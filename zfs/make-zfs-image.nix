@@ -39,7 +39,7 @@ let
   }).runInLinuxVM (pkgs.runCommand name { inherit preVM postVM; } ''
     export PATH=${lib.makeBinPath (with pkgs; [ nix e2fsprogs zfs utillinux config.system.build.nixos-enter config.system.build.nixos-install ])}:$PATH
 
-    cp -sv /dev/vda /dev/xvda
+    cp -sv /dev/vda /dev/sda
 
     export NIX_STATE_DIR=$TMPDIR/state
     nix-store --load-db < ${closureInfo}/registration

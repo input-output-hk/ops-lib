@@ -133,6 +133,7 @@ writeScript "upload-amis" ''
               --block-device-mappings $blockDeviceMappings \
               $extraFlags | jq -r .ImageId)
             if [ "$ami" = null ]; then break; fi
+            aws ec2 modify-image-attribute --region $region --image-id $ami --launch-permission "Add=[{Group=all}]"
           fi
           echo -n "$ami" > $amiFile
           echo "created AMI $ami of type '$type' in $region..."

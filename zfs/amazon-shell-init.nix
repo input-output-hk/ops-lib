@@ -23,7 +23,7 @@ in {
     restartIfChanged = false;
     unitConfig.X-StopOnRemoval = false;
 
-    path = [ pkgs.awscli config.nix.package pkgs.xz pkgs.gawk pkgs.wget pkgs.curl ];
+    path = [ pkgs.awscli config.nix.package pkgs.gnutar pkgs.xz pkgs.gawk pkgs.wget pkgs.curl ];
 
     serviceConfig = {
       Type = "oneshot";
