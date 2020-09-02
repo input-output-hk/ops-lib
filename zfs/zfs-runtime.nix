@@ -22,9 +22,11 @@ in {
       zfs.devNodes = "/dev/";
       kernelParams = [ "console=ttyS0" ];
       initrd = {
-        availableKernelModules = [ "virtio_pci" "virtio_blk" "xen-blkfront" "xen-netfront" ];
+        availableKernelModules = [ "virtio_pci" "virtio_blk" "xen-blkfront" "xen-netfront" "nvme" ];
         postDeviceCommands = lib.mkMerge [
           (lib.mkBefore ''
+            echo all block devs:
+            lsblk
             echo resizing xvda3
             TMPDIR=/run sh $(type -P growpart) "/dev/xvda" "3"
             udevadm settle
