@@ -60,15 +60,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-packet": {
-        "branch": "c2-medium-reserved-changes",
+        "branch": "cpr-support",
         "description": "NixOps Packet.net Plugin",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "nixops-packet",
-        "rev": "b96a78c57d315bb292318f7fb4f198b1483e188b",
-        "sha256": "15b7x6rilhmg42wmprqjaqadwcn8351a4wkf76m90rfqsk1piw64",
+        "rev": "f7d00f8c0ab55a082afcb9d86e960512f27373f1",
+        "sha256": "1g0p1qkv92d0x6f0r4j8i8r6c8y7zlh12vxhji1idl4zqajfj6c9",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops-packet/archive/b96a78c57d315bb292318f7fb4f198b1483e188b.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-packet/archive/f7d00f8c0ab55a082afcb9d86e960512f27373f1.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-mozilla": {
