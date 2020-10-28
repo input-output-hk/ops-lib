@@ -141,6 +141,13 @@ in {
       keyFile = ../secrets/tarsnap-dev-deployer-readwrite.secret;
     };
   };
+  bench-deployer = { pkgs, ... }: {
+    local.username = "dev";
+    deployment.ec2.ebsInitialRootDiskSize = 2000;
+    users.users.dev = {
+      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom csl-developers;
+    };
+  };
   resources = {
     elasticIPs = let
       ip = {
@@ -151,6 +158,7 @@ in {
       staging-deployer-ip = ip;
       testnet-deployer-ip = ip;
       dev-deployer-ip = ip;
+      bench-deployer-ip = ip;
     };
     ec2KeyPairs.deployers = {
       inherit region accessKeyId;
