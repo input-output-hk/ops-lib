@@ -143,6 +143,7 @@ in {
   };
   bench-deployer = { pkgs, ... }: {
     local.username = "dev";
+    deployment.ec2.instanceType = "c5.4xlarge";
     deployment.ec2.ebsInitialRootDiskSize = pkgs.lib.mkForce 2000;
     users.users.dev = {
       openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom csl-developers;
