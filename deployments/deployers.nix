@@ -63,6 +63,7 @@ in {
       openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
       isNormalUser = true;
     };
+    nix.trustedUsers = [ "root" "ci" ];
     environment.etc."client_ssh_sample".text = lib.concatStringsSep "\n" (map
       (name: ''
         Host ${name}
