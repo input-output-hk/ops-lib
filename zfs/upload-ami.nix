@@ -22,11 +22,11 @@ writeScript "upload-amis" ''
   stores="ebs"
 
   for type in $types; do
-    imageFile=${image}
-    system=x86_64-linux
-    arch=x86_64
+    imageFile="${image}"
+    system="x86_64-linux"
+    arch="x86_64"
     for store in $stores; do
-      bucket=${bucket}
+      bucket="${bucket}"
       bucketDir="$version-$type-$store"
 
       prevAmi=
@@ -37,7 +37,7 @@ writeScript "upload-amis" ''
         description="NixOS $system $version ($type-$store)"
 
         amiFile=$stateDir/$region.$type.$store.ami-id
-        if ! [ -e $amiFile ]; then
+        if ! [ -e "$amiFile" ]; then
           echo "doing $name in $region..."
           if [ -n "$prevAmi" ]; then
             ami=$(aws ec2 copy-image \
@@ -50,30 +50,30 @@ writeScript "upload-amis" ''
             vhdFileLogicalBytes="$(qemu-img info "$vhdFile" | grep ^virtual\ size: | cut -f 2 -d \(  | cut -f 1 -d \ )"
             vhdFileLogicalGigaBytes=$(((vhdFileLogicalBytes-1)/1024/1024/1024+1)) # Round to the next GB
             echo "Disk size is $vhdFileLogicalBytes bytes. Will be registered as $vhdFileLogicalGigaBytes GB."
-            taskId=$(cat $stateDir/$region.$type.task-id 2> /dev/null || true)
-            volId=$(cat $stateDir/$region.$type.vol-id 2> /dev/null || true)
-            snapId=$(cat $stateDir/$region.$type.snap-id 2> /dev/null || true)
+            taskId=$(cat "$stateDir/$region.$type.task-id" 2> /dev/null || true)
+            volId=$(cat "$stateDir/$region.$type.vol-id" 2> /dev/null || true)
+            snapId=$(cat "$stateDir/$region.$type.snap-id" 2> /dev/null || true)
 
-            if [ -z "$snapId" -a -z "$volId" -a -z "$taskId" ]; then
+            if [ -z "$snapId" ] && [ -z "$volId" ] && [ -z "$taskId" ]; then
               echo "importing $vhdFile..."
               taskId=$(ec2-import-volume $vhdFile --no-upload -f vhd \
                 -O "$AWS_ACCESS_KEY_ID" -W "$AWS_SECRET_ACCESS_KEY" \
                 -o "$AWS_ACCESS_KEY_ID" -w "$AWS_SECRET_ACCESS_KEY" \
-                --region "$region" -z "''${region}a" \
+                --region "$region" -z "${region}a" \
                 --bucket "$bucket" --prefix "$bucketDir/" \
                 | tee /dev/stderr \
                 | sed 's/.*\(import-vol-[0-9a-z]\+\).*/\1/ ; t ; d')
-              echo -n "$taskId" > $stateDir/$region.$type.task-id
+              echo -n "$taskId" > "$stateDir/$region.$type.task-id"
             fi
 
-            if [ -z "$snapId" -a -z "$volId" ]; then
+            if [ -z "$snapId" ] && [ -z "$volId" ]; then
               ec2-resume-import  $vhdFile -t "$taskId" --region "$region" \
                 -O "$AWS_ACCESS_KEY_ID" -W "$AWS_SECRET_ACCESS_KEY" \
                 -o "$AWS_ACCESS_KEY_ID" -w "$AWS_SECRET_ACCESS_KEY"
             fi
 
             # Wait for the volume creation to finish.
-            if [ -z "$snapId" -a -z "$volId" ]; then
+            if [ -z "$snapId" ] && [ -z "$volId" ]; then
               echo "waiting for import to finish..."
 
               while true; do
@@ -83,22 +83,22 @@ writeScript "upload-amis" ''
                 echo -n .
                 sleep 10
               done
-              echo -n "$volId" > $stateDir/$region.$type.vol-id
-              aws ec2 create-tags --region $region --resources $volId --tags Key=Rootfs,Value=zfs
+              echo -n "$volId" > "$stateDir/$region.$type.vol-id"
+              aws ec2 create-tags --region "$region" --resources "$volId" --tags Key=Rootfs,Value=zfs
             fi
-            if [ -n "$volId" -a -n "$taskId" ]; then
+            if [ -n "$volId" ] && [ -n "$taskId" ]; then
               echo "removing import task..."
               ec2-delete-disk-image -t "$taskId" --region "$region" \
                 -O "$AWS_ACCESS_KEY_ID" -W "$AWS_SECRET_ACCESS_KEY" \
                 -o "$AWS_ACCESS_KEY_ID" -w "$AWS_SECRET_ACCESS_KEY" || true
-              rm -f $stateDir/$region.$type.task-id
+              rm -f "$stateDir/$region.$type.task-id"
             fi
             if [ -z "$snapId" ]; then
               echo "creating snapshot..."
               snapId=$(aws ec2 create-snapshot --volume-id "$volId" --region "$region" --description "$description" | jq -r .SnapshotId)
               if [ "$snapId" = null ]; then exit 1; fi
-              echo -n "$snapId" > $stateDir/$region.$type.snap-id
-              aws ec2 create-tags --region $region --resources $snapId --tags Key=Rootfs,Value=zfs
+              echo -n "$snapId" > "$stateDir/$region.$type.snap-id"
+              aws ec2 create-tags --region "$region" --resources "$snapId" --tags Key=Rootfs,Value=zfs
             fi
             echo "waiting for snapshot to finish..."
             while true; do
@@ -110,7 +110,7 @@ writeScript "upload-amis" ''
             if [ -n "$volId" ]; then
               echo "deleting volume..."
               aws ec2 delete-volume --volume-id "$volId" --region "$region" || true
-              rm -f $stateDir/$region.$type.vol-id
+              rm -f "$stateDir/$region.$type.vol-id"
             fi
             blockDeviceMappings="DeviceName=/dev/sda1,Ebs={SnapshotId=$snapId,VolumeSize=$vhdFileLogicalGigaBytes,DeleteOnTermination=true,VolumeType=gp2}"
             extraFlags=""
@@ -133,13 +133,13 @@ writeScript "upload-amis" ''
               --block-device-mappings $blockDeviceMappings \
               $extraFlags | jq -r .ImageId)
             if [ "$ami" = null ]; then break; fi
-            aws ec2 modify-image-attribute --region $region --image-id $ami --launch-permission "Add=[{Group=all}]"
+            aws ec2 modify-image-attribute --region "$region" --image-id "$ami" --launch-permission "Add=[{Group=all}]"
           fi
-          echo -n "$ami" > $amiFile
+          echo -n "$ami" > "$amiFile"
           echo "created AMI $ami of type '$type' in $region..."
-          aws ec2 create-tags --region $region --resources $ami --tags Key=Rootfs,Value=zfs
+          aws ec2 create-tags --region "$region" --resources "$ami" --tags Key=Rootfs,Value=zfs
         else
-          ami=$(cat $amiFile)
+          ami=$(cat "$amiFile")
         fi
         echo "region = $region, type = $type, store = $store, ami = $ami"
         if [ -z "$prevAmi" ]; then
