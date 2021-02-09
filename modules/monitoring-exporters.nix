@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, name, ... }:
 
 with lib;
 
@@ -97,6 +97,15 @@ in {
         '';
       };
       networking.firewall.allowedTCPPorts = [ 9113 ];
+    })
+
+    (mkIf (config.services.varnish.enable && cfg.metrics) {
+      services.prometheus.exporters.varnish = {
+        enable = true;
+        group = "varnish";
+        instance = "/var/spool/varnish/${name}";
+      };
+      networking.firewall.allowedTCPPorts = [ 9131 ];
     })
 
     (mkIf cfg.metrics {

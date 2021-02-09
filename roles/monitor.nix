@@ -8,6 +8,7 @@ let
     listToAttrs (attrValues
       (mapAttrs (name: node: nameValuePair "${name}${suffix}" {
         hasNginx = node.config.services.nginx.enable;
+        hasVarnish = node.config.services.varnish.enable;
         applicationMonitoringPorts = node.config.services.monitoring-exporters.extraPrometheusExportersPorts;
       }) nodes));
 
