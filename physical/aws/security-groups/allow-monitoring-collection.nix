@@ -16,6 +16,7 @@
           9100  # prometheus exporters
           9102  # statd exporter
           9113  # nginx exporter
+          9131  # varnish exporter
         ] ++ (pkgs.globals.extraPrometheusExportersPorts or []));
     };
 }

@@ -17,6 +17,11 @@ let
         default = false;
         description = "if nginx stats should be scraped";
       };
+      hasVarnish = mkOption {
+        type = types.bool;
+        default = false;
+        description = "if varnish stats should be scraped";
+      };
       applicationMonitoringPorts = mkOption {
         type = types.listOf types.int;
         default = [];
@@ -248,6 +253,7 @@ in {
         example = {
           c-a-1 = {
             hasNginx = false;
+            hasVarnish = false;
             applicationMonitoringPorts = [ 8000 ];
             labels.role = "core";
           };
@@ -855,6 +861,18 @@ in {
                           "{{$labels.alias}}  number of correctly served requests is less than 50 times the number of requests aborted due to an internal server error";
                       };
                     }
+                    {
+                      alert = "varnish cache too small";
+                      expr = "rate(varnish_main_n_lru_nuked[1m]) > 0";
+                      for = "5m";
+                      labels = {
+                        severity = "page";
+                      };
+                      annotations = {
+                        summary = "{{$labels.alias}}: Too many object are being forcefully evicted from varnish cache due to memory constraints.";
+                        description = "{{$labels.alias}}: Consider increasing varnish malloc limits.";
+                      };
+                    }
                   ];
                 }
                 {
@@ -898,6 +916,18 @@ in {
                 onlyNginx = n: v: v.hasNginx;
               in mapAttrsToList makeNodeConfig
               (filterAttrs onlyNginx cfg.monitoredNodes);
+            }
+            {
+              job_name = "varnish";
+              scrape_interval = "5s";
+              static_configs = let
+                makeNodeConfig = key: value: {
+                  targets = [ "${key}:9131" ];
+                  labels = { alias = key; } // value.labels;
+                };
+                onlyVarnish = n: v: v.hasVarnish;
+              in mapAttrsToList makeNodeConfig
+              (filterAttrs onlyVarnish cfg.monitoredNodes);
             }
           ];
         };
