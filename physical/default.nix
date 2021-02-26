@@ -1,4 +1,4 @@
-{
+pkgs: {
   libvirtd = import ./libvirtd;
-  aws = import ./aws;
+  aws = import ./aws pkgs;
 }

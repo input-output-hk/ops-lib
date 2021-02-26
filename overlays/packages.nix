@@ -4,7 +4,7 @@ let
 in
 {
   iohk-ops-lib = {
-    physical = import ../physical;
+    physical = import ../physical self;
     roles = import ../roles;
     modules = import ../modules;
     ssh-keys = import ./ssh-keys.nix lib;

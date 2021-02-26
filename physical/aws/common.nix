@@ -26,8 +26,6 @@ in {
   };
 
   node = {
-    cpus = aws-instances.${config.deployment.ec2.instanceType}.vCPU;
-    inherit (aws-instances.${config.deployment.ec2.instanceType}) memory;
     inherit accessKeyId region;
     fqdn = "${name}.${domain}";
   };
