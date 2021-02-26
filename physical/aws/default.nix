@@ -24,10 +24,12 @@
   m5-xlarge = import ./m5.xlarge.nix;
 
   m5ad-xlarge = import ./m5ad.xlarge.nix;
+  m5ad-4xlarge = import ./m5ad.4xlarge.nix;
 
   r5-xlarge = import ./r5.xlarge.nix;
 
   r5a-xlarge = import ./r5a.xlarge.nix;
 
   security-groups = import ./security-groups;
+
 }

@@ -52,6 +52,18 @@ with types; {
         default = null;
       };
 
+      cpus = mkOption {
+        type = int;
+        description =
+          "Number of CPUs available (not counting hyper-threading)";
+      };
+
+      memory = mkOption {
+        type = float;
+        description =
+          "main memory size in GB";
+      };
+
       ##
       ## Non-mandatory configuration:
       instanceType = mkOption {
