@@ -14,6 +14,7 @@ in {
   t2-xlarge = mkInstance ./t2.xlarge.nix;
 
   t3-xlarge = mkInstance ./t3.xlarge.nix;
+  t3-2xlarge = mkInstance ./t3.2xlarge.nix;
   t3-2xlargeMonitor = mkInstance ./t3.2xlarge-monitor.nix;
 
   t3a-nano = mkInstance ./t3a.nano.nix;
