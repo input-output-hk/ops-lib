@@ -5,7 +5,7 @@ in
 rec {
   rustc = rustChannel.rust;
   cargo = rustChannel.cargo;
-  rustPlatform = super.recurseIntoAttrs (super.rust.makeRustPlatform {
+  rustPlatform = super.recurseIntoAttrs (super.makeRustPlatform {
     rustc = rustChannel.rust;
     cargo = rustChannel.cargo;
   });
