@@ -4,6 +4,8 @@ with lib;
 
 let
   cfg = config.services.monitoring-services;
+  oauthCfg = config.services.oauth2_proxy;
+  nginxOAuthConfig = oauthCfg.nginx.config;
 in {
 
   options = {
@@ -227,56 +229,6 @@ in {
         example = "monitoring.lan";
       };
 
-      oauth = {
-        enable = mkOption {
-          type = types.bool;
-          default = true;
-          description = ''
-            Enable OAuth authication for all monitoring services.
-          '';
-        };
-        provider = mkOption {
-          type = types.enum [
-            "google"
-            "github"
-            "azure"
-            "gitlab"
-            "linkedin"
-            "myusa"
-          ];
-          default = "google";
-          description = ''
-            OAuth provider.
-          '';
-        };
-        emailDomain = mkOption {
-          type = types.str;
-          description = ''
-            Email domain.
-          '';
-          example = "iohk.io";
-        };
-        clientID = mkOption {
-          type = types.str;
-          description = ''
-            The OAuth Client ID.
-          '';
-          example = "123456.apps.googleusercontent.com";
-        };
-        clientSecret = mkOption {
-          type = types.str;
-          description = ''
-            The OAuth Client Secret.
-          '';
-        };
-        cookie.secret = mkOption {
-          type = types.str;
-          description = ''
-            The seed string for secure cookies.
-          '';
-        };
-      };
-
       pagerDuty.serviceKey = mkOption {
         type = types.nullOr types.str;
         default = null;
@@ -328,6 +280,9 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [
+    {
+      services.oauth2_proxy.nginx.virtualHosts = [ "${cfg.webhost}" ];
+    }
     (lib.mkIf cfg.enableWireguard {
       boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
       networking.firewall.allowedUDPPorts = [ 51820 ];
@@ -339,40 +294,6 @@ in {
         };
       };
     })
-    (lib.mkIf cfg.oauth.enable (let
-      oauthProxyConfig = ''
-        auth_request /oauth2/auth;
-        error_page 401 = /oauth2/sign_in;
-
-        # pass information via X-User and X-Email headers to backend,
-        # requires running with --set-xauthrequest flag
-        auth_request_set $user   $upstream_http_x_auth_request_user;
-        auth_request_set $email  $upstream_http_x_auth_request_email;
-        proxy_set_header X-User  $user;
-        proxy_set_header X-Email $email;
-
-        # if you enabled --cookie-refresh, this is needed for it to work with auth_request
-        auth_request_set $auth_cookie $upstream_http_set_cookie;
-        add_header Set-Cookie $auth_cookie;
-      '';
-    in {
-      services = {
-        oauth2_proxy = {
-          enable = true;
-          inherit (cfg.oauth) clientID clientSecret cookie provider;
-          email.domains = [ "${cfg.oauth.emailDomain}" ];
-          nginx.virtualHosts = [ "${cfg.webhost}" ];
-          setXauthrequest = true;
-        };
-        nginx.virtualHosts."${cfg.webhost}".locations = {
-          "/prometheus/".extraConfig = oauthProxyConfig;
-          "/alertmanager/".extraConfig = oauthProxyConfig;
-          "/graylog/".extraConfig = oauthProxyConfig;
-        } // (optionalAttrs (!cfg.publicGrafana) {
-          "/grafana/".extraConfig = oauthProxyConfig;
-        });
-      };
-    }))
     {
       networking.firewall.allowedTCPPorts = [ 80 ];
       environment.systemPackages = with pkgs; [ goaccess ];
@@ -479,6 +400,7 @@ in {
           enable = true;
           virtualHosts."${cfg.webhost}".locations = {
             "/grafana/".extraConfig = ''
+              ${optionalString (!cfg.publicGrafana) nginxOAuthConfig}
               proxy_pass http://localhost:3000/;
               proxy_set_header Host $host;
               proxy_set_header REMOTE_ADDR $remote_addr;
@@ -486,6 +408,7 @@ in {
               proxy_set_header X-Forwarded-Proto https;
             '';
             "/prometheus/".extraConfig = ''
+              ${nginxOAuthConfig}
               proxy_pass http://localhost:9090/prometheus/;
               proxy_set_header Host $host;
               proxy_set_header REMOTE_ADDR $remote_addr;
@@ -493,6 +416,7 @@ in {
               proxy_set_header X-Forwarded-Proto https;
             '';
             "/alertmanager/".extraConfig = ''
+              ${nginxOAuthConfig}
               proxy_pass http://localhost:9093/;
               proxy_set_header Host $host;
               proxy_set_header REMOTE_ADDR $remote_addr;
@@ -508,10 +432,10 @@ in {
           addr = "";
           domain = "${cfg.webhost}";
           rootUrl = "%(protocol)ss://%(domain)s/grafana/";
-          extraOptions = lib.mkIf cfg.oauth.enable {
-            AUTH_GOOGLE_ENABLED = "true";
-            AUTH_GOOGLE_CLIENT_ID = cfg.oauth.clientID;
-            AUTH_GOOGLE_CLIENT_SECRET = cfg.oauth.clientSecret;
+          extraOptions = lib.mkIf oauthCfg.enable {
+            AUTH_PROXY_ENABLED = "true";
+            AUTH_PROXY_HEADER_NAME = "X-User";
+            AUTH_PROXY_HEADERS = "Email:X-Email";
           };
           provision = {
             enable = true;
@@ -885,6 +809,7 @@ in {
           enable = true;
           virtualHosts."${cfg.webhost}".locations = {
             "/graylog/".extraConfig = ''
+              ${nginxOAuthConfig}
               proxy_set_header Host $host;
               proxy_set_header REMOTE_ADDR $remote_addr;
               proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
