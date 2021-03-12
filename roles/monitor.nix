@@ -2,39 +2,63 @@
 let
 
   inherit (pkgs.globals) static;
-  inherit (lib) mapAttrs hasPrefix listToAttrs attrValues nameValuePair;
+  inherit (lib) attrNames filterAttrs attrValues mapAttrsToList groupBy' mkOption types concatMap;
 
-  mkMonitoredNodes = suffix:
-    listToAttrs (attrValues
-      (mapAttrs (name: node: nameValuePair "${name}${suffix}" {
-        hasNginx = node.config.services.nginx.enable;
-        hasVarnish = node.config.services.varnish.enable;
-        applicationMonitoringPorts = node.config.services.monitoring-exporters.extraPrometheusExportersPorts;
-      }) nodes));
+  cfg = config.services.monitoring-services;
 
-  monitoredNodes = {
-    ec2 = mkMonitoredNodes "-ip";
-    libvirtd = mkMonitoredNodes "";
-    packet = mkMonitoredNodes "";
-  };
+  nodeAddr = let
+    suffix = {
+      ec2 = "-ip";
+      libvirtd = "";
+      packet = "";
+    }.${config.deployment.targetEnv};
+    in name: "${name}${suffix}";
+
+  scrapeConfigs = let
+    nodeConfigs = concatMap
+      (name: map (c: c // { inherit name;}) nodes.${name}.config.services.monitoring-exporters.extraPrometheusExporters)
+      cfg.monitoredNodes;
+    key = scrapeConfig: filterAttrs (_: v: v != null)
+      (builtins.removeAttrs scrapeConfig ["_module" "name" "port" "labels"]);
+    nodeStaticConfig = c: {
+      targets = [ "${nodeAddr c.name}:${toString c.port}" ];
+      labels = { alias = c.name; hostname = nodeAddr c.name; } // (c.labels or {});
+    };
+  in attrValues (groupBy'
+    (scrapeConfig: c: if (scrapeConfig == {})
+      then (key c) // { static_configs = [(nodeStaticConfig c)]; }
+      else scrapeConfig // { static_configs = scrapeConfig.static_configs ++ [(nodeStaticConfig c)]; }
+    ) {} (c: builtins.toJSON (key c)) nodeConfigs);
 
 in {
   imports = [ ../modules/monitoring-services.nix ../modules/common.nix ];
-
-  services.monitoring-services = {
-    enable = true;
-    webhost = config.node.fqdn;
-    enableACME = config.deployment.targetEnv != "libvirtd";
-
-    inherit (static)
-      deadMansSnitch
-      grafanaCreds
-      graylogCreds
-      oauth
-      pagerDuty;
-
-    monitoredNodes = monitoredNodes.${config.deployment.targetEnv};
+  options = {
+    services.monitoring-services.monitoredNodes = mkOption {
+      type = types.listOf types.str;
+      default = attrNames (filterAttrs (_: node: node.config.services.monitoring-exporters.metrics) nodes);
+      description = ''
+        List of Nodes to be monitored, associated with their address.
+        Default to all nodes with services.monitoring-exporters.metrics true.
+      '';
+      example = [ "c-a-1" ];
+    };
   };
+  config = {
+    services.monitoring-services = {
+      enable = true;
+      webhost = config.node.fqdn;
+      enableACME = config.deployment.targetEnv != "libvirtd";
 
-  services.elasticsearch.extraJavaOptions = [ "-Xms6g" "-Xmx6g" ];
+      inherit (static)
+        deadMansSnitch
+        grafanaCreds
+        graylogCreds
+        oauth
+        pagerDuty;
+    };
+
+    services.prometheus = { inherit scrapeConfigs; };
+
+    services.elasticsearch.extraJavaOptions = [ "-Xms6g" "-Xmx6g" ];
+  };
 }

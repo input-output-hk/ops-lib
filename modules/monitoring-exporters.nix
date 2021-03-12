@@ -1,8 +1,31 @@
-{ config, pkgs, lib, name, ... }:
+{ config, options, pkgs, lib, name, ... }:
 
 with lib;
 
-let cfg = config.services.monitoring-exporters;
+let
+  cfg = config.services.monitoring-exporters;
+  extraExporterOpts = {
+    options =
+      # We resuse options defined in services.prometheus.scrapeConfigs, in a somewhat hacky way...
+      let scrapeConfigOpts = (builtins.head (builtins.head options.services.prometheus.scrapeConfigs.type.functor.wrapped.getSubModules).imports).options;
+      in removeAttrs scrapeConfigOpts ["static_configs"] // {
+        port = mkOption {
+          type = types.int;
+          default = 80;
+          description = ''
+            Monitoring target port.
+          '';
+        };
+        labels = mkOption {
+          type = types.attrsOf types.str;
+          default = {};
+          description = ''
+            Labels assigned to all metrics scraped from the targets.
+          '';
+        };
+      };
+  };
+
 in {
 
   options = {
@@ -21,7 +44,7 @@ in {
 
       metrics = mkOption {
         type = types.bool;
-        default = true;
+        default = cfg.enable;
         description = ''
           Enable metrics exporters via prometheus, statsd
           and nginx.
@@ -42,14 +65,48 @@ in {
       extraPrometheusExportersPorts = mkOption {
         type = types.listOf types.int;
         default = [];
+        apply = list: [ 9100 9102 ] ++ list;
         description = ''
           Ports of application specific prometheus exporters.
         '';
       };
 
+      extraPrometheusExporters = mkOption {
+        default = [];
+        type = with types; listOf (submodule extraExporterOpts);
+        apply = exporters: lib.optional (config.services.nginx.enable) {
+            job_name = "nginx";
+            scrape_interval = "5s";
+            metrics_path = "/status/format/prometheus";
+            port = 9113;
+          } ++ lib.optional (config.services.varnish.enable) {
+            job_name = "varnish";
+            scrape_interval = "5s";
+            port = 9131;
+          } ++ map (port : {
+            job_name = "node";
+            scrape_interval = "10s";
+            inherit port;
+            }) cfg.extraPrometheusExportersPorts
+          ++ exporters;
+        description = ''
+          A list of additional scrape configurations for this host.
+        '';
+        example = literalExample ''
+          [
+            {
+              job_name = "netdata";
+              scrape_interval = "60s";
+              metrics_path = "/api/v1/allmetrics?format=prometheus";
+              port = globals.netdataExporterPort;
+            };
+          ]
+        '';
+      };
+
       logging = mkOption {
         type = types.bool;
-        default = true;
+        default = cfg.enable;
         description = ''
           Enable logging exporter via journalbeat to graylog.
           See also the corresponding logging server option in
@@ -144,7 +201,7 @@ in {
           ];
         };
       };
-      networking.firewall.allowedTCPPorts = [ 9100 9102 ] ++ cfg.extraPrometheusExportersPorts;
+      networking.firewall.allowedTCPPorts = map (e: e.port) cfg.extraPrometheusExporters;
     })
 
     (mkIf cfg.logging {

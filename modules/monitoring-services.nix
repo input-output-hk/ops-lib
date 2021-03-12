@@ -4,32 +4,6 @@ with lib;
 
 let
   cfg = config.services.monitoring-services;
-  monitoredNodeOptions = { name, config, ... }: {
-    options = {
-      name = mkOption { type = types.str; };
-      labels = mkOption {
-        type = types.attrs;
-        default = { };
-        description = "Labels to add in prometheus";
-      };
-      hasNginx = mkOption {
-        type = types.bool;
-        default = false;
-        description = "if nginx stats should be scraped";
-      };
-      hasVarnish = mkOption {
-        type = types.bool;
-        default = false;
-        description = "if varnish stats should be scraped";
-      };
-      applicationMonitoringPorts = mkOption {
-        type = types.listOf types.int;
-        default = [];
-        description = "List of extra prometheus exporter that should be scraped";
-      };
-    };
-    config = { name = mkDefault name; };
-  };
 in {
 
   options = {
@@ -242,22 +216,6 @@ in {
         description = ''
           How many Elasticsearch indices do you want to keep?
         '';
-      };
-
-      monitoredNodes = mkOption {
-        type = types.attrsOf (types.submodule monitoredNodeOptions);
-        default = { };
-        description = ''
-          Attribute set of Nodes to be monitored.
-        '';
-        example = {
-          c-a-1 = {
-            hasNginx = false;
-            hasVarnish = false;
-            applicationMonitoringPorts = [ 8000 ];
-            labels.role = "core";
-          };
-        };
       };
 
       webhost = mkOption {
@@ -892,42 +850,6 @@ in {
                 targets = [ "localhost:9090" ];
                 labels = { alias = "prometheus"; };
               }];
-            }
-            {
-              job_name = "node";
-              scrape_interval = "10s";
-              static_configs = let
-                makeNodeConfig = key: value: {
-                  targets = [ "${key}:9100" "${key}:9102" ]
-                    ++ map (p: "${key}:${toString p}") value.applicationMonitoringPorts;
-                  labels = { alias = key; } // value.labels;
-                };
-              in mapAttrsToList makeNodeConfig cfg.monitoredNodes;
-            }
-            {
-              job_name = "nginx";
-              scrape_interval = "5s";
-              metrics_path = "/status/format/prometheus";
-              static_configs = let
-                makeNodeConfig = key: value: {
-                  targets = [ "${key}:9113" ];
-                  labels = { alias = key; } // value.labels;
-                };
-                onlyNginx = n: v: v.hasNginx;
-              in mapAttrsToList makeNodeConfig
-              (filterAttrs onlyNginx cfg.monitoredNodes);
-            }
-            {
-              job_name = "varnish";
-              scrape_interval = "5s";
-              static_configs = let
-                makeNodeConfig = key: value: {
-                  targets = [ "${key}:9131" ];
-                  labels = { alias = key; } // value.labels;
-                };
-                onlyVarnish = n: v: v.hasVarnish;
-              in mapAttrsToList makeNodeConfig
-              (filterAttrs onlyVarnish cfg.monitoredNodes);
             }
           ];
         };
