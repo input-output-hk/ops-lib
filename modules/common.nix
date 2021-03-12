@@ -55,7 +55,12 @@ in {
         '';
       };
 
-      ntp.enable = true;
+      chrony = {
+        enable = true;
+        extraConfig = ''
+          allow 127/8
+        '';
+      };
       cron.enable = true;
     };
 

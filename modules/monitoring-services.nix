@@ -796,7 +796,8 @@ in {
                     {
                       alert = "node_time_unsync";
                       expr =
-                        "abs(node_timex_offset_seconds) > 0.500 or node_timex_sync_status != 1";
+                        "abs(node_timex_offset_seconds) > 0.500 or
+                          (min_over_time(node_timex_sync_status[2m]) == 0 and node_timex_maxerror_seconds >= 16)";
                       for = "5m";
                       labels = { severity = "page"; };
                       annotations = {
