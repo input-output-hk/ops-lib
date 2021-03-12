@@ -23,4 +23,9 @@ in
   aws-instances = builtins.listToAttrs (map (i: lib.nameValuePair i.instance_type i)
     (builtins.fromJSON (builtins.readFile ./aws-instances.json)));
 
+  # workaround https://github.com/NixOS/nixpkgs/issues/47900
+  awscli2 = (super.awscli2.overrideAttrs (old: {
+    makeWrapperArgs = (old.makeWrapperArgs or []) ++ ["--unset" "PYTHONPATH"];
+  }));
+
 }
