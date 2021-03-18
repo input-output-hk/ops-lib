@@ -55,7 +55,7 @@ in {
         '';
       };
 
-      ntp.enable = true;
+      timesyncd.enable = true;
       cron.enable = true;
     };
 

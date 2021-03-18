@@ -191,7 +191,6 @@ in {
             "netstat"
             "stat"
             "time"
-            "ntp"
             "timex"
             "vmstat"
             "logind"
