@@ -4,7 +4,7 @@ let
   devOpsKeys = allKeysFrom devOps;
 in {
 
-  imports = [ ./aws.nix ./monitoring-exporters.nix ];
+  imports = [ ./aws.nix ./monitoring-exporters.nix ./oauth.nix ];
   options = {
     local.commonGivesVim = lib.mkOption {
       default = true;

@@ -53,9 +53,10 @@ in {
         deadMansSnitch
         grafanaCreds
         graylogCreds
-        oauth
         pagerDuty;
     };
+
+    services.oauth2_proxy.enable = lib.mkDefault true;
 
     services.prometheus = { inherit scrapeConfigs; };
 
