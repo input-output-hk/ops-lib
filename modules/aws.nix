@@ -59,7 +59,7 @@ with types; {
       };
 
       memory = mkOption {
-        type = float;
+        type = int;
         description =
           "main memory size in GB";
       };

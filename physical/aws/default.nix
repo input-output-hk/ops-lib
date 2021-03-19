@@ -1,11 +1,14 @@
 pkgs: with pkgs;
-let mkInstance = p: let i = import p { inherit pkgs lib; }; in lib.recursiveUpdate i {
-    # those data need to be available without the module system:
-    node = {
-      cpus = aws-instances.${i.deployment.ec2.instanceType}.vCPU;
-      inherit (aws-instances.${i.deployment.ec2.instanceType}) memory;
-    };
-  };
+let
+  /* Round a float to integer, toward 0. */
+  roundToInt = f: lib.toInt (lib.head (lib.splitString "." (toString f)));
+  mkInstance = p: let i = import p { inherit pkgs lib; }; in lib.recursiveUpdate i {
+     # those data need to be available without the module system:
+     node = {
+       cpus = aws-instances.${i.deployment.ec2.instanceType}.vCPU;
+       memory = roundToInt aws-instances.${i.deployment.ec2.instanceType}.memory;
+     };
+   };
 in {
   targetEnv = "ec2";
 
