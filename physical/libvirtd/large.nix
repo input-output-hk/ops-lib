@@ -1,4 +1,6 @@
-{ pkgs, ... }: {
-  imports = [ ./common.nix ];
-  deployment.libvirtd.memorySize = 8 * 1024;
+{
+  node = {
+    cpus = 3;
+    memory = 8;
+  };
 }
