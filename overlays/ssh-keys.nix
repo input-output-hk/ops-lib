@@ -70,6 +70,11 @@ lib: {
   mantis-developers = {
     alan           = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDF+B5wsIXGPdlAxdyqmXk+YBKOBcKgZQ8rVaKLmhDwtUud16210oznwHbccySxxweEAyFfvgMWh9u7XhXTXcF886Pl1YFFCTcbJmxN LKXVkmMqiM0E9/zd5OpxmqbPYCpLwsL+U/V4DOT0JmvdmJo8uKfwmXp+PoVd5vAeDjeeR/YUC5zcc68orFq1jt1gC62k1E/0DX3tOpGcvQVPCe5od26A9GIGfHwnuWYDX8ku7WCCALrm FGv8FiL2sC1RzTRdCi+bdA4YWyLpa54nZ5IzxIPvFhe/LAcfdDOi2B9/1ICUc7Y++BFjYFlkqV0//EOmsDHv53pTCykSZoS2DIqF alan@dreadnought" ];
   };
+  
+  plutus-developers = {
+    michaelpj      = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCh4N9CeS7WusC/Fl16SUdZBCCqTzGzZE4nsoyMCxXWgbZ3n+PEV1L6nXkaNViQfanEu/jZyteFGu9r17id+N8MyJgBCrjismmjnFQJF221rlbOzj5BsoS6MU1SZZMuhz0IIJ5a8vS0wvTvjhids9D7iK2jBb26enzyo7+6nx4s5yi3nhbKhwIGZKwaWjMY73MHu5jTGObLGoWsVDF7fVudOGpxjI3aP63fhNcMtJ10hd5HS7bsBl+LCDWZ9hMknsD2vsvRM2CJJn7bRlHp4CrvZRvO6eXvwfgGFxBV9Jf27nCp04kBO4hc82rR/h/haStEmus+J7slDjTo38yKpeJVVwuB4RUgDTYh8AE186mSa/RtIlg1PjmvMmKVRe/bi1gYJk7pUk2vxwqk1mxzYFcgW5ff+i1jUBiYaSios8ETxoAw3a6YnUZ/Un2IBdozrmPICyOZFvU02TFE1bIBGNudn9EKmwVboUJwBjCccXK+8uJXrhos1SWLvTLIOrH6qok= michael.peyton-jones@iohk.io" ];
+    kenneth        = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAr/gslNL1LntKBlqbSGFn9soRwizJfYU2vM45oTMMbroKg9SrsMU9CtXElV5j4rAqSN/8wf5g0aP8E+u1B4IklT6qrnp9kTNq6YDqYXCi/39mqdl4rKvY/hRFrgaxMbQg6PU7lLaT+p2WPsMbjZ/Cr5hlT0PEspH1ucEnfs33RPYNwfN4HJt8zLjuZsHAWJCzRAr14CKze47yVhour5q18N5V668Gz54TW5vh9Af0jVleudgmMTw6uiIxVfCXDih5ir7iLrxCuLdY5+Ljm5ff2atcHehUTOYOhBAa71sKcvyiL21PF1PglHpp2+JOFmEXjzSOh1Ujt2alaUruE9NNjw== kwxm@pomegranate" ];
+  };
 
   # Keys to allow remote nix-builds
   #
