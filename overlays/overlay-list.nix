@@ -1,7 +1,5 @@
-[
+withRustOverlays: [
   ./packages.nix
-  ./niv.nix
   ./nixops.nix
   ./nginx-monitoring.nix
-  ./rust.nix
-]
+] ++ (if withRustOverlays then [ ./rust.nix ] else [])
