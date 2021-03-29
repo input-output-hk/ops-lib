@@ -28,9 +28,10 @@ in {
 
   config = {
     services = {
-      oauth2_proxy = {
+      oauth2_proxy = let staticConf = pkgs.globals.static.oauth or {}; in {
         setXauthrequest = mkDefault true;
-      } // (mapAttrsRecursive (_: mkDefault) (pkgs.globals.static.oauth or {}));
+      } // staticConf
+      // (mapAttrsRecursive (_: mkDefault) (removeAttrs staticConf ["alphaConfig"]));
     };
   };
 }
