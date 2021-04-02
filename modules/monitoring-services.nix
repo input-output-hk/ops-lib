@@ -557,6 +557,18 @@ in {
                       prober = "http";
                       timeout = "5s";
                     };
+                    https_explorer_post_2xx = {
+                      prober = "http";
+                      timeout = "5s";
+                      http = {
+                        fail_if_not_ssl = true;
+                        method = "POST";
+                        headers = {
+                          Content-Type = "application/json";
+                        };
+                        body = ''{"query": "{\n  ada {\n    supply {\n      total\n    }\n  }\n}\n"}'';
+                      };
+                    };
                     ssh_banner = {
                       prober = "tcp";
                       timeout = "10s";
