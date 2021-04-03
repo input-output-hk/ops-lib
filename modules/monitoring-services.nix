@@ -550,16 +550,16 @@ in {
                   modules = {
                     https_2xx = {
                       prober = "http";
-                      timeout = "5s";
+                      timeout = "10s";
                       http = { fail_if_not_ssl = true; };
                     };
                     htts_2xx = {
                       prober = "http";
-                      timeout = "5s";
+                      timeout = "10s";
                     };
                     https_explorer_post_2xx = {
                       prober = "http";
-                      timeout = "5s";
+                      timeout = "10s";
                       http = {
                         fail_if_not_ssl = true;
                         method = "POST";
