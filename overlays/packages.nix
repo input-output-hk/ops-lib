@@ -28,4 +28,26 @@ in
     makeWrapperArgs = (old.makeWrapperArgs or []) ++ ["--unset" "PYTHONPATH"];
   }));
 
+  mkBlackboxScrapeConfig = job_name: module: targets: {
+    inherit job_name;
+    scrape_interval = "60s";
+    metrics_path = "/probe";
+    params = { inherit module; };
+    static_configs = [ { inherit targets; } ];
+    relabel_configs = [
+      {
+        source_labels = [ "__address__" ];
+        target_label = "__param_target";
+      }
+      {
+        source_labels = [ "__param_target" ];
+        target_label = "instance";
+      }
+      {
+        replacement = "127.0.0.1:9115";
+        target_label = "__address__";
+      }
+    ];
+  };
+
 }

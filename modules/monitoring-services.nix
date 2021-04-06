@@ -550,12 +550,12 @@ in {
                   modules = {
                     https_2xx = {
                       prober = "http";
-                      timeout = "5s";
+                      timeout = "10s";
                       http = { fail_if_not_ssl = true; };
                     };
                     htts_2xx = {
                       prober = "http";
-                      timeout = "5s";
+                      timeout = "10s";
                     };
                     ssh_banner = {
                       prober = "tcp";
@@ -582,7 +582,7 @@ in {
                       timeout = "5s";
                       icmp = { preferred_ip_protocol = "ip6"; };
                     };
-                  };
+                  } // (pkgs.globals.extraPrometheusBlackboxExporterModules or {});
                 });
             };
           };
@@ -693,13 +693,13 @@ in {
                       };
                     }
                     {
-                      alert = "node_ram_using_99percent";
+                      alert = "node_ram_using_90percent";
                       expr =
-                        "node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes < node_memory_MemTotal_bytes * 0.01";
+                        "node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes < node_memory_MemTotal_bytes * 0.10";
                       for = "30m";
                       labels = { severity = "page"; };
                       annotations = {
-                        summary = "{{$labels.alias}}: Using lots of RAM.";
+                        summary = "{{$labels.alias}}: High RAM utilization.";
                         description =
                           "{{$labels.alias}} is using at least 90% of its RAM for at least 30 minutes now.";
                       };
