@@ -40,6 +40,10 @@ with types; {
         default = false;
       };
 
+      roles.class = lib.mkOption {
+        type = lib.types.str;
+      };
+
       accessKeyId = mkOption {
         type = str;
         description = "Access key ID.";

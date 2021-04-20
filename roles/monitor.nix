@@ -22,7 +22,12 @@ let
       (builtins.removeAttrs scrapeConfig ["_module" "name" "port" "labels"]);
     nodeStaticConfig = c: {
       targets = [ "${nodeAddr c.name}:${toString c.port}" ];
-      labels = { alias = c.name; hostname = nodeAddr c.name; } // (c.labels or {});
+      labels = {
+        alias = c.name;
+        hostname = nodeAddr c.name;
+        class = nodes.${c.name}.config.node.roles.class;
+        cpus = toString nodes.${c.name}.config.node.cpus;
+      } // (c.labels or {});
     };
   in attrValues (groupBy'
     (scrapeConfig: c: if (scrapeConfig == {})
