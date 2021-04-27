@@ -706,8 +706,8 @@ in {
                     }
                     {
                       alert = "node_swap_using_80percent";
-                      expr =
-                        "node_memory_SwapTotal_bytes - (node_memory_SwapFree_bytes + node_memory_SwapCached_bytes) > node_memory_SwapTotal_bytes * 0.8";
+                      expr = ''
+                        node_memory_SwapTotal_bytes{alias!="packet-ipxe-hydra-1"} - (node_memory_SwapFree_bytes{alias!="packet-ipxe-hydra-1"} + node_memory_SwapCached_bytes{alias!="packet-ipxe-hydra-1"}) > node_memory_SwapTotal_bytes{alias!="packet-ipxe-hydra-1"} * 0.8'';
                       for = "10m";
                       labels = { severity = "page"; };
                       annotations = {
