@@ -386,7 +386,7 @@ in {
         # https://grafana.com/docs/auth/auth-proxy/
         AUTH_PROXY_ENABLED = "true";
         AUTH_PROXY_HEADER_NAME = "X-Email";
-        AUTH_PROXY_HEADER_PROPERTY = "email";
+        AUTH_PROXY_HEADER_PROPERTY = "username";
         AUTH_PROXY_AUTO_SIGN_UP = "true";
         AUTH_PROXY_WHITELIST =
           "127.0.0.1, ::1"; # only trust nginx to claim usernames
