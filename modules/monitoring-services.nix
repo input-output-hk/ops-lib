@@ -434,7 +434,8 @@ in {
           rootUrl = "%(protocol)ss://%(domain)s/grafana/";
           extraOptions = lib.mkIf oauthCfg.enable {
             AUTH_PROXY_ENABLED = "true";
-            AUTH_PROXY_HEADER_NAME = "X-User";
+            AUTH_PROXY_HEADER_NAME = "X-Email";
+            AUTH_PROXY_HEADER_PROPERTY = "username";
             AUTH_PROXY_HEADERS = "Email:X-Email";
           };
           provision = {
