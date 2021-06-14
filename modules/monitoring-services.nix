@@ -788,7 +788,7 @@ in {
       networking.firewall.allowedTCPPorts = [ 5044 ];
       systemd.services.graylog = {
         environment.JAVA_OPTS = ''
-          -Djava.library.path=${pkgs.graylog}/lib/sigar -Xms3g -Xmx3g -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:+UseParNewGC -XX:-OmitStackTraceInFastThrow
+          -Djava.library.path=${pkgs.graylog}/lib/sigar -Xms3g -Xmx3g -XX:NewRatio=1 -server -XX:+ResizeTLAB -XX:-OmitStackTraceInFastThrow
         '';
         environment.JAVA_HOME =
           lib.mkForce pkgs.jre_headless; # until fix gets upstreamed
