@@ -54,6 +54,7 @@ lib: {
     mior           = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCz+7i/QHmJGn7CjP35g3pLzEkOTrY3Ru4XNKVIHgT6Fo65qWLndMd8OqDn8BULcBlaFJlf8Ff/Qyn0a4h7gYkZZ5y5WGLVvCJWY4YV9JZg02joqINEx13tVIV3hlQFzj2jwHpdd1GDr9XJzeL6XV9Civ2fg8bHEbPc0CgaHUGTX+PgR8Pf3YqSk8Ru7hefNCOyCoPtsQz6rgLA6eRIeN1sL71xJgPFKtfwUgQlXHaGN3MlnK4/a47yFkW4T627gMIOYOevF9I/yw4CxS88/imZsown+3dvLn77OCOClYh8UIUgP/z1q4NjP4Yzwl+kNbtt82CEKVS8yaa6w40iRGXL2hDMb67pNfdVyhHq1/RKNDi9zxxwFuY610N9eS75uezd1Ew0WW2TJccZ3RePP5j/2rK5CV9r5LDiI0Qx8HZD8JIqrQYooxW202vg/0ioKIcvLpOOIpIcuA2kMzchWFSjoh8sCBoDQhN6sCU8VTHyemg24OG8Z6bAPKROAtE1GNs= ms@ms-VirtualBox"];
     rhys           = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIRpi9cJaa+MIoeOPRcPQzuSaPwbeDUY/Me8AWHoPd5h rhys.bartelswaller@iohk.io" ];
     tsenguun       = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQBcbKV1ru917kk95p1GgEnjr185I+Rgq+xVHnHP7FCR3gRGm3o/QdotIFb5wQb7/jhNbF4lHNvpfvWOxPGHFfFJ7XU8DLW539YR4ed20btnpHl6DTfINpWl8I6lwzT/XWLooVSPhTky9ZvsuIihv9XffGcTf+GQyJ1KQxURHEe7roapih0ea++sw+DFf1uSGlNpV+XVFZgLi3iTEvTI0yzm33pZ2ZzYlWWrzf2AILRJ1A0mYW5bAPInmXOX0LcOW0c06s79JuZ9Co+sDVDSJbUXKJIkEt++SOwzc58aYRRFuTun3rNb0FBpAizjLNswQwSCVuPDKAKaIHEvOKGYJ6n5 tuvshintsenguun.erdenejargal@iohk.io" ];
+    kchaires       = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICuEp7B+GEWg0jBAUG8wAo5BPhPGImf2dB//ySZvqgji karina.lopez@iohk.io" ];
   };
 
   # Mantis devops keys:
