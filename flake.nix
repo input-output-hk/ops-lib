@@ -31,10 +31,9 @@
       #        mantis-docker.x86_64-linux = <drv>;
       #    };}
       mkHydraUtils = mkPkgs: let
-        # nothing in lib should really depend on the system
-        libPkgs = mkPkgs "x86_64-linux";
+        inherit (nixpkgs) lib;
         # [attrset] -> attrset
-        recursiveMerge = libPkgs.lib.foldr libPkgs.lib.recursiveUpdate {};
+        recursiveMerge = lib.foldr lib.recursiveUpdate {};
         mkHydraJobsForSystem = attrs: system:
             recursiveMerge (map (n: { "${n}"."${system}" = (mkPkgs system)."${n}"; }) attrs);
       in {
