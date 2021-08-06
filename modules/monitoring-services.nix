@@ -745,15 +745,15 @@ in {
                       };
                     }
                     {
-                      alert = "varnish cache too small";
-                      expr = "rate(varnish_main_n_lru_nuked[1m]) > 0";
-                      for = "5m";
+                      alert = "varnish cache too small or ttl too long";
+                      expr = "(rate(varnish_main_n_lru_nuked[5m]) - rate(varnish_main_n_expired[5m])) / rate(varnish_main_n_object[5m]) > 0.005";
+                      for = "10m";
                       labels = {
                         severity = "page";
                       };
                       annotations = {
-                        summary = "{{$labels.alias}}: Too many object are being forcefully evicted from varnish cache due to memory constraints.";
-                        description = "{{$labels.alias}}: Consider increasing varnish malloc limits.";
+                        summary = "{{$labels.alias}}: Too many object (>1%) are being forcefully evicted from varnish cache due to memory constraints.";
+                        description = "{{$labels.alias}}: Consider increasing varnish malloc limit or decreasing beresp.ttl";
                       };
                     }
                   ];
