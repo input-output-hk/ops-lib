@@ -746,13 +746,13 @@ in {
                     }
                     {
                       alert = "varnish cache too small or ttl too long";
-                      expr = "(rate(varnish_main_n_lru_nuked[5m]) - rate(varnish_main_n_expired[5m])) / rate(varnish_main_n_object[5m]) > 0.005";
-                      for = "10m";
+                      expr = "rate(varnish_main_n_lru_nuked[30m]) > 5 * rate(varnish_main_n_expired[30m])";
+                      for = "1h";
                       labels = {
                         severity = "page";
                       };
                       annotations = {
-                        summary = "{{$labels.alias}}: Too many object (>1%) are being forcefully evicted from varnish cache due to memory constraints.";
+                        summary = "{{$labels.alias}}: Too many objects (5 times the number of expiring objects) are being forcefully evicted from varnish cache due to memory constraints.";
                         description = "{{$labels.alias}}: Consider increasing varnish malloc limit or decreasing beresp.ttl";
                       };
                     }
