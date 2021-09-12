@@ -609,7 +609,7 @@ in {
                   rules = [
                     {
                       alert = "node_down";
-                      expr = let intermittentMonitoringTargets = pkgs.globals.intermittentMonitoringTarget or [];
+                      expr = let intermittentMonitoringTargets = pkgs.globals.intermittentMonitoringTargets or [];
                        in "up${optionalString (intermittentMonitoringTargets != []) ''{alias!~"${concatStringsSep "|" intermittentMonitoringTargets}"}''} == 0";
                       for = "5m";
                       labels = { severity = "page"; };
