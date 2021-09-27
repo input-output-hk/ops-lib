@@ -40,8 +40,10 @@ in {
   m5ad-4xlarge = mkInstance ./m5ad.4xlarge.nix;
 
   r5-xlarge = mkInstance ./r5.xlarge.nix;
+  r5-2xlarge = mkInstance ./r5.2xlarge.nix;
 
   r5a-xlarge = mkInstance ./r5a.xlarge.nix;
+  r5a-2xlarge = mkInstance ./r5a.2xlarge.nix;
 
   security-groups = import ./security-groups;
 
