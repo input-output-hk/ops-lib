@@ -259,6 +259,15 @@ in {
           "extra receivers added to services.prometheus.alertmanager.configuration.receivers";
       };
 
+      prometheus.basicAuthFile = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = ''
+          Basic Auth password file for prometheus, for use in addition to oauth2_proxy.
+          Syntax is name + ':' + <command>openssl passwd -6</command>
+        '';
+      };
+
 
       prometheus.storageRetentionTime = mkOption {
         type = types.str;
@@ -409,6 +418,11 @@ in {
             '';
             "/prometheus/".extraConfig = ''
               ${nginxOAuthConfig}
+              ${optionalString (cfg.prometheus.basicAuthFile != null) ''
+              satisfy any;
+              auth_basic "prometheus";
+              auth_basic_user_file "${cfg.prometheus.basicAuthFile}";
+              ''}
               proxy_pass http://localhost:9090/prometheus/;
               proxy_set_header Host $host;
               proxy_set_header REMOTE_ADDR $remote_addr;

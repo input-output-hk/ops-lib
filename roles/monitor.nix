@@ -59,6 +59,7 @@ in {
         grafanaCreds
         graylogCreds
         pagerDuty;
+      prometheus = static.prometheus or {};
     };
 
     services.oauth2_proxy.enable = lib.mkDefault true;
