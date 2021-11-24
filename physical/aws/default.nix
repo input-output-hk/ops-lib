@@ -39,6 +39,7 @@ in {
   m5ad-xlarge = mkInstance ./m5ad.xlarge.nix;
   m5ad-4xlarge = mkInstance ./m5ad.4xlarge.nix;
 
+  r5-large = mkInstance ./r5.large.nix;
   r5-xlarge = mkInstance ./r5.xlarge.nix;
   r5-2xlarge = mkInstance ./r5.2xlarge.nix;
 
