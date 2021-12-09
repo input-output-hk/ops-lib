@@ -26,7 +26,7 @@ in {
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     services = {
       oauth2_proxy = let staticConf = pkgs.globals.static.oauth or {}; in {
         setXauthrequest = mkDefault true;
