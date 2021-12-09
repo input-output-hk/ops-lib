@@ -33,5 +33,7 @@ in {
       } // staticConf
       // (mapAttrsRecursive (_: mkDefault) (removeAttrs staticConf ["alphaConfig"]));
     };
+    users.users.oauth2_proxy.group = "oauth2_proxy";
+    users.groups.oauth2_proxy = {};
   };
 }
