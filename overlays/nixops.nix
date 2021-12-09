@@ -3,7 +3,7 @@ self: super: {
     nixpkgs = self.path;
     p = p:
       let
-        pluginSources = with self.sourcePaths; [ nixops-packet nixops-libvirtd ];
+        pluginSources = with self.sourcePaths; [ nixops-libvirtd ];
         plugins = map (source: p.callPackage (source + "/release.nix") { })
           pluginSources;
       in [ p.aws ] ++ plugins;

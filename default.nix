@@ -3,7 +3,7 @@
 , config ? {}
 , sourcesOverride ? {}
 , pkgs ? import ./nix { inherit system crossSystem config sourcesOverride; }
-, withRustOverlays ? true
+, withRustOverlays ? false
 }:
 with pkgs; {
   inherit nixops nginxStable nginxMainline;
