@@ -54,7 +54,7 @@ jmespath==0.10.0
 jsonschema==2.6.0
 kombu==3.0.35
 loremipsum==1.0.5
-lxml==4.3.5
+lxml==4.6.5
 maxminddb==1.4.1
 milksnake==0.1.5
 mistune==0.8.4
