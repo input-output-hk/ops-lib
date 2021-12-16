@@ -32,6 +32,7 @@ in {
 
   c5-2xlarge = mkInstance ./c5.2xlarge.nix;
   c5-4xlarge = mkInstance ./c5.4xlarge.nix;
+  c5a-4xlarge = mkInstance ./c5a.4xlarge.nix;
   c5-9xlarge = mkInstance ./c5.9xlarge.nix;
 
   m5-xlarge = mkInstance ./m5.xlarge.nix;
