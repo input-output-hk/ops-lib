@@ -35,7 +35,7 @@ let
           names = [
             "vim-nix"
             "Syntastic"
-            "youcompleteme"
+            "YouCompleteMe"
           ];
         }
       ];
