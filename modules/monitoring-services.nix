@@ -139,16 +139,14 @@ in {
           description.
         '';
         example = [{
-          name     = "postgres-tsdb";
-          type     = "postgres";
+          name = "postgres-tsdb";
+          type = "postgres";
           database = "testdb";
-          user     = "testuser";
+          user = "testuser";
           editable = false;
-          access   = "direct";
-          url      = "localhost:5432";
-          jsonData = {
-            sslmode = "disable";
-          };
+          access = "direct";
+          url = "localhost:5432";
+          jsonData = { sslmode = "disable"; };
         }];
       };
 
@@ -268,7 +266,6 @@ in {
         '';
       };
 
-
       prometheus.storageRetentionTime = mkOption {
         type = types.str;
         default = "8760h";
@@ -289,9 +286,7 @@ in {
   };
 
   config = mkIf cfg.enable (mkMerge [
-    {
-      services.oauth2_proxy.nginx.virtualHosts = [ "${cfg.webhost}" ];
-    }
+    { services.oauth2_proxy.nginx.virtualHosts = [ "${cfg.webhost}" ]; }
     (lib.mkIf cfg.enableWireguard {
       boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
       networking.firewall.allowedUDPPorts = [ 51820 ];
@@ -419,9 +414,9 @@ in {
             "/prometheus/".extraConfig = ''
               ${nginxOAuthConfig}
               ${optionalString (cfg.prometheus.basicAuthFile != null) ''
-              satisfy any;
-              auth_basic "prometheus";
-              auth_basic_user_file "${cfg.prometheus.basicAuthFile}";
+                satisfy any;
+                auth_basic "prometheus";
+                auth_basic_user_file "${cfg.prometheus.basicAuthFile}";
               ''}
               proxy_pass http://localhost:9090/prometheus/;
               proxy_set_header Host $host;
@@ -513,10 +508,14 @@ in {
           webExternalUrl = "https://${cfg.webhost}/prometheus/";
           extraFlags = [
             "--storage.tsdb.retention.time=${cfg.prometheus.storageRetentionTime}"
-          ] ++ (if (cfg.prometheus.storageRetentionSize == null)
-                then builtins.trace "services.monitoring-services.prometheus.storageRetentionSize is null" []
-                else [ "--storage.tsdb.retention.size=${cfg.prometheus.storageRetentionSize}" ]
-          );
+          ] ++ (if (cfg.prometheus.storageRetentionSize == null) then
+            builtins.trace
+            "services.monitoring-services.prometheus.storageRetentionSize is null"
+            [ ]
+          else
+            [
+              "--storage.tsdb.retention.size=${cfg.prometheus.storageRetentionSize}"
+            ]);
 
           alertmanagers = [{
             scheme = "http";
@@ -597,7 +596,8 @@ in {
                       timeout = "5s";
                       icmp = { preferred_ip_protocol = "ip6"; };
                     };
-                  } // (pkgs.globals.extraPrometheusBlackboxExporterModules or {});
+                  }
+                    // (pkgs.globals.extraPrometheusBlackboxExporterModules or { });
                 });
             };
           };
@@ -623,8 +623,15 @@ in {
                   rules = [
                     {
                       alert = "node_down";
-                      expr = let intermittentMonitoringTargets = pkgs.globals.intermittentMonitoringTargets or [];
-                       in "up${optionalString (intermittentMonitoringTargets != []) ''{alias!~"${concatStringsSep "|" intermittentMonitoringTargets}"}''} == 0";
+                      expr = let
+                        intermittentMonitoringTargets =
+                          pkgs.globals.intermittentMonitoringTargets or [ ];
+                      in "up${
+                        optionalString (intermittentMonitoringTargets != [ ]) ''
+                          {alias!~"${
+                            concatStringsSep "|" intermittentMonitoringTargets
+                          }"}''
+                      } == 0";
                       for = "5m";
                       labels = { severity = "page"; };
                       annotations = {
@@ -761,14 +768,15 @@ in {
                     }
                     {
                       alert = "varnish cache too small or ttl too long";
-                      expr = "rate(varnish_main_n_lru_nuked[30m]) > 5 * rate(varnish_main_n_expired[30m])";
+                      expr =
+                        "rate(varnish_main_n_lru_nuked[30m]) > 5 * rate(varnish_main_n_expired[30m])";
                       for = "1h";
-                      labels = {
-                        severity = "page";
-                      };
+                      labels = { severity = "page"; };
                       annotations = {
-                        summary = "{{$labels.alias}}: Too many objects (5 times the number of expiring objects) are being forcefully evicted from varnish cache due to memory constraints.";
-                        description = "{{$labels.alias}}: Consider increasing varnish malloc limit or decreasing beresp.ttl";
+                        summary =
+                          "{{$labels.alias}}: Too many objects (5 times the number of expiring objects) are being forcefully evicted from varnish cache due to memory constraints.";
+                        description =
+                          "{{$labels.alias}}: Consider increasing varnish malloc limit or decreasing beresp.ttl";
                       };
                     }
                   ];
@@ -781,17 +789,15 @@ in {
             })
           ];
 
-          scrapeConfigs = [
-            {
-              job_name = "prometheus";
-              scrape_interval = "5s";
-              metrics_path = "/prometheus/metrics";
-              static_configs = [{
-                targets = [ "localhost:9090" ];
-                labels = { alias = "prometheus"; };
-              }];
-            }
-          ];
+          scrapeConfigs = [{
+            job_name = "prometheus";
+            scrape_interval = "5s";
+            metrics_path = "/prometheus/metrics";
+            static_configs = [{
+              targets = [ "localhost:9090" ];
+              labels = { alias = "prometheus"; };
+            }];
+          }];
         };
       };
     })
@@ -939,15 +945,23 @@ in {
           elasticsearchHosts = [ "http://localhost:9200" ];
           # Elasticsearch config below is for a single node deployment
           extraConfig = let
-            maxSize =
-              if cfg.graylogMaxSizePerIndex == null
-              then builtins.trace "services.monitoring-services.graylogMaxSizePerIndex is null. To set this value after deploy, use the Graylog web UI." ""
-              else "elasticsearch_max_size_per_index = ${toString (cfg.graylogMaxSizePerIndex * 1024 * 1024 * 1024)}";
+            maxSize = if cfg.graylogMaxSizePerIndex == null then
+              builtins.trace
+              "services.monitoring-services.graylogMaxSizePerIndex is null. To set this value after deploy, use the Graylog web UI."
+              ""
+            else
+              "elasticsearch_max_size_per_index = ${
+                toString (cfg.graylogMaxSizePerIndex * 1024 * 1024 * 1024)
+              }";
 
-            maxIndices =
-              if cfg.graylogMaxNumberOfIndices == null
-              then builtins.trace "services.monitoring-services.graylogMaxNumberOfIndices is null. To set this value after deploy, use the Graylog web UI." ""
-              else "elasticsearch_max_number_of_indices = ${toString cfg.graylogMaxNumberOfIndices}";
+            maxIndices = if cfg.graylogMaxNumberOfIndices == null then
+              builtins.trace
+              "services.monitoring-services.graylogMaxNumberOfIndices is null. To set this value after deploy, use the Graylog web UI."
+              ""
+            else
+              "elasticsearch_max_number_of_indices = ${
+                toString cfg.graylogMaxNumberOfIndices
+              }";
           in ''
             http_bind_address = 0.0.0.0:9000
             elasticsearch_shards = 1
