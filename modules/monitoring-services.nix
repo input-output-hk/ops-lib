@@ -48,10 +48,10 @@ in {
         type = types.bool;
         default = true;
         description = ''
-          Enable log collection via graylog and journalbeat.
+          Enable log collection via graylog and filebeat.
           This option installs graylog, elasticsearch, mongodb and
-          a journalbeat graylog input.
-          See also the corresponding journalbeat exporter option in
+          a filebeat graylog input.
+          See also the corresponding filebeat exporter option in
           the monitoring-exporters.nix module:
           config.services.monitoring-exporters.logging
         '';

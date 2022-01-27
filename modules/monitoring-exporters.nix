@@ -38,7 +38,7 @@ in {
         description = ''
           Enable monitoring exporters.  Metrics exporters are
           prometheus, statsd and nginx by default.  Log exporting is
-          available via journalbeat by default.
+          available via filebeat by default.
           Metrics export can be selectively disabled with the metrics option.
           Log export be selectively disabled with the logging option.
         '';
@@ -110,7 +110,7 @@ in {
         type = types.bool;
         default = cfg.enable;
         description = ''
-          Enable logging exporter via journalbeat to graylog.
+          Enable logging exporter via filebeat to graylog.
           See also the corresponding logging server option in
           the monitoring-services.nix module:
           config.services.monitoring-services.logging
@@ -208,28 +208,20 @@ in {
         map (e: e.port) cfg.extraPrometheusExporters;
     })
 
-    (mkIf cfg.logging {
-      services.journalbeat = {
-        enable = true;
-        package = pkgs.journalbeat7;
-        extraConfig = ''
-          journalbeat:
-            seek_position: cursor
-            cursor_seek_fallback: tail
-            write_cursor_state: true
-            cursor_flush_period: 5s
-            clean_field_names: true
-            convert_to_numbers: false
-            move_metadata_to_field: journal
-            default_type: journal
-          output.logstash:
-            hosts: ["${cfg.graylogHost}"]
-          journalbeat.inputs:
-            - paths:
-              - "/var/log/journal/"
-        '';
-      };
-    })
+    #(mkIf cfg.logging {
+    #  services.filebeat = {
+    #    enable = true;
+    #    package = pkgs.filebeat7;
+    #    inputs = {
+    #      journald.id = "everything"; # Only for filebeat7
+    #      log = {
+    #        enabled = true;
+    #        paths = [ "/var/log/journal/" ];
+    #      };
+    #    };
+    #    settings = { output.logstash = { hosts = [ "${cfg.graylogHost}" ]; }; };
+    #  };
+    #})
 
     (mkIf cfg.papertrail.enable {
       systemd.services.papertrail = {
@@ -245,6 +237,7 @@ in {
           TimeoutStartSec = 0;
           KillSignal = "SIGINT";
         };
+
       };
     })
   ]);
