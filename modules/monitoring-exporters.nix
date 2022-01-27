@@ -210,7 +210,7 @@ in {
 
     (mkIf cfg.logging {
       services.journalbeat = {
-        enable = true;
+        enable = false;
         package = pkgs.journalbeat7;
         extraConfig = ''
           journalbeat:
