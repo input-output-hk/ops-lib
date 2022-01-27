@@ -7,8 +7,10 @@ let
   extraExporterOpts = {
     options =
       # We resuse options defined in services.prometheus.scrapeConfigs, in a somewhat hacky way...
-      let scrapeConfigOpts = (builtins.head (builtins.head options.services.prometheus.scrapeConfigs.type.functor.wrapped.getSubModules).imports).options;
-      in removeAttrs scrapeConfigOpts ["static_configs"] // {
+      let
+        scrapeConfigOpts = (builtins.head (builtins.head
+          options.services.prometheus.scrapeConfigs.type.functor.wrapped.getSubModules).imports).options;
+      in removeAttrs scrapeConfigOpts [ "static_configs" ] // {
         port = mkOption {
           type = types.int;
           default = 80;
@@ -18,7 +20,7 @@ let
         };
         labels = mkOption {
           type = types.attrsOf types.str;
-          default = {};
+          default = { };
           description = ''
             Labels assigned to all metrics scraped from the targets.
           '';
@@ -64,7 +66,7 @@ in {
 
       extraPrometheusExportersPorts = mkOption {
         type = types.listOf types.int;
-        default = [];
+        default = [ ];
         apply = list: [ 9100 9102 ] ++ list;
         description = ''
           Ports of application specific prometheus exporters.
@@ -72,9 +74,10 @@ in {
       };
 
       extraPrometheusExporters = mkOption {
-        default = [];
+        default = [ ];
         type = with types; listOf (submodule extraExporterOpts);
-        apply = exporters: lib.optional (config.services.nginx.enable) {
+        apply = exporters:
+          lib.optional (config.services.nginx.enable) {
             job_name = "nginx";
             scrape_interval = "5s";
             metrics_path = "/status/format/prometheus";
@@ -83,12 +86,11 @@ in {
             job_name = "varnish";
             scrape_interval = "5s";
             port = 9131;
-          } ++ map (port : {
+          } ++ map (port: {
             job_name = "node";
             scrape_interval = "10s";
             inherit port;
-            }) cfg.extraPrometheusExportersPorts
-          ++ exporters;
+          }) cfg.extraPrometheusExportersPorts ++ exporters;
         description = ''
           A list of additional scrape configurations for this host.
         '';
@@ -171,7 +173,9 @@ in {
         requires = [ "network.target" ];
         after = [ "network.target" ];
         serviceConfig.ExecStart =
-          "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:${toString cfg.statsdPort} --web.listen-address=:9102";
+          "${pkgs.prometheus-statsd-exporter}/bin/statsd_exporter --statsd.listen-udp=:${
+            toString cfg.statsdPort
+          } --web.listen-address=:9102";
       };
 
       services = {
@@ -200,12 +204,13 @@ in {
           ];
         };
       };
-      networking.firewall.allowedTCPPorts = map (e: e.port) cfg.extraPrometheusExporters;
+      networking.firewall.allowedTCPPorts =
+        map (e: e.port) cfg.extraPrometheusExporters;
     })
 
     (mkIf cfg.logging {
       services.journalbeat = {
-        enable = true;
+        enable = false;
         package = pkgs.journalbeat7;
         extraConfig = ''
           journalbeat:
