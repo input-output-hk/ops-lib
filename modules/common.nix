@@ -72,6 +72,8 @@ in {
         http2 = true
         show-trace = true
         narinfo-cache-negative-ttl = 0
+        experimental-features = nix-command flakes
+        allow-import-from-derivation = true
       '';
 
       # use all cores
