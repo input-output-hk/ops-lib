@@ -11,6 +11,6 @@ portName: port: sourcesNodes: { region, org, pkgs, ... }@args: {
       sourceIp = resources.elasticIPs."${n}-ip";
     }) sourcesNodes;
   } // pkgs.lib.optionalAttrs (args ? vpcId) {
-    resources.vpc.vpcId = args.vpcId;
+    vpcId = resources.vpc.${args.vpcId};
   };
 }

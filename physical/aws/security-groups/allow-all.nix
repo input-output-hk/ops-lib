@@ -11,6 +11,6 @@
       sourceIp = "0.0.0.0/0";
     }];
   } // pkgs.lib.optionalAttrs (args ? vpcId) {
-    resources.vpc.vpcId = args.vpcId;
+    vpcId = resources.vpc.${args.vpcId};
   };
 }
