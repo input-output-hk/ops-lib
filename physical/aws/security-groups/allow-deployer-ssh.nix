@@ -1,4 +1,4 @@
-{ region, org, pkgs, lib, ... }: {
+{ region, org, pkgs, lib, ... }@args: {
   "allow-deployer-ssh-${region}-${org}" = {
     inherit region;
     accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${org};
@@ -10,5 +10,7 @@
       toPort = 22;
       sourceIp = pkgs.globals.deployerIp + "/32";
     }];
+  } // pkgs.lib.optionalAttrs (args ? vpcId) {
+    inherit (args) vpcId;
   };
 }

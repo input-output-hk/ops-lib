@@ -1,4 +1,4 @@
-{ region, org, pkgs, ... }: {
+{ region, org, pkgs, ... }@args: {
   "allow-monitoring-collection-${region}-${org}" = { nodes, resources, lib, ... }:
     let monitoringSourceIp = resources.elasticIPs.monitoring-ip;
     in {
@@ -18,5 +18,7 @@
           9113  # nginx exporter
           9131  # varnish exporter
         ] ++ (pkgs.globals.extraPrometheusExportersPorts or []));
-    };
+    } // pkgs.lib.optionalAttrs (args ? vpcId) {
+    inherit (args) vpcId;
+  };
 }

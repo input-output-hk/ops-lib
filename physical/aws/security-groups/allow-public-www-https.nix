@@ -1,4 +1,4 @@
-{ region, org, pkgs, ... }: {
+{ region, org, pkgs, ... }@args: {
   "allow-public-www-https-${region}-${org}" = {
     _file = ./allow-public-www-https.nix;
     inherit region;
@@ -18,5 +18,7 @@
         sourceIp = "0.0.0.0/0";
       }
     ];
+  } // pkgs.lib.optionalAttrs (args ? vpcId) {
+    inherit (args) vpcId;
   };
 }

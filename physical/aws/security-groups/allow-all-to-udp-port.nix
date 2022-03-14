@@ -1,4 +1,4 @@
-portName: port: { region, org, pkgs, ... }: {
+portName: port: { region, org, pkgs, ... }@args: {
   "allow-all-to-${portName}-${region}-${org}" = {
     inherit region;
     accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${org};
@@ -10,5 +10,7 @@ portName: port: { region, org, pkgs, ... }: {
       toPort = port;
       sourceIp = "0.0.0.0/0";
     }];
+  } // pkgs.lib.optionalAttrs (args ? vpcId) {
+    inherit (args) vpcId;
   };
 }
