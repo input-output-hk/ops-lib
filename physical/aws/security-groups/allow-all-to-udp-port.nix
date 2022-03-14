@@ -1,5 +1,5 @@
 portName: port: { region, org, pkgs, ... }@args: {
-  "allow-all-to-${portName}-${region}-${org}" = {
+  "allow-all-to-${portName}-${region}-${org}" = {resources, ...}: {
     inherit region;
     accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${org};
     _file = ./allow-all-to-udp-port.nix;
@@ -11,6 +11,6 @@ portName: port: { region, org, pkgs, ... }@args: {
       sourceIp = "0.0.0.0/0";
     }];
   } // pkgs.lib.optionalAttrs (args ? vpcId) {
-    inherit (args) vpcId;
+    resources.vpc.vpcId = args.vpcId;
   };
 }

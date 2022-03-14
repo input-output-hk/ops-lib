@@ -1,5 +1,5 @@
 { region, org, lib, pkgs, ... }@args: {
-  "allow-all-${region}-${org}" = {
+  "allow-all-${region}-${org}" = {resources, ...}: {
     inherit region;
     accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${org};
     _file = ./allow-all.nix;
@@ -11,6 +11,6 @@
       sourceIp = "0.0.0.0/0";
     }];
   } // pkgs.lib.optionalAttrs (args ? vpcId) {
-    inherit (args) vpcId;
+    resources.vpc.vpcId = args.vpcId;
   };
 }

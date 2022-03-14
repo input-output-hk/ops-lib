@@ -1,5 +1,5 @@
 { region, org, pkgs, ... }@args: {
-  "allow-public-www-https-${region}-${org}" = {
+  "allow-public-www-https-${region}-${org}" = {resources, ...}: {
     _file = ./allow-public-www-https.nix;
     inherit region;
     accessKeyId = pkgs.globals.ec2.credentials.accessKeyIds.${org};
@@ -19,6 +19,6 @@
       }
     ];
   } // pkgs.lib.optionalAttrs (args ? vpcId) {
-    inherit (args) vpcId;
+    resources.vpc.vpcId = args.vpcId;
   };
 }
