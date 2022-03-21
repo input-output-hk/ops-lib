@@ -23,16 +23,28 @@
         "url": "https://github.com/nmattia/naersk/archive/254fa90956d3e0b6747fbd2b6bea71169c740e6f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nixops-aws": {
+        "branch": "ipv6",
+        "description": "Nixops AWS Backend Plugin",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "nixops-aws",
+        "rev": "a96f5e6afba8921050b1a605412e0fbee2259cab",
+        "sha256": "1q8lx5vi6k31hh4802sf7v3183divlxgk21fwz3ws9xi175w70a5",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nixops-aws/archive/a96f5e6afba8921050b1a605412e0fbee2259cab.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "nixops-core": {
         "branch": "nixops-core-pr-int",
         "description": "NixOps, the NixOS-based cloud deployment tool",
         "homepage": "http://nixos.org/",
         "owner": "input-output-hk",
         "repo": "nixops",
-        "rev": "d26cb7f12b523734d906549ecc513f695a97d6a1",
-        "sha256": "09hbdrybil7f1y2qi8578877fximbr54ijhwkrnr0qqbfg3ibg7c",
+        "rev": "f3cb356c04d8ed1953d7879d7d7f755dcbbc440a",
+        "sha256": "12v6fb6lbqfcljlhympna8h4w24bqnin7gxcs8fyvr6bi7xgsp7k",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops/archive/d26cb7f12b523734d906549ecc513f695a97d6a1.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops/archive/f3cb356c04d8ed1953d7879d7d7f755dcbbc440a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-libvirtd": {

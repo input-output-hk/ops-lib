@@ -1,11 +1,7 @@
 self: super: {
   nixops = (import (self.sourcePaths.nixops-core + "/release.nix") {
     nixpkgs = self.path;
-    p = p:
-      let
-        pluginSources = with self.sourcePaths; [ nixops-libvirtd ];
-        plugins = map (source: p.callPackage (source + "/release.nix") { })
-          pluginSources;
-      in [ p.aws ] ++ plugins;
+    pluginsSources = self.sourcePaths;
+    p = self.lib.attrVals (self.globals.nixops-plugins or [ "nixops-aws" "nixops-libvirtd" ]);
   }).build.${self.stdenv.system};
 }
