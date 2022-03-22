@@ -41,10 +41,10 @@
         "homepage": "http://nixos.org/",
         "owner": "input-output-hk",
         "repo": "nixops",
-        "rev": "f3cb356c04d8ed1953d7879d7d7f755dcbbc440a",
-        "sha256": "12v6fb6lbqfcljlhympna8h4w24bqnin7gxcs8fyvr6bi7xgsp7k",
+        "rev": "e8499dbf13fe4c1d2a88f0f706104b25783673ef",
+        "sha256": "1adhwlinlakfidw5p5ah8my1v5r3ahjhxj2l89b8vn8spfddpdvx",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops/archive/f3cb356c04d8ed1953d7879d7d7f755dcbbc440a.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops/archive/e8499dbf13fe4c1d2a88f0f706104b25783673ef.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-libvirtd": {
