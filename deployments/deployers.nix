@@ -130,7 +130,7 @@ in {
   dev-deployer = { pkgs, ... }: {
     local.username = "dev";
     users.users.dev = {
-      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom csl-developers;
+      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; (allKeysFrom csl-developers ++ allKeysFrom plutus-developers);
     };
     services.tarsnap = {
       enable = true;
