@@ -12,7 +12,13 @@ in {
     sqlite-interactive
     tmux
     gnupg
+    pinentry
   ];
+
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
   programs.screen.screenrc = ''
     defscrollback 10000

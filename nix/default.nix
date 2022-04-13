@@ -14,7 +14,7 @@ let
     then sourcePaths.nixpkgs
     else iohkNix.nixpkgs;
 
-  overlays = (import ../overlays sourcePaths true) ++
+  overlays = (import ../overlays sourcePaths false) ++
     [ (import ../globals-deployers.nix)
     ];
 

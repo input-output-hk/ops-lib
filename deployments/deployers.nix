@@ -153,6 +153,7 @@ in {
     users.users.dev = {
       openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom csl-developers;
     };
+    nix.nrBuildUsers = pkgs.lib.mkForce 36;
   };
   resources = {
     elasticIPs = let

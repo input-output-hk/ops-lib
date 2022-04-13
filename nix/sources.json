@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "nixops-aws",
-        "rev": "a96f5e6afba8921050b1a605412e0fbee2259cab",
-        "sha256": "1q8lx5vi6k31hh4802sf7v3183divlxgk21fwz3ws9xi175w70a5",
+        "rev": "eac7647187b70077b2e1a08dd6cc02f5f156b5a4",
+        "sha256": "1y9x15z3b8y1smv9c7rpsjmi3xs8abg3xk7r7ar4jj7njbarbfaf",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/nixops-aws/archive/a96f5e6afba8921050b1a605412e0fbee2259cab.tar.gz",
+        "url": "https://github.com/input-output-hk/nixops-aws/archive/eac7647187b70077b2e1a08dd6cc02f5f156b5a4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixops-core": {
