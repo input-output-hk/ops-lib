@@ -35,8 +35,6 @@ in {
       ripgrep
     ] ++ (lib.optional config.local.commonGivesVim vim);
 
-    environment.variables.TERM = "xterm-256color";
-
     users.mutableUsers = false;
     users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
 
