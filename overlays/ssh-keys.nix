@@ -92,7 +92,7 @@ lib: {
     kenneth        = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAr/gslNL1LntKBlqbSGFn9soRwizJfYU2vM45oTMMbroKg9SrsMU9CtXElV5j4rAqSN/8wf5g0aP8E+u1B4IklT6qrnp9kTNq6YDqYXCi/39mqdl4rKvY/hRFrgaxMbQg6PU7lLaT+p2WPsMbjZ/Cr5hlT0PEspH1ucEnfs33RPYNwfN4HJt8zLjuZsHAWJCzRAr14CKze47yVhour5q18N5V668Gz54TW5vh9Af0jVleudgmMTw6uiIxVfCXDih5ir7iLrxCuLdY5+Ljm5ff2atcHehUTOYOhBAa71sKcvyiL21PF1PglHpp2+JOFmEXjzSOh1Ujt2alaUruE9NNjw== kwxm@pomegranate" ];
     roman          = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEh6j4ImWVuNRv5InE3havU9RTFJakBQvrDEkttmE/Bu effectfully@gmail.com" ];
     shlevy         = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID/fJqgjwPG7b5SRPtCovFmtjmAksUSNg3xHWyqBM4Cs shlevy@shlevy-laptop" ];
-    nikos          = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOEwI1amjadX4pPxsYp7Ee1MAi8/tuPM+goiay089+t bezirg@lenovo" ];
+    nikos          = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDgnWZEYqVsuR7xb8ydoOBjWJkBXveVnGdZWyb1Lyscr openpgp:0x9B48F94F" ];
   };
 
   # Keys to allow remote nix-builds
