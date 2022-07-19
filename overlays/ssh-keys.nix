@@ -93,6 +93,7 @@ lib: {
     roman          = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEh6j4ImWVuNRv5InE3havU9RTFJakBQvrDEkttmE/Bu effectfully@gmail.com" ];
     shlevy         = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID/fJqgjwPG7b5SRPtCovFmtjmAksUSNg3xHWyqBM4Cs shlevy@shlevy-laptop" ];
     nikos          = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOEwI1amjadX4pPxsYp7Ee1MAi8/tuPM+goiay089+t bezirg@lenovo" ];
+    ziyang         = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICQ0CTCsumV0DD+5JLIdaUpgZVvesWR7I/LExEoc1onh unsafeFixIO@gmail.com" ];
   };
 
   # Keys to allow remote nix-builds
