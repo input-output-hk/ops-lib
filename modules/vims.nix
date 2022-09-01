@@ -5,14 +5,14 @@
   ];
   environment = {
     shellAliases = {
-      vim = "neovim";
-      vi = "neovim";
+      vim = "nvim";
+      vi = "nvim";
     };
-    variables.EDITOR = "neovim";
+    variables.EDITOR = "nvim";
   };
   programs.bash.shellAliases = {
-    vim = "neovim";
-    vi = "neovim";
+    vim = "nvim";
+    vi = "nvim";
   };
   local.commonGivesVim = false;
 }
