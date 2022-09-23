@@ -72,7 +72,7 @@ petname==2.6
 phabricator==0.7.0
 phonenumberslite==7.7.5
 progressbar2==3.10.1
-protobuf==3.12.2
+protobuf==3.18.3
 psycopg2-binary==2.8.5
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
