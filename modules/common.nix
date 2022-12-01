@@ -78,7 +78,7 @@ in {
       buildCores = 0;
 
       # use our hydra builds
-      binaryCaches = [ "https://cache.nixos.org" "https://hydra.iohk.io" "https://iohk.cachix.org" ];
+      binaryCaches = [ "https://cache.nixos.org" "https://cache.iog.io" "https://iohk.cachix.org" ];
       binaryCachePublicKeys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
