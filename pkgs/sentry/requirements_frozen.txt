@@ -45,7 +45,7 @@ googleapis-common-protos==1.6.0
 grpc-google-iam-v1==0.11.4
 grpcio==1.30.0
 hiredis==0.1.6
-httplib2==0.18.1
+httplib2==0.19.0
 idna==2.7
 importlib-metadata==1.6.1
 ipaddress==1.0.23
