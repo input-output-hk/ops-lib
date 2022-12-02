@@ -16,6 +16,7 @@ in {
     networking.hostName = name;
 
     environment.systemPackages = with pkgs; [
+      awscli     # Unified tool to manage AWS services
       bat
       git
       graphviz
