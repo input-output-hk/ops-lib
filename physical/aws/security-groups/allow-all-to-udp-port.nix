@@ -9,7 +9,6 @@ portName: port: { region, org, pkgs, ... }@args: {
       fromPort = port;
       toPort = port;
       sourceIp = "0.0.0.0/0";
-      sourceIpv6 = "::/0";
     }];
   } // pkgs.lib.optionalAttrs (args ? vpcId) {
     vpcId = resources.vpc.${args.vpcId};
