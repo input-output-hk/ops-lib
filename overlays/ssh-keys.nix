@@ -65,6 +65,7 @@ lib: {
     tsenguun       = [ "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQBcbKV1ru917kk95p1GgEnjr185I+Rgq+xVHnHP7FCR3gRGm3o/QdotIFb5wQb7/jhNbF4lHNvpfvWOxPGHFfFJ7XU8DLW539YR4ed20btnpHl6DTfINpWl8I6lwzT/XWLooVSPhTky9ZvsuIihv9XffGcTf+GQyJ1KQxURHEe7roapih0ea++sw+DFf1uSGlNpV+XVFZgLi3iTEvTI0yzm33pZ2ZzYlWWrzf2AILRJ1A0mYW5bAPInmXOX0LcOW0c06s79JuZ9Co+sDVDSJbUXKJIkEt++SOwzc58aYRRFuTun3rNb0FBpAizjLNswQwSCVuPDKAKaIHEvOKGYJ6n5 tuvshintsenguun.erdenejargal@iohk.io" ];
     kchaires       = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICuEp7B+GEWg0jBAUG8wAo5BPhPGImf2dB//ySZvqgji karina.lopez@iohk.io" ];
     yupanqui       = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCYFf5CMpIpiRBO9iBNVomr0VZ/2nXRvVQ1Es5SDNp5aeD9QXLkC+oR8uOVRxRwys6DtBdlvUGPhyDX5JdpbFxzBZ3jBJb35KbrEJTMjdt3zNRL18El9cuOVgtXgpfb5xMeNl8kn6Y/QnXS41tSgjNgKK6jAP9Mx+MRhLqqlwTmgzM75lwzEPMy4JbwhVsdYtZx/t4j1SkctHTHBIZ42UI74MGt2dsHqTZ4sEjoN2jIroOjKYgd8qotP2AhE1wxAQUhMWlw3GbItcxdNagUkOzk7vw8FP9ErAUrVHfR93gqq7hBjDGq77Z9sgtn5ph74GAtQ2KHLoeT5oelcd+UT1v3O4kB84OO6PbDO7xZsch7oTwata2upYSBDhMshoJmjDWER2sOYlnV/8Bk/h32k1t4K0cT38ENZAvXcX6mP0UclFJf7yhfYL935tQkiRSbIrxlGQz4K+IoNf3aQNqf6cUbzz38cFq519yyI+tedaKEuX2WaIIj9Dgn4tnYJBLoISU= yupanqui@deusXmachina" ];
+    jasagredo      = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID/VgQqHapAJ0ToCdhvarY84RD3BFMXsY16dEBeeKk0q jasataco@gmail.com" ];
   };
 
   # Mantis devops keys:
