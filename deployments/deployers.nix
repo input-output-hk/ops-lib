@@ -4,7 +4,7 @@ let
   accessKeyId = "root-account";
   pkgs = import ../nix {};
 in {
-  defaults = { pkgs, resources, name, config, lib, nodes, ... }: {
+  defaults = { resources, name, config, lib, nodes, ... }: {
     options = {
       local.username = lib.mkOption {
         type = lib.types.str;
@@ -40,9 +40,7 @@ in {
       };
       nixpkgs = {
         config.allowUnfree = true;
-        overlays = [
-          (import ../overlays/packages.nix)
-        ];
+        inherit pkgs;
       };
       users.users = {
         ${config.local.username} = {
