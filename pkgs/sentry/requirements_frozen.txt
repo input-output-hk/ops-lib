@@ -57,7 +57,7 @@ loremipsum==1.0.5
 lxml==4.3.5
 maxminddb==1.4.1
 milksnake==0.1.5
-mistune==0.8.4
+mistune==2.0.3
 mmh3==2.3.1
 mock==2.0.0
 msgpack==0.6.2
