@@ -9,7 +9,7 @@ with pkgs; {
   inherit nixops nginxStable nginxMainline;
   overlays = import ./overlays sourcePaths withRustOverlays;
   shell = mkShell {
-    buildInputs = [ niv nixops nix telnet dnsutils ];
+    buildInputs = [ niv nixops nix dnsutils ];
     NIX_PATH = "nixpkgs=${path}";
     NIXOPS_DEPLOYMENT = "${globals.deploymentName}";
   };

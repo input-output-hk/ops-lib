@@ -30,15 +30,13 @@ let
 
         let g:ycm_server_python_interpreter='${pkgs.python3.interpreter}'
       '';
-      vam.pluginDictionaries = [
-        {
-          names = [
-            "vim-nix"
-            "Syntastic"
-            "YouCompleteMe"
-          ];
-        }
-      ];
+      packages.myVimPackage = with pkgs.vimPlugins; {
+        start = [
+          vim-nix
+          Syntastic
+          YouCompleteMe
+        ];
+      };
     };
   };
 in {
