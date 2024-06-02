@@ -112,7 +112,7 @@ toml==0.10.1
 toronado==0.0.11
 ua-parser==0.7.3
 unidiff==0.6.0
-urllib3==1.24.2
+urllib3==1.26.5
 uWSGI==2.0.19.1
 vcversioner==2.16.0.0
 zipp==1.2.0
