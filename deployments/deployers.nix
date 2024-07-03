@@ -50,6 +50,7 @@ in {
       networking.firewall.allowedUDPPorts = [ 17777 ];
     };
   };
+
   mainnet-deployer = { pkgs, lib, nodes, ... }: {
     local.username = "mainnet";
     users.users.ci = {
@@ -72,6 +73,7 @@ in {
       destDir = "/etc/wireguard";
       keyFile = ../secrets/mainnet-deployer.wgprivate;
     };
+
     networking.wireguard.interfaces.wg0 = {
       ips = [ "10.90.1.1/32" ];
       listenPort = 17777;
@@ -99,6 +101,7 @@ in {
       keyFile = ../secrets/tarsnap-mainnet-deployer-readwrite.secret;
     };
   };
+
   staging-deployer = {
     local.username = "staging";
     services.tarsnap = {
@@ -111,6 +114,7 @@ in {
       keyFile = ../secrets/tarsnap-staging-deployer-readwrite.secret;
     };
   };
+
   testnet-deployer = {
     local.username = "testnet";
     deployment.ec2.instanceType = "r5a.xlarge";
@@ -124,6 +128,7 @@ in {
       keyFile = ../secrets/tarsnap-testnet-deployer-readwrite.secret;
     };
   };
+
   dev-deployer = { pkgs, ... }: {
     local.username = "dev";
     users.users.dev = {
@@ -139,6 +144,7 @@ in {
       keyFile = ../secrets/tarsnap-dev-deployer-readwrite.secret;
     };
   };
+
   bench-deployer = { pkgs, ... }: {
     local.username = "dev";
     fileSystems."/home" =
@@ -152,6 +158,7 @@ in {
     };
     nix.nrBuildUsers = pkgs.lib.mkForce 36;
   };
+
   resources = {
     elasticIPs = let
       ip = {
@@ -168,7 +175,7 @@ in {
       inherit region accessKeyId;
     };
     ec2SecurityGroups = let
-      fn = x: __head (__attrValues x);
+      fn = x: builtins.head (builtins.attrValues x);
     in with (import ../physical/aws/security-groups); {
       allow-ssh = fn (allow-ssh { inherit pkgs region org accessKeyId; });
       allow-wireguard = fn (allow-wireguard { inherit pkgs region org accessKeyId; });
