@@ -45,24 +45,41 @@ in {
         else "monitoring:5044";
 
       openssh = {
-        passwordAuthentication = false;
         authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
         extraConfig = lib.mkOrder 9999 ''
           Match User root
             AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys2 /etc/ssh/authorized_keys.d/%u
         '';
+        settings.PasswordAuthentication = false;
       };
 
       timesyncd.enable = true;
       cron.enable = true;
     };
 
-    nix = rec {
-      # use nix sandboxing for greater determinism
-      useSandbox = true;
+    nix = {
+      # 2.19 is the latest version that works with recursive submodules of haskellNix
+      # https://github.com/NixOS/nix/issues/10022
+      package = pkgs.nixVersions.nix_2_19;
 
       # make sure we have enough build users
       nrBuildUsers = 32;
+
+      # use nix sandboxing for greater determinism
+      settings = {
+        sandbox = true;
+
+        # use all cores
+        cores = 0;
+
+        # use our hydra builds
+        substituters = [ "https://cache.nixos.org" "https://cache.iog.io" "https://iohk.cachix.org" ];
+        trusted-public-keys = [
+          "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+          "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+          "iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo="
+        ];
+      };
 
       # if our hydra is down, don't wait forever
       extraOptions = ''
@@ -70,20 +87,15 @@ in {
         http2 = true
         show-trace = true
         narinfo-cache-negative-ttl = 0
-        experimental-features = nix-command flakes
+
+        # Fetch-closure required by capkgs
+        experimental-features = nix-command flakes fetch-closure auto-allocate-uids configurable-impure-env
         allow-import-from-derivation = true
+
+        # To disable warnings on newer nix versions ~ >= 2.19
+        auto-allocate-uids = false
+        impure-env =
       '';
-
-      # use all cores
-      buildCores = 0;
-
-      # use our hydra builds
-      binaryCaches = [ "https://cache.nixos.org" "https://cache.iog.io" "https://iohk.cachix.org" ];
-      binaryCachePublicKeys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-        "iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo="
-      ];
 
       # nixpkgs path is created by 'extraSystemBuilderCmds' below:
       nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
