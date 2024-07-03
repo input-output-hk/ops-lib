@@ -110,6 +110,12 @@ in {
       from = 60000;
       to = 61000;
     }];
-    programs.mosh.enable = true;
+
+    programs = {
+      mosh.enable = true;
+      ssh.package = (
+        builtins.getFlake "github:nixos/nixpkgs/b9014df496d5b68bf7c0145d0e9b0f529ce4f2a8"
+      ).legacyPackages.${pkgs.system}.openssh;
+    };
   };
 }
