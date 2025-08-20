@@ -17,10 +17,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "bc4216c5b0e14dbde5541763f4952f99c3c712fa",
-        "sha256": "0y5n3limj5dg1vgxyxafg0ky35qq7w97rr00gr3yl16xx5jrhs6w",
+        "rev": "64ca6f4c0c6db283e2ec457c775bce75173fb319",
+        "sha256": "0b0swikhj400b2zmskkdyiyvfdvgk0l1771ad6jgnxbnil75fjdf",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/bc4216c5b0e14dbde5541763f4952f99c3c712fa.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/64ca6f4c0c6db283e2ec457c775bce75173fb319.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "naersk": {
@@ -84,15 +84,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
-        "branch": "nixos-23.11",
+        "branch": "nixos-25.05",
         "description": "Nix Packages collection",
         "homepage": null,
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "dd37924974b9202f8226ed5d74a252a9785aedf8",
-        "sha256": "1nxd4dqci8rs94a7cypx30axgj778p2wydkx16q298n29crkflbw",
+        "rev": "a58390ab6f1aa810eb8e0f0fc74230e7cc06de03",
+        "sha256": "1kmh2gdbpjcdwlyci0vfp09rzp2al50x1jclkvb1y3y1z2w4q3q4",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/dd37924974b9202f8226ed5d74a252a9785aedf8.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/a58390ab6f1aa810eb8e0f0fc74230e7cc06de03.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-2211": {
