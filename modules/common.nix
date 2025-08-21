@@ -58,9 +58,9 @@ in {
     };
 
     nix = {
-      # 2.19 is the latest version that works with recursive submodules of haskellNix
-      # https://github.com/NixOS/nix/issues/10022
-      package = pkgs.nixVersions.nix_2_19;
+      # A recent version of nix daemon is required to be able to migrate to newer nixpkgs, such as 25.05,
+      # otherwise an `error: path '/nix/store/...-linux-$VERSION-modules-shrunk/lib` is encountered during build.
+      package = (builtins.getFlake "github:nixos/nix/9328af84d33281ef8018251b2a4289e89719c7ae").packages.${pkgs.system}.nix;
 
       # make sure we have enough build users
       nrBuildUsers = 32;

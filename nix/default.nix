@@ -17,12 +17,12 @@ let
   flake-compat = import sourcePaths.flake-compat;
 
   overlays = (import ../overlays sourcePaths false) ++
-  [ (import ../globals-deployers.nix)
-  (final: prev: {
-    inherit ((flake-compat {
-        inherit pkgs;
-        src = sourcePaths.nixpkgs-2211;
-      }).defaultNix.legacyPackages.${final.system}) nix;
+  [
+    (import ../globals-deployers.nix)
+    (final: prev: {
+      # A recent version of nix daemon is required to be able to migrate to newer nixpkgs, such as 25.05,
+      # otherwise an `error: path '/nix/store/...-linux-$VERSION-modules-shrunk/lib` is encountered during build.
+      nix = (builtins.getFlake "github:nixos/nix/9328af84d33281ef8018251b2a4289e89719c7ae").packages.${final.system}.nix;
     })
   ];
 
