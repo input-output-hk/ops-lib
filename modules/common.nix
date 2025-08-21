@@ -58,9 +58,7 @@ in {
     };
 
     nix = {
-      # 2.19 is the latest version that works with recursive submodules of haskellNix
-      # https://github.com/NixOS/nix/issues/10022
-      package = pkgs.nixVersions.nix_2_19;
+      package = pkgs.nixVersions.nix_2_29;
 
       # make sure we have enough build users
       nrBuildUsers = 32;
@@ -113,9 +111,6 @@ in {
 
     programs = {
       mosh.enable = true;
-      ssh.package = (
-        builtins.getFlake "github:nixos/nixpkgs/b9014df496d5b68bf7c0145d0e9b0f529ce4f2a8"
-      ).legacyPackages.${pkgs.system}.openssh;
     };
   };
 }

@@ -70,7 +70,7 @@ in {
       };
       # Used by starship for fonts
       fonts.packages = with pkgs; [
-        (nerdfonts.override {fonts = ["FiraCode"];})
+        nerd-fonts.fira-code
       ];
       environment = {
         systemPackages = with pkgs; [
@@ -99,7 +99,7 @@ in {
       openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
       isNormalUser = true;
     };
-    nix.trustedUsers = [ "root" "ci" ];
+    nix.settings.trusted-users = [ "root" "ci" ];
     environment.etc."client_ssh_sample".text = lib.concatStringsSep "\n" (map
       (name: ''
         Host ${name}
