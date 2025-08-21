@@ -58,9 +58,7 @@ in {
     };
 
     nix = {
-      # A recent version of nix daemon is required to be able to migrate to newer nixpkgs, such as 25.05,
-      # otherwise an `error: path '/nix/store/...-linux-$VERSION-modules-shrunk/lib` is encountered during build.
-      package = (builtins.getFlake "github:nixos/nix/9328af84d33281ef8018251b2a4289e89719c7ae").packages.${pkgs.system}.nix;
+      package = pkgs.nixVersions.nix_2_29;
 
       # make sure we have enough build users
       nrBuildUsers = 32;
@@ -113,9 +111,6 @@ in {
 
     programs = {
       mosh.enable = true;
-      ssh.package = (
-        builtins.getFlake "github:nixos/nixpkgs/b9014df496d5b68bf7c0145d0e9b0f529ce4f2a8"
-      ).legacyPackages.${pkgs.system}.openssh;
     };
   };
 }

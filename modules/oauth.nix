@@ -3,10 +3,10 @@
 with lib;
 
 let
-  cfg = config.services.oauth2_proxy;
+  cfg = config.services.oauth2-proxy;
 in {
   options = {
-    services.oauth2_proxy.nginx.config = mkOption {
+    services.oauth2-proxy.nginx.config = mkOption {
       type = types.str;
       default = optionalString cfg.enable ''
         auth_request /oauth2/auth;
@@ -28,12 +28,12 @@ in {
 
   config = lib.mkIf cfg.enable {
     services = {
-      oauth2_proxy = let staticConf = pkgs.globals.static.oauth or {}; in {
+      oauth2-proxy = let staticConf = pkgs.globals.static.oauth or {}; in {
         setXauthrequest = mkDefault true;
       } // staticConf
       // (mapAttrsRecursive (_: mkDefault) (removeAttrs staticConf ["alphaConfig"]));
     };
-    users.users.oauth2_proxy.group = "oauth2_proxy";
-    users.groups.oauth2_proxy = {};
+    users.users.oauth2-proxy.group = "oauth2-proxy";
+    users.groups.oauth2-proxy = {};
   };
 }

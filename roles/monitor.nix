@@ -62,7 +62,7 @@ in {
       prometheus = static.prometheus or {};
     };
 
-    services.oauth2_proxy.enable = lib.mkDefault true;
+    services.oauth2-proxy.enable = lib.mkDefault true;
 
     services.prometheus = { inherit scrapeConfigs; };
 

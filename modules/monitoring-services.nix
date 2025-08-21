@@ -4,7 +4,7 @@ with lib;
 
 let
   cfg = config.services.monitoring-services;
-  oauthCfg = config.services.oauth2_proxy;
+  oauthCfg = config.services.oauth2-proxy;
   nginxOAuthConfig = oauthCfg.nginx.config;
 in {
 
@@ -169,7 +169,7 @@ in {
         type = types.bool;
         default = false;
         description = ''
-          auto-login grafana based on oauth2_proxy login
+          auto-login grafana based on oauth2-proxy login
           also auto-registers all new users
 
           warning: if set at first start, you must set grafanaCreds.user to an email from oauth.emailDomain
@@ -263,7 +263,7 @@ in {
         type = types.nullOr types.path;
         default = null;
         description = ''
-          Basic Auth password file for prometheus, for use in addition to oauth2_proxy.
+          Basic Auth password file for prometheus, for use in addition to oauth2-proxy.
           Syntax is name + ':' + <command>openssl passwd -6</command>
         '';
       };
@@ -290,7 +290,7 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
-      services.oauth2_proxy.nginx.virtualHosts = [ "${cfg.webhost}" ];
+      services.oauth2-proxy.nginx.virtualHosts = [ "${cfg.webhost}" ];
     }
     (lib.mkIf cfg.enableWireguard {
       boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
