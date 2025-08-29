@@ -7,12 +7,14 @@ in {
   imports = [ ./common.nix ];
 
   environment.systemPackages = with pkgs; [
-    (ruby.withPackages (ps: with ps; [ sequel pry sqlite3 nokogiri ]))
-    screen
-    sqlite-interactive
-    tmux
+    (ruby.withPackages (ps: with ps; [ nokogiri pry sequel sqlite3 ]))
+    awscli2
     gnupg
     pinentry
+    screen
+    ssm-session-manager-plugin
+    sqlite-interactive
+    tmux
   ];
 
   programs.gnupg.agent = {
