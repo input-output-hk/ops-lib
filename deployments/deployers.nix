@@ -80,6 +80,7 @@ in {
         variables.DEPLOYER_IP = toString config.networking.publicIPv4;
       };
       nixpkgs = { inherit pkgs; };
+      system.stateVersion = "26.05";
       users.users.${config.local.username}.isNormalUser = true;
       programs.auth-keys-hub.github.users = usersFor config.local.username;
       networking.firewall.allowedUDPPorts = [ 17777 ];
