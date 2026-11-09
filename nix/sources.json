@@ -21,18 +21,6 @@
         "url": "https://github.com/input-output-hk/flake-compat/archive/7da118186435255a30b5ffeabba9629c344c0bec.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "iohk-nix": {
-        "branch": "master",
-        "description": "nix scripts shared across projects",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "iohk-nix",
-        "rev": "64ca6f4c0c6db283e2ec457c775bce75173fb319",
-        "sha256": "0b0swikhj400b2zmskkdyiyvfdvgk0l1771ad6jgnxbnil75fjdf",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/64ca6f4c0c6db283e2ec457c775bce75173fb319.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "naersk": {
         "branch": "master",
         "description": "Build rust crates in Nix. No configuration, no code generation, no IFD. Sandbox friendly.",
