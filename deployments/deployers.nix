@@ -3,6 +3,7 @@ let
   org = "IOHK";
   accessKeyId = "root-account";
   pkgs = import ../nix { config.allowUnfree = true; };
+  usersFor = import ../modules/ssh-users.nix;
 in {
   defaults = { resources, name, config, lib, nodes, ... }: {
     options = {
@@ -79,27 +80,18 @@ in {
         variables.DEPLOYER_IP = toString config.networking.publicIPv4;
       };
       nixpkgs = { inherit pkgs; };
-      users.users = {
-        ${config.local.username} = {
-          isNormalUser = true;
-          openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
-        };
-      };
+      users.users.${config.local.username}.isNormalUser = true;
+      programs.auth-keys-hub.github.users = usersFor config.local.username;
       networking.firewall.allowedUDPPorts = [ 17777 ];
     };
   };
 
   mainnet-deployer = { pkgs, lib, nodes, ... }: {
     local.username = "mainnet";
-    users.users.ci = {
-      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
-      isNormalUser = true;
-    };
-    users.users.exchanges = {
-      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom devOps;
-      isNormalUser = true;
-    };
+    users.users.ci.isNormalUser = true;
+    users.users.exchanges.isNormalUser = true;
     nix.settings.trusted-users = [ "root" "ci" ];
+    programs.auth-keys-hub.github.users = usersFor "ci" ++ usersFor "exchanges";
     environment.etc."client_ssh_sample".text = lib.concatStringsSep "\n" (map
       (name: ''
         Host ${name}
@@ -167,11 +159,9 @@ in {
     };
   };
 
-  dev-deployer = { pkgs, ... }: {
+  dev-deployer = {
     local.username = "dev";
-    users.users.dev = {
-      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; (allKeysFrom csl-developers ++ allKeysFrom plutus-developers);
-    };
+    programs.auth-keys-hub.github.users = [ "coot:dev" "karknu:dev" ];
     services.tarsnap = {
       enable = true;
       keyfile = "/run/keys/tarsnap";
@@ -185,15 +175,13 @@ in {
 
   bench-deployer = { pkgs, ... }: {
     local.username = "dev";
+    programs.auth-keys-hub.github.users = [ "mgmeier:dev" "fmaste:dev" ];
     fileSystems."/home" =
       { device = "/dev/disk/by-label/home";
         fsType = "ext4";
       };
     deployment.ec2.instanceType = "c5.9xlarge";
     deployment.ec2.ebsInitialRootDiskSize = pkgs.lib.mkForce 2000;
-    users.users.dev = {
-      openssh.authorizedKeys.keys = with pkgs.iohk-ops-lib.ssh-keys; allKeysFrom csl-developers;
-    };
     nix.nrBuildUsers = pkgs.lib.mkForce 36;
   };
 

@@ -1,4 +1,14 @@
 {
+    "auth-keys-hub": {
+        "branch": "main",
+        "owner": "input-output-hk",
+        "repo": "auth-keys-hub",
+        "rev": "ee87ab8fc1ebd507a8272dbf09b8212f6dfd36b0",
+        "sha256": "0f0ja5vy4nph9b226alpxlp85j8m103kv89q17jj5kv1pkxghaag",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/auth-keys-hub/archive/ee87ab8fc1ebd507a8272dbf09b8212f6dfd36b0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "flake-compat": {
         "branch": "fixes",
         "description": null,

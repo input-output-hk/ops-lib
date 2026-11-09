@@ -1,10 +1,7 @@
 { pkgs, lib, name, config, ... }:
-let
-  inherit (pkgs.iohk-ops-lib.ssh-keys) allKeysFrom devOps;
-  devOpsKeys = allKeysFrom devOps;
-in {
+{
 
-  imports = [ ./aws.nix ./monitoring-exporters.nix ./oauth.nix ];
+  imports = [ ./aws.nix ./monitoring-exporters.nix ./oauth.nix ./ssh.nix ];
   options = {
     local.commonGivesVim = lib.mkOption {
       default = true;
@@ -36,7 +33,6 @@ in {
     ] ++ (lib.optional config.local.commonGivesVim vim);
 
     users.mutableUsers = false;
-    users.users.root.openssh.authorizedKeys.keys = devOpsKeys;
 
     services = {
       monitoring-exporters.graylogHost =
