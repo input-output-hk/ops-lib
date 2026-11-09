@@ -58,7 +58,7 @@ in {
     };
 
     nix = {
-      package = pkgs.nixVersions.nix_2_29;
+      package = pkgs.nix;
 
       # make sure we have enough build users
       nrBuildUsers = 32;
@@ -95,11 +95,11 @@ in {
         impure-env =
       '';
 
-      # nixpkgs path is created by 'extraSystemBuilderCmds' below:
+      # nixpkgs path is created by 'systemBuilderCommands' below:
       nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
     };
 
-    system.extraSystemBuilderCmds = ''
+    system.systemBuilderCommands = ''
       ln -sv ${pkgs.path} $out/nixpkgs
     '';
 

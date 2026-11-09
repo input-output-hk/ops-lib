@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  customizedVim = pkgs.vim_configurable.customize {
+  customizedVim = pkgs.vim-full.customize {
     name = "vim-mb";
     vimrcConfig = {
       customRC = ''
@@ -33,7 +33,7 @@ let
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [
           vim-nix
-          Syntastic
+          syntastic
           YouCompleteMe
         ];
       };

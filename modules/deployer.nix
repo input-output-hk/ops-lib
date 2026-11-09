@@ -12,7 +12,7 @@ in {
     sqlite-interactive
     tmux
     gnupg
-    pinentry
+    pinentry-curses
   ];
 
   programs.gnupg.agent = {
