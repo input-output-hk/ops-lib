@@ -176,6 +176,8 @@ in {
 
   bench-deployer = { pkgs, ... }: {
     local.username = "dev";
+    # /dev/nvme0n1 is the /home volume here; the root volume enumerates as nvme1n1.
+    boot.loader.grub.device = pkgs.lib.mkOverride 40 "/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_vol0182a95e9f07a4c8e";
     programs.auth-keys-hub.github.users = [ "mgmeier:dev" "fmaste:dev" ];
     fileSystems."/home" =
       { device = "/dev/disk/by-label/home";
