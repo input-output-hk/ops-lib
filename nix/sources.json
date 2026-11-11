@@ -1,4 +1,14 @@
 {
+    "auth-keys-hub": {
+        "branch": "main",
+        "owner": "input-output-hk",
+        "repo": "auth-keys-hub",
+        "rev": "ee87ab8fc1ebd507a8272dbf09b8212f6dfd36b0",
+        "sha256": "0f0ja5vy4nph9b226alpxlp85j8m103kv89q17jj5kv1pkxghaag",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/auth-keys-hub/archive/ee87ab8fc1ebd507a8272dbf09b8212f6dfd36b0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "flake-compat": {
         "branch": "fixes",
         "description": null,
@@ -9,18 +19,6 @@
         "sha256": "01iwymbnyadqj1xfl0xhk8582v7k9b2m6s6yxp3r805w4g3h1k62",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/flake-compat/archive/7da118186435255a30b5ffeabba9629c344c0bec.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "iohk-nix": {
-        "branch": "master",
-        "description": "nix scripts shared across projects",
-        "homepage": null,
-        "owner": "input-output-hk",
-        "repo": "iohk-nix",
-        "rev": "64ca6f4c0c6db283e2ec457c775bce75173fb319",
-        "sha256": "0b0swikhj400b2zmskkdyiyvfdvgk0l1771ad6jgnxbnil75fjdf",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/64ca6f4c0c6db283e2ec457c775bce75173fb319.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "naersk": {
