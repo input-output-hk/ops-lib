@@ -162,7 +162,7 @@ in {
 
   dev-deployer = {
     local.username = "dev";
-    programs.auth-keys-hub.github.users = [ "coot:dev" "karknu:dev" ];
+    programs.auth-keys-hub.github.users = [ "crocodile-dentist:dev" "coot:dev" "karknu:dev" ];
     services.tarsnap = {
       enable = true;
       keyfile = "/run/keys/tarsnap";
